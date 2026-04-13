@@ -1,6 +1,6 @@
 name: backend_driven_ui
 description: Server-Driven UI framework for Flutter with ApiWidget - build data-driven interfaces without FutureBuilder boilerplate.
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/igloodev/backend_driven_ui
 repository: https://github.com/igloodev/backend_driven_ui
 issue_tracker: https://github.com/igloodev/backend_driven_ui/issues

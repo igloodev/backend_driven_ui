@@ -6,7 +6,7 @@ import '../models/widget_schema.dart';
 import '../registry/builtin_widgets.dart';
 import '../registry/widget_registry.dart';
 import '../utils/helpers.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 
 /// Parser for converting widget schemas to Flutter widgets
 class SchemaParser {
@@ -29,6 +29,11 @@ class SchemaParser {
   /// Callback for API errors
   final ApiErrorCallback? onApiError;
 
+  /// Callback for URL launching - wire in url_launcher or any custom handler.
+  ///
+  /// See [LaunchUrlCallback] for usage example.
+  final LaunchUrlCallback? onLaunchUrl;
+
   /// Creates a SchemaParser with its own registry.
   ///
   /// Each parser instance has its own registry to ensure callbacks
@@ -41,6 +46,7 @@ class SchemaParser {
     this.onNavigate,
     this.onApiSuccess,
     this.onApiError,
+    this.onLaunchUrl,
   })  : _registry = registry ?? WidgetRegistry(),
         _cacheEnabled = enableCache {
     // Register built-in widgets to this parser's registry
@@ -55,6 +61,7 @@ class SchemaParser {
       onNavigate: onNavigate,
       onApiSuccess: onApiSuccess,
       onApiError: onApiError,
+      onLaunchUrl: onLaunchUrl,
     );
   }
 
@@ -127,6 +134,19 @@ class SchemaParser {
     return schemas.map((schema) => parse(schema, context)).toList();
   }
 
+  /// Register a custom widget builder on this parser's registry.
+  ///
+  /// Use this to extend the built-in 33 widgets with your own types:
+  /// ```dart
+  /// final parser = SchemaParser();
+  /// parser.register('ProductCard', (schema, context) {
+  ///   return ProductCard(title: schema.props?['title']);
+  /// });
+  /// ```
+  void register(String type, Widget Function(WidgetSchema, BuildContext) builder) {
+    _registry.register(type, builder);
+  }
+
   /// Enable or disable widget caching
   void setCacheEnabled(bool enabled) {
     _cacheEnabled = enabled;
@@ -140,48 +160,62 @@ class SchemaParser {
     _widgetCache.clear();
   }
 
-  /// Generate cache key for a schema
+  /// Generate a deterministic cache key for a schema.
+  ///
+  /// Uses a stable string built from type + props + child hashes.
+  /// No hashCode-of-hashCode: the buffer string itself is the key,
+  /// keeping it compact via [_getSchemaHash].
   String _getCacheKey(WidgetSchema schema) {
-    // Generate unique hash including full content
     final buffer = StringBuffer();
     buffer.write(schema.type);
-    buffer.write('_');
+    buffer.write('|');
 
-    // Include full props hash
     if (schema.props != null) {
-      buffer.write(schema.props.toString().hashCode);
+      buffer.write(_propsKey(schema.props!));
     }
-    buffer.write('_');
+    buffer.write('|');
 
-    // Include child's full content hash (recursive)
     if (schema.child != null) {
       buffer.write(_getSchemaHash(schema.child!));
     }
-    buffer.write('_');
+    buffer.write('|');
 
-    // Include children's content hash
     if (schema.children != null && schema.children!.isNotEmpty) {
-      for (var i = 0; i < schema.children!.length; i++) {
-        buffer.write(_getSchemaHash(schema.children![i]));
+      for (final child in schema.children!) {
+        buffer.write(_getSchemaHash(child));
         buffer.write(',');
       }
     }
 
-    return buffer.toString().hashCode.toString();
+    return buffer.toString();
   }
 
-  /// Get a hash for a schema's full content
+  /// Stable string key for a props map.
+  ///
+  /// Sorts entries by key so insertion-order differences don't produce
+  /// different cache keys for semantically identical props.
+  String _propsKey(Map<String, dynamic> props) {
+    final entries = props.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    return entries.map((e) => '${e.key}:${e.value}').join(';');
+  }
+
+  /// Polynomial hash for a schema's full content.
+  ///
+  /// Uses prime multiplication (31) rather than XOR so that child order
+  /// and duplicate children produce distinct hashes.
   int _getSchemaHash(WidgetSchema schema) {
-    var hash = schema.type.hashCode;
+    var hash = 17;
+    hash = hash * 31 + schema.type.hashCode;
     if (schema.props != null) {
-      hash ^= schema.props.toString().hashCode;
+      hash = hash * 31 + _propsKey(schema.props!).hashCode;
     }
     if (schema.child != null) {
-      hash ^= _getSchemaHash(schema.child!);
+      hash = hash * 31 + _getSchemaHash(schema.child!);
     }
     if (schema.children != null) {
       for (final child in schema.children!) {
-        hash ^= _getSchemaHash(child);
+        hash = hash * 31 + _getSchemaHash(child);
       }
     }
     return hash;

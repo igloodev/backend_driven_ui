@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import '../core/api_client.dart';
 import '../models/api_response.dart';
 import '../models/cache_control.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 
 /// Declarative API widget - FutureBuilder's better alternative
 ///

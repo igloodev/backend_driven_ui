@@ -202,12 +202,12 @@ Box with styling (background, border, padding).
 |----------|------|-------------|
 | `width` | Number | Fixed width |
 | `height` | Number | Fixed height |
-| `color` | String/Number | Background color (`#RRGGBB` or integer) |
+| `color` | String/Number | Background color (hex, named, or integer — see Color Formats) |
 | `padding` | Number | Inner padding |
 | `margin` | Number | Outer margin |
 | `borderRadius` | Number | Corner radius |
 | `border` | Boolean | Show border |
-| `borderColor` | String/Number | Border color |
+| `borderColor` | String/Number | Border color (hex, named, or integer) |
 | `borderWidth` | Number | Border width |
 
 ---
@@ -338,7 +338,7 @@ Display text with styling.
 | `fontSize` | Number | Font size in pixels |
 | `fontWeight` | String | `normal`, `bold`, `w100`-`w900` |
 | `fontStyle` | String | `normal`, `italic` |
-| `color` | String/Number | Text color |
+| `color` | String/Number | Text color (hex, named, or integer) |
 | `textAlign` | String | `left`, `right`, `center`, `justify`, `start`, `end` |
 | `maxLines` | Number | Maximum lines |
 | `overflow` | String | `clip`, `fade`, `ellipsis`, `visible` |
@@ -365,7 +365,7 @@ Material icon.
 |----------|------|-------------|
 | `icon` | String | Material icon name (e.g., `home`, `settings`, `favorite`) |
 | `size` | Number | Icon size |
-| `color` | String/Number | Icon color |
+| `color` | String/Number | Icon color (hex, named, or integer) |
 
 **Available icons:** `home`, `settings`, `favorite`, `star`, `person`, `email`, `phone`, `message`, `camera`, `image`, `file`, `folder`, `download`, `upload`, `share`, `copy`, `delete`, `edit`, `add`, `remove`, `check`, `close`, `search`, `menu`, `arrow_back`, `arrow_forward`, `refresh`, `info`, `warning`, `error`, `help`, `lock`, `unlock`, `visibility`, `visibility_off`
 
@@ -929,21 +929,37 @@ Conditions control when widgets are rendered.
 
 ## Color Formats
 
-Colors can be specified as:
+Four formats are accepted wherever a color prop appears:
 
-1. **Hex string:** `"#RRGGBB"` or `"#AARRGGBB"`
-2. **Integer:** `4278190080` (0xFF000000 in hex = black)
+| Format | Example | Notes |
+|--------|---------|-------|
+| Named | `"color": "blue"` | All Flutter `Colors.*` names (e.g. `red`, `green`, `amber`) |
+| `Colors.x` | `"color": "Colors.deepPurple"` | Flutter dot-notation directly |
+| Hex `#RRGGBB` | `"color": "#1976D2"` | Standard CSS hex, fully opaque |
+| Hex `#AARRGGBB` | `"color": "#FF1976D2"` | With alpha channel |
+| Integer | `"color": 4278190080` | Raw Flutter ARGB int (`0xFF000000`) |
 
-**Common colors:**
+**Material shade names** are also supported — append the shade number to the color name:
 
-| Color | Hex | Integer |
-|-------|-----|---------|
-| Black | `#000000` | `4278190080` |
-| White | `#FFFFFF` | `4294967295` |
-| Red | `#FF0000` | `4294901760` |
-| Green | `#00FF00` | `4278255360` |
-| Blue | `#0000FF` | `4278190335` |
-| Grey | `#9E9E9E` | `4288585374` |
+```
+"red50", "red100" … "red900"
+"blue50", "blue100" … "blue900"
+"deepPurple200", "teal400", "amber700" …
+```
+
+**CSS color names** (`navy`, `coral`, `gold`, `salmon`, `teal`, `olive`, `maroon`, `violet`, `indigo`, `crimson`, `turquoise`, `skyblue`, `hotpink`, `lime`, `aqua`, `fuchsia`, `silver`, `gray` / `grey`, …) are recognized as well.
+
+**Common colors quick reference:**
+
+| Color | Named | Hex |
+|-------|-------|-----|
+| Black | `"black"` | `"#000000"` |
+| White | `"white"` | `"#FFFFFF"` |
+| Red | `"red"` | `"#FF0000"` |
+| Blue | `"blue"` | `"#0000FF"` |
+| Green | `"green"` | `"#00FF00"` |
+| Grey | `"grey"` | `"#9E9E9E"` |
+| Transparent | `"transparent"` | `"#00000000"` |
 
 ---
 

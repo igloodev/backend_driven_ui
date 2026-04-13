@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../models/api_exception.dart';
 import '../models/api_response.dart';
 import '../models/cache_control.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 import '../utils/url_validator.dart';
 import 'api_cache.dart';
 import 'bdui_config.dart';
@@ -24,11 +24,16 @@ class ApiClient {
   /// Flag to indicate disposal was requested
   static bool _disposalRequested = false;
 
+  /// Guard to prevent _performDisposal() from running more than once
+  /// if multiple in-flight requests complete at the same time.
+  static bool _isDisposing = false;
+
   /// Get or create the HTTP client
   static http.Client _getOrCreateClient() {
     if (_disposalRequested) {
       // Reset disposal flag - user wants to make new requests
       _disposalRequested = false;
+      _isDisposing = false;
     }
     return _httpClient ??= http.Client();
   }
@@ -43,6 +48,20 @@ class ApiClient {
   /// Validate URL to prevent SSRF attacks
   static bool isUrlSafe(String url) => UrlValidator.isUrlSafe(url);
 
+  /// Resolve a URL against [BduiConfig.baseUrl].
+  ///
+  /// Full URLs (starting with `http://` or `https://`) are returned unchanged.
+  /// Relative paths are prepended with [BduiConfig.baseUrl].
+  static String resolveUrl(String url) {
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    final base = BduiConfig.baseUrl;
+    if (base.isEmpty) return url;
+    if (base.endsWith('/')) {
+      return '$base${url.startsWith('/') ? url.substring(1) : url}';
+    }
+    return '$base${url.startsWith('/') ? url : '/$url'}';
+  }
+
   /// GET request with caching and retry
   static Future<ApiResponse> get(
     String url, {
@@ -51,6 +70,7 @@ class ApiClient {
     int maxRetries = 3,
     Duration timeout = const Duration(seconds: 30),
   }) async {
+    url = resolveUrl(url);
     BduiLogger.network('API GET: $url');
 
     // Check cache first
@@ -111,6 +131,7 @@ class ApiClient {
     int maxRetries = 3,
     Duration timeout = const Duration(seconds: 30),
   }) async {
+    url = resolveUrl(url);
     return RetryHandler.retry(
       action: () => _fetch('POST', url,
           headers: headers, body: body, timeout: timeout),
@@ -127,6 +148,7 @@ class ApiClient {
     int maxRetries = 3,
     Duration timeout = const Duration(seconds: 30),
   }) async {
+    url = resolveUrl(url);
     return RetryHandler.retry(
       action: () =>
           _fetch('PUT', url, headers: headers, body: body, timeout: timeout),
@@ -142,6 +164,7 @@ class ApiClient {
     int maxRetries = 3,
     Duration timeout = const Duration(seconds: 30),
   }) async {
+    url = resolveUrl(url);
     return RetryHandler.retry(
       action: () => _fetch('DELETE', url, headers: headers, timeout: timeout),
       maxRetries: maxRetries,
@@ -158,6 +181,7 @@ class ApiClient {
     Duration timeout = const Duration(seconds: 30),
     void Function(ApiResponse freshResponse)? onRefresh,
   }) async {
+    url = resolveUrl(url);
     final cached = _cache.get<Map<String, dynamic>>(url);
 
     if (cached != null) {
@@ -296,10 +320,15 @@ class ApiClient {
 
           if (data is Map<String, dynamic>) {
             cacheControl = _extractCacheControl(data);
-            if (data.containsKey('ui')) {
-              data = data['ui'];
-            } else if (data.containsKey('data')) {
-              data = data['data'];
+            // Only unwrap 'ui'/'data' when the value is itself a Map.
+            // A non-Map value (String, List, etc.) is left as-is so
+            // the caller receives the raw decoded body rather than crashing.
+            if (data.containsKey('ui') &&
+                data['ui'] is Map<String, dynamic>) {
+              data = data['ui'] as Map<String, dynamic>;
+            } else if (data.containsKey('data') &&
+                data['data'] is Map<String, dynamic>) {
+              data = data['data'] as Map<String, dynamic>;
             }
           }
         } catch (e) {
@@ -369,13 +398,20 @@ class ApiClient {
     _performDisposal();
   }
 
-  /// Actually perform the disposal
+  /// Actually perform the disposal.
+  ///
+  /// The [_isDisposing] guard ensures this runs at most once even if multiple
+  /// in-flight requests complete simultaneously and both see _activeRequests==0.
   static void _performDisposal() {
+    if (_isDisposing) return;
+    _isDisposing = true;
+
     _httpClient?.close();
     _httpClient = null;
     _cacheInstance?.dispose();
     _cacheInstance = null;
     _disposalRequested = false;
+    _isDisposing = false;
     BduiLogger.debug('ApiClient: Disposed');
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
+import 'bdui_logger.dart';
+
 /// Safely convert a dynamic value to a String-keyed Map.
 /// Returns null if conversion fails.
 Map<String, dynamic>? toStringKeyedMap(dynamic value) {
@@ -64,6 +66,12 @@ bool evaluateCondition(String condition, BuildContext context) {
   if (cond == 'isdarkmode') return brightness == Brightness.dark;
   if (cond == 'islightmode') return brightness == Brightness.light;
 
-  // Unknown condition - default false
+  // Unknown condition - log and default to false so the widget is hidden
+  // rather than silently shown. Check for typos in the condition string.
+  BduiLogger.warn(
+    'evaluateCondition: unknown condition "$condition" — defaulting to false. '
+    'Supported: isAndroid, isIOS, isMobile, isWeb, isDesktop, '
+    'isSmallScreen, isMediumScreen, isLargeScreen, isDarkMode, isLightMode.',
+  );
   return false;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 
 /// In-memory API cache with LRU eviction and memory pressure handling
 class ApiCache with WidgetsBindingObserver {

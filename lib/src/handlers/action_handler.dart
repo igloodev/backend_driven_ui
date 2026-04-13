@@ -5,7 +5,7 @@ import '../core/api_client.dart';
 import '../core/bdui_config.dart';
 import '../models/action_schema.dart';
 import '../utils/helpers.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 import '../utils/url_validator.dart';
 
 /// Callback for custom action handling
@@ -13,6 +13,18 @@ typedef CustomActionCallback = Future<void> Function(String name, Map<String, dy
 
 /// Callback for navigation - allows app to override default navigation
 typedef NavigationCallback = Future<void> Function(String route, Map<String, dynamic>? arguments);
+
+/// Callback for URL launching - wire in url_launcher or any custom handler.
+///
+/// Example:
+/// ```dart
+/// onLaunchUrl: (url) async {
+///   if (await canLaunchUrl(Uri.parse(url))) {
+///     await launchUrl(Uri.parse(url));
+///   }
+/// }
+/// ```
+typedef LaunchUrlCallback = Future<void> Function(String url);
 
 /// Callback for API responses
 typedef ApiCallback = void Function(String endpoint, dynamic data);
@@ -32,6 +44,7 @@ typedef ApiErrorCallback = void Function(String endpoint, String error);
 class ActionHandler {
   final BuildContext context;
   final NavigationCallback? onNavigate;
+  final LaunchUrlCallback? onLaunchUrl;
   final ApiCallback? onApiSuccess;
   final ApiErrorCallback? onApiError;
   final CustomActionCallback? onCustomAction;
@@ -39,6 +52,7 @@ class ActionHandler {
   ActionHandler({
     required this.context,
     this.onNavigate,
+    this.onLaunchUrl,
     this.onApiSuccess,
     this.onApiError,
     this.onCustomAction,
@@ -411,20 +425,25 @@ class ActionHandler {
     // Security: Validate URL before launching
     if (!isUrlSafe(url)) {
       BduiLogger.warn('LaunchUrl blocked: URL failed security validation');
-      _handleShowSnackBar(const ActionSchema(
-        type: 'showSnackBar',
-        params: {'message': 'Cannot open this URL for security reasons'},
-      ));
+      if (_isContextMounted) {
+        _handleShowSnackBar(const ActionSchema(
+          type: 'showSnackBar',
+          params: {'message': 'Cannot open this URL for security reasons'},
+        ));
+      }
       return;
     }
 
-    // Note: In a real app, use url_launcher package
-    // For now, we'll just show a snackbar with the URL
-    BduiLogger.debug('Would launch URL: $url');
-    _handleShowSnackBar(ActionSchema(
-      type: 'showSnackBar',
-      params: {'message': 'Opening: $url'},
-    ));
+    if (onLaunchUrl != null) {
+      await onLaunchUrl!(url);
+    } else {
+      // No handler registered — app must provide onLaunchUrl to open URLs.
+      // Wire in url_launcher or any custom implementation via ActionHandler.onLaunchUrl.
+      BduiLogger.warn(
+        'LaunchUrl: no onLaunchUrl handler registered. '
+        'Provide onLaunchUrl in ActionHandler to open URLs.',
+      );
+    }
   }
 
   Future<void> _handleCopy(ActionSchema action) async {

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import '../core/bdui_config.dart';
-import 'logger.dart';
+import 'bdui_logger.dart';
 
 /// URL validation utility to prevent SSRF attacks
 class UrlValidator {

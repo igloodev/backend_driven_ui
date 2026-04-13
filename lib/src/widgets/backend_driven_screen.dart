@@ -37,6 +37,11 @@ class BackendDrivenScreen extends StatefulWidget {
   /// Callback when navigation is requested
   final NavigationCallback? onNavigate;
 
+  /// Callback for URL launching - wire in url_launcher or any custom handler.
+  ///
+  /// See [LaunchUrlCallback] for usage example.
+  final LaunchUrlCallback? onLaunchUrl;
+
   /// Callback for custom actions
   final CustomActionCallback? onCustomAction;
 
@@ -61,6 +66,7 @@ class BackendDrivenScreen extends StatefulWidget {
     this.errorWidget,
     this.onSchemaLoaded,
     this.onNavigate,
+    this.onLaunchUrl,
     this.onCustomAction,
     this.onApiSuccess,
     this.onApiError,
@@ -88,6 +94,7 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
     // Recreate parser if callbacks changed
     if (widget.parser != oldWidget.parser ||
         widget.onNavigate != oldWidget.onNavigate ||
+        widget.onLaunchUrl != oldWidget.onLaunchUrl ||
         widget.onCustomAction != oldWidget.onCustomAction ||
         widget.onApiSuccess != oldWidget.onApiSuccess ||
         widget.onApiError != oldWidget.onApiError) {
@@ -99,6 +106,7 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
     _parser = widget.parser ??
         SchemaParser(
           onNavigate: widget.onNavigate,
+          onLaunchUrl: widget.onLaunchUrl,
           onCustomAction: widget.onCustomAction,
           onApiSuccess: widget.onApiSuccess,
           onApiError: widget.onApiError,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/widget_schema.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 
 /// Widget builder function signature
 typedef WidgetBuilder = Widget Function(

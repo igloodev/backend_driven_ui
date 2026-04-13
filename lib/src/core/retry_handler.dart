@@ -1,4 +1,4 @@
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 import 'bdui_config.dart';
 
 /// Retry handler with exponential backoff and safety limits

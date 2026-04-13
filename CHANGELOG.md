@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2026-04-13
+
+### Added
+- `BduiConfig.baseUrl` — set a global base URL once; all relative endpoints resolve against it automatically
+- `SchemaParser.register()` — convenience method to add custom widget builders without accessing the registry directly
+- Named color support in JSON: `"color": "blue"`, `"color": "Colors.deepPurple"`, `"color": "#1976D2"` (all Flutter color names + CSS hex + ARGB hex — any format now works)
+- `onLaunchUrl` callback on `ActionHandler`, `SchemaParser`, and `BackendDrivenScreen` — wire in `url_launcher` or any custom handler to handle `launchUrl` actions from JSON schemas
+- 74 tests covering `ApiCache`, `WidgetSchema`, `BduiConfig`, `helpers`, `ApiClient`, `SchemaWidget`, and custom widget registration
+
+### Fixed
+- `WidgetRegistry.instance` referenced in README docs was incorrect — corrected to use `SchemaParser.register()` API
+- Cache key generation now uses a deterministic polynomial hash and sorted props keys — previously XOR-based hashing caused collisions for schemas with swapped or duplicate children
+- `ApiClient.dispose()` now guards against `_performDisposal()` being called more than once when multiple in-flight requests complete simultaneously
+- JSON response unwrapping for `ui`/`data` keys now validates the value is a `Map` before extracting — previously a non-Map value (e.g. String) would propagate and crash the schema parser
+- `evaluateCondition` now logs a warning with the full list of supported conditions when an unknown condition string is received, instead of silently returning `false`
+
+### Changed
+- `logger.dart` renamed to `bdui_logger.dart` for clarity — internal change, no public API impact
+
+### Removed
+- "Early stage" disclaimer from README — the API is stable
+
+---
+
 ## [0.1.0] - 2025-03-17
 
 ### Added

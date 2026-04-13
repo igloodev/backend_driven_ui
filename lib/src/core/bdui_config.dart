@@ -27,6 +27,21 @@ class BduiConfig {
 
   // ============ Network Settings ============
 
+  /// Global base URL prepended to all relative endpoint paths.
+  ///
+  /// Set once at app startup to avoid repeating the full URL on every widget:
+  /// ```dart
+  /// BduiConfig.baseUrl = 'https://api.myapp.com';
+  ///
+  /// // Then use relative paths everywhere:
+  /// ApiWidget(endpoint: '/products')
+  /// BackendDrivenScreen(endpoint: '/screens/home')
+  /// ```
+  ///
+  /// Endpoints that already start with `http://` or `https://` are used as-is.
+  /// Default: '' (empty — full URLs required)
+  static String baseUrl = '';
+
   /// Maximum cache entries for API responses.
   /// Default: 100
   static int maxCacheEntries = 100;
@@ -75,6 +90,7 @@ class BduiConfig {
     maxWidgetDepth = 50;
     maxChildren = 500;
     maxActionDepth = 10;
+    baseUrl = '';
     maxCacheEntries = 100;
     defaultCacheDuration = const Duration(minutes: 5);
     defaultTimeout = const Duration(seconds: 30);

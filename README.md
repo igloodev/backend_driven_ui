@@ -20,57 +20,97 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ---
 
-> **Note:** This package is at an early stage (v0.1.0). While we support 33 built-in widgets, some widgets you need might not be available yet. There might also be some edge case issues. Please [open an issue](https://github.com/igloodev/backend_driven_ui/issues) to let us know which widgets you require or any issues you encounter — we'll address them as soon as possible!
-
----
-
 ## 🚀 Quick Start
 
 ### Installation
 
 ```yaml
 dependencies:
-  backend_driven_ui: ^0.1.0
+  backend_driven_ui: ^0.2.0
 ```
 
-### Basic Usage
+### Global Base URL (optional)
 
-#### The FutureBuilder Hell 😭
+Set once at app startup to avoid repeating the full URL on every widget:
 
 ```dart
-FutureBuilder(
-  future: api.fetchProducts(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return CircularProgressIndicator();
-    }
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    }
-    if (!snapshot.hasData) {
-      return Text('No data');
-    }
-    return ProductList(snapshot.data);
-  }
-)
+void main() {
+  BduiConfig.baseUrl = 'https://api.myapp.com';
+  runApp(MyApp());
+}
 ```
 
-#### The ApiWidget Magic ✨
+All relative endpoints are then resolved automatically:
 
 ```dart
-ApiWidget(
-  endpoint: '/api/products',
-  loadingWidget: ShimmerLoader(),
-  successWidget: (data) => ProductList(data),
-  errorWidget: (error) => ErrorCard(error),
-)
+BackendDrivenScreen(endpoint: '/screens/home')  // → https://api.myapp.com/screens/home
+ApiWidget(endpoint: '/products')                // → https://api.myapp.com/products
 ```
 
-**That's it!** Caching, retry, polling, error handling—all built in.
+Full URLs (`https://...`) are always used as-is regardless of `baseUrl`.
 
 ---
 
 ## 📖 Documentation
+
+### Backend-Driven UI (the wow factor)
+
+Render an entire screen from a JSON schema your backend returns.
+No app update needed — change the JSON, the UI changes instantly.
+
+```dart
+BackendDrivenScreen(
+  endpoint: '/api/screens/home',
+  cacheDuration: Duration(minutes: 5),
+  onNavigate: (route, args) => Navigator.pushNamed(context, route),
+)
+```
+
+**Backend returns JSON → Flutter renders the UI:**
+
+```json
+{
+  "type": "Column",
+  "props": { "mainAxisAlignment": "center" },
+  "children": [
+    {
+      "type": "Text",
+      "props": { "text": "Hello from Backend!", "fontSize": 24, "color": "#1976D2" }
+    },
+    { "type": "SizedBox", "props": { "height": 16 } },
+    {
+      "type": "ElevatedButton",
+      "props": { "text": "Shop Now" },
+      "action": { "type": "navigate", "route": "/shop" }
+    }
+  ]
+}
+```
+
+#### Colors in JSON
+
+Three formats are supported — use whichever fits your backend:
+
+| Format | Example | Notes |
+|--------|---------|-------|
+| Named | `"color": "blue"` | All Flutter `Colors.*` names |
+| `Colors.x` | `"color": "Colors.deepPurple"` | Flutter notation directly |
+| Hex `#RRGGBB` | `"color": "#1976D2"` | Standard CSS hex |
+| Hex `#AARRGGBB` | `"color": "#FF1976D2"` | With alpha channel |
+| ARGB int | `"color": 4278190080` | Raw Flutter int |
+
+#### Local Schema (no API call needed)
+
+```dart
+SchemaWidget.fromJson({
+  "type": "Column",
+  "children": [
+    { "type": "Text", "props": { "text": "Hello from JSON!", "fontSize": 24 } }
+  ]
+})
+```
+
+---
 
 ### ApiWidget
 
@@ -120,169 +160,21 @@ ApiWidget(
 )
 ```
 
-### Backend-Driven UI
-
-Build entire screens from JSON schemas.
-
-#### Basic Usage
-
-```dart
-BackendDrivenScreen(
-  endpoint: '/api/screens/home',
-  cacheDuration: Duration(minutes: 5),
-  onSchemaLoaded: (schema) => print('UI loaded from backend'),
-)
-```
-
-#### Built-in Widgets (33 Total)
-
-The framework includes these widgets out of the box - **NO custom registration needed!**
-
-**Layout (12):**
-- Column, Row, Stack - Basic layouts
-- Center, Padding, SizedBox - Alignment & spacing
-- Expanded, Flexible - Flexible layouts
-- Wrap - Wrapping layout
-- Spacer - Spacing helper
-- AspectRatio - Maintain aspect ratio
-- Container - Box with styling (colors, borders, padding)
-
-**Display (4):**
-- Text - Text with styling
-- Icon - Material icons
-- Image - Network images
-- Divider - Horizontal lines
-
-**Material (5):**
-- Card - Material card with elevation
-- ListTile - Standard list item
-- CircleAvatar - User avatars
-- Chip - Tags/labels
-- ClipRRect - Rounded corners
-
-**Interactive (7):**
-- Button, ElevatedButton, TextButton, OutlinedButton - Buttons
-- IconButton - Icon buttons
-- GestureDetector, InkWell - Tap detection
-
-**Scrollable (3):**
-- ListView - Scrollable lists (lazy loading)
-- GridView - Scrollable grids
-- SingleChildScrollView - Scrollable content
-
-**Effects (2):**
-- Visibility - Show/hide widgets
-- Opacity - Transparency control
-
-**Build complex, interactive UIs by combining these - no app updates needed!** 🚀
-
-#### JSON Schema Format
-
-```json
-{
-  "type": "Column",
-  "props": {
-    "mainAxisAlignment": "center",
-    "crossAxisAlignment": "center"
-  },
-  "children": [
-    {
-      "type": "Text",
-      "props": {
-        "text": "Hello from Backend!",
-        "fontSize": 24,
-        "fontWeight": "bold",
-        "color": 4278190080
-      }
-    },
-    {
-      "type": "SizedBox",
-      "props": {"height": 16}
-    },
-    {
-      "type": "Container",
-      "props": {
-        "padding": 16,
-        "color": 4293848814,
-        "borderRadius": 8,
-        "border": true,
-        "borderColor": 4278190080,
-        "borderWidth": 2
-      },
-      "child": {
-        "type": "Text",
-        "props": {
-          "text": "This UI is rendered from JSON!"
-        }
-      }
-    }
-  ]
-}
-```
-
-#### Conditional Rendering
-
-Show/hide widgets based on platform, screen size, or theme:
-
-```json
-{
-  "type": "Text",
-  "props": {
-    "text": "Only on Android"
-  },
-  "condition": "isAndroid"
-}
-```
-
-**Available conditions:**
-- `isAndroid`, `isIOS`, `isMobile`, `isWeb`
-- `isSmallScreen`, `isMediumScreen`, `isLargeScreen`
-- `isDarkMode`, `isLightMode`
-
-#### Using Local Schemas
-
-Render UI from local JSON without API:
-
-```dart
-// From JSON Map
-SchemaWidget.fromJson({
-  "type": "Column",
-  "children": [
-    {
-      "type": "Text",
-      "props": {
-        "text": "Hello from JSON!",
-        "fontSize": 24
-      }
-    }
-  ]
-})
-
-// Or from WidgetSchema
-final schema = WidgetSchema.fromJson(myJsonData);
-SchemaWidget(schema: schema)
-```
-
 #### Custom Widget Registration
 
-Extend with your own widgets:
+Extend with your own widgets using `SchemaParser.register`:
 
 ```dart
-void main() {
-  final registry = WidgetRegistry.instance;
+final parser = SchemaParser();
 
-  // Register custom widget
-  registry.register('ProductCard', (schema, context) {
-    final props = schema.props ?? {};
-    return ProductCard(
-      title: props['title'],
-      price: props['price'],
-      imageUrl: props['imageUrl'],
-    );
-  });
-
-  runApp(MyApp());
-}
+parser.register('ProductCard', (schema, context) {
+  final props = schema.props ?? {};
+  return ProductCard(
+    title: props['title'],
+    price: props['price'],
+    imageUrl: props['imageUrl'],
+  );
+});
 ```
 
 **Use it from backend:**
@@ -319,6 +211,7 @@ Execute actions from your backend schemas:
 - `showDialog` - Show dialogs
 - `showSnackBar` - Show snackbars
 - `pop` - Go back
+- `launchUrl` - Open a URL (requires `onLaunchUrl` callback)
 - `sequence` - Execute multiple actions
 - `conditional` - Conditional execution
 
@@ -384,7 +277,7 @@ ApiWidget(
 
 ## 📚 Schema Reference
 
-See [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md) for complete documentation of all 33 widgets, props, actions, and conditions.
+See the [Schema Reference](https://igloodev.in/docs/backend-driven-ui/schema) for complete documentation of all 33 widgets, props, actions, and conditions — also available as [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md).
 
 ---
 

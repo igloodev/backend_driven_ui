@@ -1,6 +1,6 @@
 import '../core/bdui_config.dart';
 import '../utils/helpers.dart';
-import '../utils/logger.dart';
+import '../utils/bdui_logger.dart';
 
 /// Widget schema from backend JSON
 class WidgetSchema {
