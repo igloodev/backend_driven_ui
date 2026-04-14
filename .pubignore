@@ -35,3 +35,14 @@ example/macos/
 example/windows/
 example/web/
 example/test/
+
+# Large example files — full demos are on GitHub, not needed in the package archive
+example/lib/examples/
+
+# Schema reference is hosted at igloodev.in/docs/backend-driven-ui/schema
+SCHEMA_REFERENCE.md
+
+# Developer-only artifacts — consumers only need lib/
+test/
+example/
+analysis_options.yaml
