@@ -42,13 +42,31 @@ typedef ApiErrorCallback = void Function(String endpoint, String error);
 /// - launchUrl, copy, share
 /// - custom
 class ActionHandler {
+  /// The Flutter [BuildContext] used for navigation, dialogs, and snackbars.
   final BuildContext context;
+
+  /// Called when a `navigate` action is triggered. Receives the route name
+  /// and optional arguments map.
   final NavigationCallback? onNavigate;
+
+  /// Called when a `launchUrl` action is triggered. Wire in `url_launcher`
+  /// or any custom handler — the package has no direct dependency on it.
   final LaunchUrlCallback? onLaunchUrl;
+
+  /// Called after a successful `api` action. Receives the endpoint and
+  /// the parsed response data.
   final ApiCallback? onApiSuccess;
+
+  /// Called when an `api` action fails. Receives the endpoint and the
+  /// error message string.
   final ApiErrorCallback? onApiError;
+
+  /// Called when a `custom` action is triggered. Receives the action name
+  /// and optional params map.
   final CustomActionCallback? onCustomAction;
 
+  /// Creates an [ActionHandler] with the given [context] and optional
+  /// callbacks for navigation, URL launching, API results, and custom actions.
   ActionHandler({
     required this.context,
     this.onNavigate,

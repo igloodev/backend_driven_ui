@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-04-14
+
+### Fixed
+- Restored `example/` in the published archive so pub.dev awards the example pub points (was incorrectly excluded in 0.2.0 `.pubignore`)
+- Added missing dartdoc comments to `ActionHandler` constructor and fields (`context`, `onApiSuccess`, `onApiError`, `onCustomAction`)
+
+---
+
 ## [0.2.0] - 2026-04-13
 
 ### Added
