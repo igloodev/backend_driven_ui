@@ -19,6 +19,16 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+screenshots:
+  - description: Chats screen rendered entirely from backend JSON
+    path: screenshots/1_chats.jpg
+  - description: Status screen rendered from backend JSON
+    path: screenshots/2_status.jpg
+  - description: Calls screen rendered from backend JSON
+    path: screenshots/3_calls.jpg
+  - description: Settings screen rendered from backend JSON
+    path: screenshots/4_settings.jpg
+
 topics:
   - server-driven-ui
   - api

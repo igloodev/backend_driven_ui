@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:backend_driven_ui/src/core/bdui_http_client.dart';
 import 'package:backend_driven_ui/src/models/api_request.dart';
 import 'package:backend_driven_ui/src/models/api_response.dart';
-import 'package:backend_driven_ui/src/models/http_method.dart';
 import 'package:backend_driven_ui/src/widgets/api_widget.dart';
 
 // ── Mock ─────────────────────────────────────────────────────────────────────

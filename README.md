@@ -20,6 +20,16 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ---
 
+## 📸 Screenshots
+
+> A WhatsApp-style UI built entirely from backend JSON — zero hardcoded screens.
+
+| Chats | Status | Calls | Settings |
+|-------|--------|-------|----------|
+| ![Chats](screenshots/1_chats.jpg) | ![Status](screenshots/2_status.jpg) | ![Calls](screenshots/3_calls.jpg) | ![Settings](screenshots/4_settings.jpg) |
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation

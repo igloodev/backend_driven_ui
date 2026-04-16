@@ -16,14 +16,14 @@ void main() {
     });
 
     test('all fields set correctly', () {
-      final req = ApiRequest(
+      final req = const ApiRequest(
         endpoint: '/api/orders',
         method: HttpMethod.post,
         headers: {'Authorization': 'Bearer token'},
         body: {'item': 1},
-        cacheDuration: const Duration(minutes: 5),
+        cacheDuration: Duration(minutes: 5),
         maxRetries: 2,
-        timeout: const Duration(seconds: 10),
+        timeout: Duration(seconds: 10),
       );
       expect(req.endpoint, '/api/orders');
       expect(req.method, HttpMethod.post);

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [0.3.0] - 2026-04-16
 
 ### Added
+- 4 screenshots added to pub.dev gallery showcasing the WhatsApp-clone example (Chats, Status, Calls, Settings screens)
 - `BduiHttpClient` abstract class — inject a custom HTTP backend into `ApiWidget` for testing or alternative HTTP libraries without modifying widget code
 - `DefaultBduiHttpClient` — default implementation backed by `ApiClient`, used automatically when no `httpClient` is provided
 - `ApiRequest` model — bundles all API call parameters into a reusable, composable value object with `copyWith()` support; pass to `ApiWidget(request: ...)` instead of individual params
@@ -44,6 +45,9 @@ All notable changes to this project will be documented in this file.
 - `ActionHandler` `api` action no longer shows a default error snackbar when an `onApiError` callback is registered — previously both the callback and the snackbar fired simultaneously
 - `ApiWidget` now uses separate deduplication hashes for `onSuccess` and `onError` — previously a single shared hash could suppress one callback when the other fired with an identical hash value
 - `ApiWidget.didUpdateWidget` now also refetches when `headers` change, covering auth-token refresh without other param changes
+
+### Maintenance
+- Resolved all static analysis issues in test files — unused import removed, redundant `const` keywords fixed; `flutter analyze` now reports zero issues
 
 ### Exports
 - `BduiHttpClient`, `DefaultBduiHttpClient` now exported from the package root

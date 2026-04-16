@@ -198,14 +198,14 @@ void main() {
           return const Scaffold(body: Text('Start'));
         }));
 
-        await handler.execute(ActionSchema(
+        await handler.execute(const ActionSchema(
           type: 'sequence',
           actions: [
-            const ActionSchema(
+            ActionSchema(
                 type: 'custom', params: {'name': 'first'}),
-            const ActionSchema(
+            ActionSchema(
                 type: 'custom', params: {'name': 'second'}),
-            const ActionSchema(
+            ActionSchema(
                 type: 'custom', params: {'name': 'third'}),
           ],
         ));
@@ -286,10 +286,10 @@ void main() {
           return const Scaffold(body: Text('Start'));
         }));
 
-        await handler.execute(ActionSchema(
+        await handler.execute(const ActionSchema(
           type: 'custom',
-          params: const {'name': 'main'},
-          onSuccess: const ActionSchema(
+          params: {'name': 'main'},
+          onSuccess: ActionSchema(
             type: 'custom',
             params: {'name': 'success'},
           ),
