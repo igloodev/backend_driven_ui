@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../core/api_client.dart';
+import '../core/bdui_config.dart';
+import '../core/bdui_http_client.dart';
+import '../models/api_request.dart';
 import '../models/api_response.dart';
 import '../models/cache_control.dart';
+import '../models/http_method.dart';
 import '../utils/bdui_logger.dart';
 
 /// Declarative API widget - FutureBuilder's better alternative
@@ -13,11 +16,20 @@ import '../utils/bdui_logger.dart';
 /// Automatically handles loading, success, error, and empty states
 /// with built-in caching and retry logic.
 class ApiWidget extends StatefulWidget {
-  /// API endpoint URL
+  /// Pre-built request config. When provided, [endpoint], [method], [headers],
+  /// [body], [cacheDuration], [maxRetries], and [timeout] are all derived from
+  /// this — the individual params below are ignored.
+  final ApiRequest? request;
+
+  /// API endpoint URL. Ignored when [request] is provided.
   final String endpoint;
 
-  /// HTTP method (default: GET)
-  final String method;
+  /// HTTP method (default: [HttpMethod.get]). Ignored when [request] is provided.
+  final HttpMethod method;
+
+  /// Custom HTTP client — inject a [BduiHttpClient] implementation to override
+  /// the default network behaviour (useful for testing or custom HTTP libraries).
+  final BduiHttpClient? httpClient;
 
   /// Request headers
   final Map<String, String>? headers;
@@ -28,11 +40,11 @@ class ApiWidget extends StatefulWidget {
   /// Cache duration (null = no cache)
   final Duration? cacheDuration;
 
-  /// Maximum retry attempts
-  final int maxRetries;
+  /// Maximum retry attempts. `null` resolves to [BduiConfig.defaultMaxRetries].
+  final int? maxRetries;
 
-  /// Request timeout
-  final Duration timeout;
+  /// Per-request timeout. `null` resolves to [BduiConfig.defaultTimeout].
+  final Duration? timeout;
 
   /// Auto-refresh interval (null = no polling)
   final Duration? pollInterval;
@@ -63,13 +75,15 @@ class ApiWidget extends StatefulWidget {
 
   const ApiWidget({
     super.key,
-    required this.endpoint,
-    this.method = 'GET',
+    this.request,
+    this.endpoint = '',
+    this.method = HttpMethod.get,
+    this.httpClient,
     this.headers,
     this.body,
     this.cacheDuration,
-    this.maxRetries = 3,
-    this.timeout = const Duration(seconds: 30),
+    this.maxRetries,
+    this.timeout,
     this.pollInterval,
     this.loadingWidget,
     this.successWidget,
@@ -90,8 +104,9 @@ class _ApiWidgetState extends State<ApiWidget> {
   Timer? _pollTimer;
   CacheControl? _lastCacheControl;
 
-  /// Prevent duplicate callbacks for same data
-  String? _lastCallbackDataHash;
+  /// Prevent duplicate success/error callbacks for the same data
+  String? _lastSuccessHash;
+  String? _lastErrorHash;
 
   /// Track if a request is in flight (prevents polling overlap)
   bool _isRequestInFlight = false;
@@ -107,8 +122,10 @@ class _ApiWidgetState extends State<ApiWidget> {
   void didUpdateWidget(ApiWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.endpoint != widget.endpoint ||
+    if (oldWidget.request != widget.request ||
+        oldWidget.endpoint != widget.endpoint ||
         oldWidget.method != widget.method ||
+        oldWidget.headers != widget.headers ||
         oldWidget.body != widget.body) {
       _fetchData();
     }
@@ -165,50 +182,82 @@ class _ApiWidgetState extends State<ApiWidget> {
   }
 
   Future<ApiResponse> _makeRequest() async {
-    switch (widget.method.toUpperCase()) {
-      case 'GET':
+    // Guard: flat-params path requires a non-empty endpoint.
+    if (widget.request == null && widget.endpoint.isEmpty) {
+      BduiLogger.warn(
+        'ApiWidget: endpoint is empty and no ApiRequest was provided. '
+        'Set endpoint or pass a request object.',
+      );
+      throw Exception('ApiWidget requires a non-empty endpoint or an ApiRequest.');
+    }
+
+    final client = widget.httpClient ?? const DefaultBduiHttpClient();
+
+    // When an ApiRequest is provided, use it directly.
+    if (widget.request != null) {
+      final req = widget.request!;
+      if (req.method == HttpMethod.get &&
+          _lastCacheControl?.shouldRefreshInBackground == true) {
+        return client.getWithRefresh(
+          req.endpoint,
+          headers: req.headers,
+          cacheDuration: _lastCacheControl?.ttl ?? req.cacheDuration,
+          maxRetries: req.maxRetries,
+          timeout: req.timeout,
+          onRefresh: _handleBackgroundRefresh,
+        );
+      }
+      return client.execute(widget.request!);
+    }
+
+    // Flat params path — kept for backward compatibility.
+    final effectiveRetries = widget.maxRetries ?? BduiConfig.defaultMaxRetries;
+    final effectiveTimeout = widget.timeout ?? BduiConfig.defaultTimeout;
+
+    switch (widget.method) {
+      case HttpMethod.get:
         if (_lastCacheControl?.shouldRefreshInBackground == true) {
-          return ApiClient.getWithRefresh(
+          return client.getWithRefresh(
             widget.endpoint,
             headers: widget.headers,
             cacheDuration: _lastCacheControl?.ttl ?? widget.cacheDuration,
-            maxRetries: widget.maxRetries,
-            timeout: widget.timeout,
+            maxRetries: effectiveRetries,
+            timeout: effectiveTimeout,
             onRefresh: _handleBackgroundRefresh,
           );
         }
-        return ApiClient.get(
+        return client.get(
           widget.endpoint,
           headers: widget.headers,
           cacheDuration: widget.cacheDuration,
-          maxRetries: widget.maxRetries,
-          timeout: widget.timeout,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'POST':
-        return ApiClient.post(
+      case HttpMethod.post:
+        return client.post(
           widget.endpoint,
           headers: widget.headers,
           body: widget.body,
-          maxRetries: widget.maxRetries,
-          timeout: widget.timeout,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'PUT':
-        return ApiClient.put(
+      case HttpMethod.put:
+        return client.put(
           widget.endpoint,
           headers: widget.headers,
           body: widget.body,
-          maxRetries: widget.maxRetries,
-          timeout: widget.timeout,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'DELETE':
-        return ApiClient.delete(
+      case HttpMethod.delete:
+        return client.delete(
           widget.endpoint,
           headers: widget.headers,
-          maxRetries: widget.maxRetries,
-          timeout: widget.timeout,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
       default:
-        throw Exception('Unsupported HTTP method: ${widget.method}');
+        throw Exception('Unsupported HTTP method: ${widget.method.value}');
     }
   }
 
@@ -224,9 +273,12 @@ class _ApiWidgetState extends State<ApiWidget> {
         if (snapshot.hasError) {
           final error = snapshot.error.toString();
 
-          _invokeCallbackAfterBuild(() {
-            widget.onError?.call(error);
-          });
+          _invokeCallbackAfterBuild(
+            () => widget.onError?.call(error),
+            getHash: () => _lastErrorHash,
+            setHash: (h) => _lastErrorHash = h,
+            dataHash: error.hashCode.toString(),
+          );
 
           Widget errorWidget;
           try {
@@ -275,9 +327,12 @@ class _ApiWidgetState extends State<ApiWidget> {
             }
           }
 
-          _invokeCallbackAfterBuild(() {
-            widget.onSuccess?.call(data);
-          }, dataHash: data.hashCode.toString());
+          _invokeCallbackAfterBuild(
+            () => widget.onSuccess?.call(data),
+            getHash: () => _lastSuccessHash,
+            setHash: (h) => _lastSuccessHash = h,
+            dataHash: data.hashCode.toString(),
+          );
 
           try {
             return widget.successWidget?.call(data) ??
@@ -299,18 +354,17 @@ class _ApiWidgetState extends State<ApiWidget> {
     );
   }
 
-  void _invokeCallbackAfterBuild(VoidCallback callback, {String? dataHash}) {
-    if (dataHash != null && _lastCallbackDataHash == dataHash) {
-      return;
-    }
+  void _invokeCallbackAfterBuild(
+    VoidCallback callback, {
+    required String? Function() getHash,
+    required void Function(String?) setHash,
+    String? dataHash,
+  }) {
+    if (dataHash != null && getHash() == dataHash) return;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-
-      if (dataHash != null) {
-        _lastCallbackDataHash = dataHash;
-      }
-
+      if (dataHash != null) setHash(dataHash);
       try {
         callback();
       } catch (e) {

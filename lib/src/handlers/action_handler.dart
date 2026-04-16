@@ -4,33 +4,14 @@ import 'package:flutter/services.dart';
 import '../core/api_client.dart';
 import '../core/bdui_config.dart';
 import '../models/action_schema.dart';
-import '../utils/helpers.dart';
+import '../models/http_method.dart';
 import '../utils/bdui_logger.dart';
+import '../utils/helpers.dart';
+import '../utils/schema_converters.dart';
 import '../utils/url_validator.dart';
+import 'action_callbacks.dart';
 
-/// Callback for custom action handling
-typedef CustomActionCallback = Future<void> Function(String name, Map<String, dynamic>? params);
-
-/// Callback for navigation - allows app to override default navigation
-typedef NavigationCallback = Future<void> Function(String route, Map<String, dynamic>? arguments);
-
-/// Callback for URL launching - wire in url_launcher or any custom handler.
-///
-/// Example:
-/// ```dart
-/// onLaunchUrl: (url) async {
-///   if (await canLaunchUrl(Uri.parse(url))) {
-///     await launchUrl(Uri.parse(url));
-///   }
-/// }
-/// ```
-typedef LaunchUrlCallback = Future<void> Function(String url);
-
-/// Callback for API responses
-typedef ApiCallback = void Function(String endpoint, dynamic data);
-
-/// Callback for API errors
-typedef ApiErrorCallback = void Function(String endpoint, String error);
+export 'action_callbacks.dart';
 
 /// Centralized action executor for backend-driven UI
 ///
@@ -223,6 +204,8 @@ class ActionHandler {
     final arguments = toStringKeyedMap(action.params?['arguments']);
 
     if (onNavigate != null) {
+      // App-level navigation handler (GoRouter, AutoRoute, etc.) takes
+      // responsibility for the replacement semantics.
       await onNavigate!(route, arguments);
     } else if (_isContextMounted) {
       Navigator.of(context).pushReplacementNamed(route, arguments: arguments);
@@ -281,6 +264,7 @@ class ActionHandler {
     final cancelText = action.params?['cancelText'] as String?;
     final confirmAction = toStringKeyedMap(action.params?['onConfirm']);
     final cancelAction = toStringKeyedMap(action.params?['onCancel']);
+    final dismissAction = toStringKeyedMap(action.params?['onDismiss']);
 
     final result = await showDialog<bool>(
       context: context,
@@ -304,11 +288,12 @@ class ActionHandler {
 
     // Check context after async operation
     if (!_isContextMounted) return;
-
-    if (result == true && confirmAction != null && _isContextMounted) {
+    if (result == true && confirmAction != null) {
       await executeFromMap(confirmAction);
-    } else if (result == false && cancelAction != null && _isContextMounted) {
+    } else if (result == false && cancelAction != null) {
       await executeFromMap(cancelAction);
+    } else if (result == null && dismissAction != null) {
+      await executeFromMap(dismissAction);
     }
   }
 
@@ -375,8 +360,12 @@ class ActionHandler {
       return;
     }
 
-    final method = (action.method ?? action.params?['method'] as String? ?? 'GET')
+    final methodStr = (action.method ?? action.params?['method'] as String? ?? 'GET')
         .toUpperCase();
+    final method = HttpMethod.values.firstWhere(
+      (m) => m.value == methodStr,
+      orElse: () => HttpMethod.get,
+    );
 
     try {
       final response = await _makeApiCall(method, endpoint, action);
@@ -394,8 +383,9 @@ class ActionHandler {
         onApiError!(endpoint, errorMessage);
       }
 
-      // Show default error snackbar if no onError action defined
-      if (action.onError == null) {
+      // Show default error snackbar only when no error handler is registered
+      // at either the action level or the widget/handler level.
+      if (action.onError == null && onApiError == null) {
         _handleShowSnackBar(ActionSchema(
           type: 'showSnackBar',
           params: {'message': 'Request failed: $errorMessage'},
@@ -408,7 +398,7 @@ class ActionHandler {
   }
 
   Future<dynamic> _makeApiCall(
-    String method,
+    HttpMethod method,
     String endpoint,
     ActionSchema action,
   ) async {
@@ -418,16 +408,38 @@ class ActionHandler {
     );
 
     switch (method) {
-      case 'GET':
-        return await ApiClient.get(endpoint, headers: stringHeaders);
-      case 'POST':
-        return await ApiClient.post(endpoint, body: action.body, headers: stringHeaders);
-      case 'PUT':
-        return await ApiClient.put(endpoint, body: action.body, headers: stringHeaders);
-      case 'DELETE':
-        return await ApiClient.delete(endpoint, headers: stringHeaders);
+      case HttpMethod.get:
+        return await ApiClient.get(
+          endpoint,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
+      case HttpMethod.post:
+        return await ApiClient.post(
+          endpoint,
+          body: action.body,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
+      case HttpMethod.put:
+        return await ApiClient.put(
+          endpoint,
+          body: action.body,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
+      case HttpMethod.delete:
+        return await ApiClient.delete(
+          endpoint,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
       default:
-        throw Exception('Unsupported HTTP method: $method');
+        throw Exception('Unsupported HTTP method: ${method.value}');
     }
   }
 
@@ -539,36 +551,7 @@ class ActionHandler {
 
   // ============ Helpers ============
 
-  /// Get icon data by name
-  IconData _getIconData(String name) => _iconMap[name] ?? Icons.help_outline;
-
-  /// Static icon map for performance (avoid recreating on each call)
-  static const Map<String, IconData> _iconMap = {
-    'share': Icons.share,
-    'copy': Icons.copy,
-    'delete': Icons.delete,
-    'edit': Icons.edit,
-    'info': Icons.info,
-    'settings': Icons.settings,
-    'close': Icons.close,
-    'check': Icons.check,
-    'add': Icons.add,
-    'remove': Icons.remove,
-    'favorite': Icons.favorite,
-    'star': Icons.star,
-    'home': Icons.home,
-    'person': Icons.person,
-    'email': Icons.email,
-    'phone': Icons.phone,
-    'message': Icons.message,
-    'camera': Icons.camera_alt,
-    'image': Icons.image,
-    'file': Icons.insert_drive_file,
-    'folder': Icons.folder,
-    'download': Icons.download,
-    'upload': Icons.upload,
-    'link': Icons.link,
-    'lock': Icons.lock,
-    'unlock': Icons.lock_open,
-  };
+  /// Get icon data by name — delegates to SchemaConverters for a single source of truth
+  IconData _getIconData(String name) =>
+      SchemaConverters.toIconData(name) ?? Icons.help_outline;
 }

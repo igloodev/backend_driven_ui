@@ -27,6 +27,10 @@ class BduiConfig {
 
   // ============ Network Settings ============
 
+  /// Default `Content-Type` header sent with every request.
+  /// Default: `'application/json'`
+  static String defaultContentType = 'application/json';
+
   /// Global base URL prepended to all relative endpoint paths.
   ///
   /// Set once at app startup to avoid repeating the full URL on every widget:
@@ -91,6 +95,7 @@ class BduiConfig {
     maxChildren = 500;
     maxActionDepth = 10;
     baseUrl = '';
+    defaultContentType = 'application/json';
     maxCacheEntries = 100;
     defaultCacheDuration = const Duration(minutes: 5);
     defaultTimeout = const Duration(seconds: 30);

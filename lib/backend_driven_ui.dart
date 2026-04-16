@@ -24,14 +24,15 @@ library;
 
 // Core
 export 'src/core/api_client.dart';
-export 'src/core/api_cache.dart';
-export 'src/core/retry_handler.dart';
+export 'src/core/bdui_http_client.dart';
 export 'src/core/bdui_config.dart';
 
 // Models
+export 'src/models/api_request.dart';
 export 'src/models/api_response.dart';
 export 'src/models/api_exception.dart';
 export 'src/models/cache_control.dart';
+export 'src/models/http_method.dart';
 export 'src/models/widget_schema.dart';
 export 'src/models/action_schema.dart';
 

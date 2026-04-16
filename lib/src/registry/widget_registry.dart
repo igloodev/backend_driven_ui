@@ -26,11 +26,11 @@ typedef WidgetBuilder = Widget Function(
 /// final parser2 = SchemaParser(registry: sharedRegistry);
 /// ```
 class WidgetRegistry {
-  /// Global singleton instance for app-wide widget registration.
+  /// Singleton instance for app-wide widget registration.
   ///
   /// Use sparingly. Prefer creating new instances per [SchemaParser]
   /// to ensure proper callback isolation.
-  static final WidgetRegistry global = WidgetRegistry._internal();
+  static final WidgetRegistry instance = WidgetRegistry._internal();
 
   /// Creates a new isolated registry instance.
   ///

@@ -90,7 +90,14 @@ class SchemaParser {
     _currentDepth++;
 
     try {
-      // Check cache first
+      // Check cache first.
+      // Widgets with conditions or actions are never cached because they depend
+      // on runtime context (platform, screen size, theme) or need a fresh
+      // BuildContext for action execution.
+      // Note: static cached widgets (no condition/action) are keyed by schema
+      // content only — they do NOT update when the theme or locale changes.
+      // Call [clearCache] after a theme switch if your schemas use
+      // context-dependent values like inherited styles.
       if (_cacheEnabled && schema.condition == null && schema.action == null) {
         final cacheKey = _getCacheKey(schema);
         if (_widgetCache.containsKey(cacheKey)) {

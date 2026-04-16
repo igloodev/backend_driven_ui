@@ -26,7 +26,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ```yaml
 dependencies:
-  backend_driven_ui: ^0.2.0
+  backend_driven_ui: ^0.3.0
 ```
 
 ### Global Base URL (optional)
@@ -119,7 +119,7 @@ The declarative way to fetch and display API data.
 ```dart
 ApiWidget(
   endpoint: '/api/products/featured',
-  method: 'GET',
+  method: HttpMethod.get,
 
   // Optional: Headers
   headers: {'Authorization': 'Bearer $token'},
@@ -129,9 +129,6 @@ ApiWidget(
 
   // Optional: Cache duration
   cacheDuration: Duration(minutes: 5),
-
-  // Optional: Max retry attempts
-  maxRetries: 3,
 
   // Optional: Auto-refresh (polling)
   pollInterval: Duration(seconds: 30),
@@ -157,6 +154,50 @@ ApiWidget(
   // Optional: Callbacks
   onSuccess: (data) => print('Loaded ${data.length} products'),
   onError: (error) => print('Error: $error'),
+)
+```
+
+#### Using ApiRequest (reusable request config)
+
+Bundle all request parameters into one object — compose it outside the widget tree and reuse across screens:
+
+```dart
+final productsRequest = ApiRequest(
+  endpoint: '/api/products',
+  method: HttpMethod.get,
+  headers: {'Authorization': 'Bearer $token'},
+  cacheDuration: Duration(minutes: 5),
+);
+
+// Use it directly
+ApiWidget(
+  request: productsRequest,
+  successWidget: (data) => ProductList(data),
+)
+
+// Derive a variant with copyWith
+final filteredRequest = productsRequest.copyWith(
+  endpoint: '/api/products?category=electronics',
+);
+```
+
+#### Injecting a custom HTTP client
+
+Implement `BduiHttpClient` to swap the network layer — useful for testing or custom HTTP libraries:
+
+```dart
+class MockHttpClient implements BduiHttpClient {
+  @override
+  Future<ApiResponse> get(String url, { ... }) async {
+    return ApiResponse(statusCode: 200, data: {'products': []});
+  }
+  // implement remaining methods...
+}
+
+ApiWidget(
+  endpoint: '/api/products',
+  httpClient: MockHttpClient(),
+  successWidget: (data) => ProductList(data),
 )
 ```
 
@@ -207,13 +248,19 @@ Execute actions from your backend schemas:
 
 **Supported actions:**
 - `navigate` - Navigate to a route
-- `api` - Make API calls
-- `showDialog` - Show dialogs
-- `showSnackBar` - Show snackbars
 - `pop` - Go back
+- `replace` - Replace current route
+- `popUntil` - Pop to a named route (or root)
+- `api` - Make API calls
+- `showDialog` - Show alert dialogs (supports `onConfirm`, `onCancel`, `onDismiss`)
+- `showSnackBar` - Show snackbars
+- `showBottomSheet` - Show modal bottom sheets
 - `launchUrl` - Open a URL (requires `onLaunchUrl` callback)
-- `sequence` - Execute multiple actions
+- `copy` - Copy text to clipboard
+- `share` - Share text content
+- `sequence` - Execute multiple actions in order
 - `conditional` - Conditional execution
+- `custom` - App-defined custom actions
 
 ### Caching & Performance
 

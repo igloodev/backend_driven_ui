@@ -3,12 +3,19 @@ import 'dart:io';
 import '../core/bdui_config.dart';
 import 'bdui_logger.dart';
 
-/// URL validation utility to prevent SSRF attacks
+/// URL validation utility to reduce SSRF attack surface.
+///
+/// **Limitation — DNS rebinding:** validation runs on the hostname string
+/// before the request is made. A malicious hostname that resolves to a private
+/// IP at request time (DNS rebinding) will pass this check. This is a
+/// best-effort mitigation, not a complete SSRF defence. For stricter
+/// environments, combine this with network-level controls (firewall rules,
+/// egress proxies) that enforce IP restrictions at the socket layer.
 class UrlValidator {
-  /// Validate URL for security - prevents SSRF attacks
+  /// Returns `true` if the URL is safe to request.
   ///
-  /// Returns true if the URL is safe to request.
-  /// Can be disabled via [BduiConfig.enableUrlValidation].
+  /// Rejects private/loopback IPs, cloud metadata endpoints, and non-http(s)
+  /// schemes. Can be disabled entirely via [BduiConfig.enableUrlValidation].
   static bool isUrlSafe(String url) {
     if (!BduiConfig.enableUrlValidation) {
       return true;

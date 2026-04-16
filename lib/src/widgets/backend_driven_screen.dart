@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/api_client.dart';
+import '../core/bdui_config.dart';
 import '../handlers/action_handler.dart';
+import '../models/http_method.dart';
 import '../models/widget_schema.dart';
 import '../parser/schema_parser.dart';
 
@@ -10,17 +12,23 @@ class BackendDrivenScreen extends StatefulWidget {
   /// API endpoint to fetch the screen schema
   final String endpoint;
 
-  /// HTTP method (default: GET)
-  final String method;
+  /// HTTP method (default: [HttpMethod.get])
+  final HttpMethod method;
 
   /// Request body for POST/PUT requests
   final dynamic body;
 
+  /// Request headers (e.g. `{'Authorization': 'Bearer $token'}`)
+  final Map<String, String>? headers;
+
   /// Cache duration for the schema
   final Duration? cacheDuration;
 
-  /// Maximum retry attempts
-  final int maxRetries;
+  /// Maximum retry attempts. `null` resolves to [BduiConfig.defaultMaxRetries].
+  final int? maxRetries;
+
+  /// Per-request timeout. `null` resolves to [BduiConfig.defaultTimeout].
+  final Duration? timeout;
 
   /// Custom schema parser
   final SchemaParser? parser;
@@ -57,10 +65,12 @@ class BackendDrivenScreen extends StatefulWidget {
   const BackendDrivenScreen({
     super.key,
     required this.endpoint,
-    this.method = 'GET',
+    this.method = HttpMethod.get,
     this.body,
+    this.headers,
     this.cacheDuration,
-    this.maxRetries = 3,
+    this.maxRetries,
+    this.timeout,
     this.parser,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
     this.errorWidget,
@@ -100,6 +110,15 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
         widget.onApiError != oldWidget.onApiError) {
       _initParser();
     }
+    // Refetch if endpoint or request parameters changed
+    if (widget.endpoint != oldWidget.endpoint ||
+        widget.method != oldWidget.method ||
+        widget.headers != oldWidget.headers ||
+        widget.body != oldWidget.body) {
+      setState(() {
+        _schemaFuture = _fetchSchema();
+      });
+    }
   }
 
   void _initParser() {
@@ -134,32 +153,42 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
   }
 
   Future<dynamic> _makeApiCall() async {
-    switch (widget.method.toUpperCase()) {
-      case 'GET':
+    final effectiveRetries = widget.maxRetries ?? BduiConfig.defaultMaxRetries;
+    final effectiveTimeout = widget.timeout ?? BduiConfig.defaultTimeout;
+    switch (widget.method) {
+      case HttpMethod.get:
         return await ApiClient.get(
           widget.endpoint,
+          headers: widget.headers,
           cacheDuration: widget.cacheDuration,
-          maxRetries: widget.maxRetries,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'POST':
+      case HttpMethod.post:
         return await ApiClient.post(
           widget.endpoint,
+          headers: widget.headers,
           body: widget.body,
-          maxRetries: widget.maxRetries,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'PUT':
+      case HttpMethod.put:
         return await ApiClient.put(
           widget.endpoint,
+          headers: widget.headers,
           body: widget.body,
-          maxRetries: widget.maxRetries,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
-      case 'DELETE':
+      case HttpMethod.delete:
         return await ApiClient.delete(
           widget.endpoint,
-          maxRetries: widget.maxRetries,
+          headers: widget.headers,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
         );
       default:
-        throw Exception('Unsupported HTTP method: ${widget.method}');
+        throw Exception('Unsupported HTTP method: ${widget.method.value}');
     }
   }
 

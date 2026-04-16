@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-04-16
+
+### Added
+- `BduiHttpClient` abstract class — inject a custom HTTP backend into `ApiWidget` for testing or alternative HTTP libraries without modifying widget code
+- `DefaultBduiHttpClient` — default implementation backed by `ApiClient`, used automatically when no `httpClient` is provided
+- `ApiRequest` model — bundles all API call parameters into a reusable, composable value object with `copyWith()` support; pass to `ApiWidget(request: ...)` instead of individual params
+- `HttpMethod` enum (`get`, `post`, `put`, `delete`, `patch`) — replaces raw string method values; exposes `.value` for the uppercase string representation
+- `ApiWidget.httpClient` — inject a `BduiHttpClient` implementation per-widget (useful for mocking in tests)
+- `ApiWidget.request` — shorthand: pass one `ApiRequest` instead of separate `endpoint`, `method`, `headers`, `body`, `cacheDuration`, `maxRetries`, `timeout` params
+- `BduiConfig.defaultContentType` — configurable default `Content-Type` header (default: `'application/json'`)
+
+### Changed
+- `ApiWidget.method` type changed from `String` to `HttpMethod` (default: `HttpMethod.get`)
+- `ApiWidget.maxRetries` changed from `int = 3` to `int?` — `null` resolves to `BduiConfig.defaultMaxRetries` so changing config once applies everywhere
+- `ApiWidget.timeout` changed from `Duration = const Duration(seconds: 30)` to `Duration?` — `null` resolves to `BduiConfig.defaultTimeout`
+- `BackendDrivenScreen.method` type changed from `String` to `HttpMethod`
+- `BackendDrivenScreen.maxRetries` changed from `int = 3` to `int?` — resolves to `BduiConfig.defaultMaxRetries`
+- `ApiClient._fetch` now uses `BduiConfig.defaultContentType` instead of the hardcoded string `'application/json'`
+- `ApiClient._refreshInBackground` now uses `BduiConfig.defaultCacheDuration` instead of the hardcoded `const Duration(minutes: 5)`
+
+### Fixed
+- `ApiClient._fetch` now throws `ApiException` on invalid JSON responses instead of silently passing the raw response body to the caller — `ApiWidget` and `BackendDrivenScreen` both route to their error state correctly
+- `ApiWidget.didUpdateWidget` now triggers a refetch when `widget.request` changes (was only watching `endpoint`, `method`, and `body`)
+- `ApiWidget` error callback now deduplicates via `dataHash` (same guard already applied to `onSuccess`) — prevents repeated `onError` calls for the same error
+- `ApiWidget` now throws immediately when both `request` and `endpoint` are absent instead of making a request to an empty URL
+- `RetryHandler.defaultShouldRetry` now inspects `ApiException.statusCode` directly instead of string-matching the error message — 4xx errors no longer retry, 5xx always retry, network/timeout errors retry correctly
+- `ActionHandler._handleReplace` delegates to `onNavigate` when provided (GoRouter / AutoRoute compatibility), otherwise calls `Navigator.pushReplacementNamed`
+- `api_client.dart`, `api_cache.dart`, and `retry_handler.dart` removed from public exports — these are internal implementation details
+- `WidgetRegistry.global` renamed to `WidgetRegistry.instance` (Flutter singleton convention)
+- `SchemaParser.parse()` documented: widget cache is context-unaware; call `clearCache()` after theme or locale changes to force rebuilds
+- `UrlValidator` class-level doc updated to document the DNS-rebinding limitation and recommend network-level controls for stricter environments
+- `toIconData` in `SchemaConverters` expanded from 8 to 35 icons; unknown icon names now log a warning listing all supported values
+- Codebase refactored for single responsibility: `builtin_widgets.dart` reduced from ~1 500 lines to 68-line registration map; type converters moved to `SchemaConverters`; widget builders split into `display_builders`, `layout_builders`, `material_builders`, `interactive_builders`, `scrollable_builders`, `effects_builders`; `ActionHandler` typedefs moved to `action_callbacks.dart`
+- `BackendDrivenScreen.didUpdateWidget` now refetches the schema when `endpoint`, `method`, or `body` changes — previously only callback changes triggered a re-init
+- `BackendDrivenScreen` now accepts a `timeout` parameter; previously the 30-second default was hardcoded and could not be overridden
+- `Button`, `ElevatedButton`, `TextButton`, `OutlinedButton`, `IconButton` builders now route actions through `SchemaParser.createActionHandler()`, ensuring `onNavigate`, `onCustomAction`, `onApiSuccess`, `onApiError`, and `onLaunchUrl` callbacks set on the parser are honoured — previously these widgets created a bare `ActionHandler` that ignored all parser callbacks
+- `GestureDetector` and `InkWell` builders now execute `onDoubleTap` and `onLongPress` action maps from `props` instead of logging a debug message
+- `ListTile` builder now supports `onTap` via the schema `action` field
+- `ActionHandler` `api` action now passes `BduiConfig.defaultMaxRetries` and `BduiConfig.defaultTimeout` to all API calls — previously these were ignored and the hardcoded SDK defaults were used regardless of config
+- `ActionHandler` `api` action no longer shows a default error snackbar when an `onApiError` callback is registered — previously both the callback and the snackbar fired simultaneously
+- `ApiWidget` now uses separate deduplication hashes for `onSuccess` and `onError` — previously a single shared hash could suppress one callback when the other fired with an identical hash value
+- `ApiWidget.didUpdateWidget` now also refetches when `headers` change, covering auth-token refresh without other param changes
+
+### Exports
+- `BduiHttpClient`, `DefaultBduiHttpClient` now exported from the package root
+- `ApiRequest` now exported from the package root
+- `HttpMethod` now exported from the package root
+
+---
+
 ## [0.2.1] - 2026-04-14
 
 ### Fixed

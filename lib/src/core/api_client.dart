@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 
 import '../models/api_exception.dart';
@@ -27,6 +28,12 @@ class ApiClient {
   /// Guard to prevent _performDisposal() from running more than once
   /// if multiple in-flight requests complete at the same time.
   static bool _isDisposing = false;
+
+  /// Inject a custom HTTP client for testing.
+  @visibleForTesting
+  static void setHttpClientForTesting(http.Client client) {
+    _httpClient = client;
+  }
 
   /// Get or create the HTTP client
   static http.Client _getOrCreateClient() {
@@ -228,16 +235,21 @@ class ApiClient {
           await _fetch('GET', url, headers: headers, timeout: timeout);
 
       if (response.isSuccess && response.data != null) {
-        final effectiveTTL = cacheDuration ?? const Duration(minutes: 5);
+        final effectiveTTL = cacheDuration ?? BduiConfig.defaultCacheDuration;
         _cache.set(url, response.data, duration: effectiveTTL);
         BduiLogger.success('Background refresh complete');
         onRefresh?.call(response);
       } else {
         BduiLogger.warn(
-            'Background refresh returned non-success, keeping stale cache');
+          'Background refresh returned ${response.statusCode} for $url — '
+          'keeping stale cache. The cache entry will expire normally.',
+        );
       }
     } catch (e) {
-      BduiLogger.warn('Background refresh failed, keeping stale cache: $e');
+      BduiLogger.warn(
+        'Background refresh failed for $url — keeping stale cache: $e. '
+        'The cache entry will expire normally.',
+      );
     }
   }
 
@@ -270,7 +282,7 @@ class ApiClient {
       http.Response response;
 
       final effectiveHeaders = {
-        'Content-Type': 'application/json',
+        'Content-Type': BduiConfig.defaultContentType,
         ...?headers,
       };
 
@@ -332,7 +344,10 @@ class ApiClient {
             }
           }
         } catch (e) {
-          data = response.body;
+          throw ApiException(
+            message: 'Invalid JSON response: ${e.toString()}',
+            statusCode: response.statusCode,
+          );
         }
       }
 

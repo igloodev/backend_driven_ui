@@ -1,3 +1,4 @@
+import '../models/api_exception.dart';
 import '../utils/bdui_logger.dart';
 import 'bdui_config.dart';
 
@@ -65,38 +66,36 @@ class RetryHandler {
     }
   }
 
-  /// Default retry predicate for API calls
+  /// Default retry predicate for API calls.
   ///
   /// Conservative approach: only retry known-retriable errors.
   /// Unknown errors are NOT retried to prevent infinite loops.
+  ///
+  /// Decision order:
+  /// 1. [ApiException] with a status code → use the code directly (no string parsing).
+  /// 2. Network / timeout exceptions (SocketException, TimeoutException) → retry.
+  /// 3. Everything else → don't retry.
   static bool defaultShouldRetry(dynamic error) {
-    if (error is Exception) {
-      final errorStr = error.toString().toLowerCase();
-
-      // Retry on network/timeout errors
-      if (errorStr.contains('timeout') ||
-          errorStr.contains('network') ||
-          errorStr.contains('socket') ||
-          errorStr.contains('connection')) {
-        return true;
-      }
-
-      // Don't retry on 4xx client errors
-      if (errorStr.contains('400') ||
-          errorStr.contains('401') ||
-          errorStr.contains('403') ||
-          errorStr.contains('404') ||
-          errorStr.contains('422')) {
+    // Use the structured status code when available — avoids false matches
+    // from status-code digits appearing in URLs or error messages.
+    if (error is ApiException) {
+      final code = error.statusCode;
+      if (code != null) {
+        if (code >= 400 && code < 500) return false; // client error — don't retry
+        if (code >= 500) return true;                 // server error — retry
         return false;
       }
+      // No status code → network/timeout error from ApiException message
+      return error.isNetworkError || error.isTimeout;
+    }
 
-      // Retry on 5xx server errors
-      if (errorStr.contains('500') ||
-          errorStr.contains('502') ||
-          errorStr.contains('503') ||
-          errorStr.contains('504')) {
-        return true;
-      }
+    // Retry on low-level network / timeout errors
+    if (error is Exception) {
+      final errorStr = error.toString().toLowerCase();
+      return errorStr.contains('timeout') ||
+          errorStr.contains('socket') ||
+          errorStr.contains('connection') ||
+          errorStr.contains('network');
     }
 
     // Don't retry unknown errors (conservative approach)
