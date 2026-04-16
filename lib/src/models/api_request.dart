@@ -53,12 +53,20 @@ class ApiRequest {
     this.timeout,
   });
 
+  // Sentinel used by copyWith to distinguish "not passed" from explicit null.
+  static const _unset = Object();
+
   /// Returns a copy of this request with the given fields replaced.
+  ///
+  /// Pass `body: null` explicitly to clear the body on the copy:
+  /// ```dart
+  /// final getRequest = postRequest.copyWith(method: HttpMethod.get, body: null);
+  /// ```
   ApiRequest copyWith({
     String? endpoint,
     HttpMethod? method,
     Map<String, String>? headers,
-    dynamic body,
+    Object? body = _unset,
     Duration? cacheDuration,
     int? maxRetries,
     Duration? timeout,
@@ -67,7 +75,7 @@ class ApiRequest {
       endpoint: endpoint ?? this.endpoint,
       method: method ?? this.method,
       headers: headers ?? this.headers,
-      body: body ?? this.body,
+      body: identical(body, _unset) ? this.body : body,
       cacheDuration: cacheDuration ?? this.cacheDuration,
       maxRetries: maxRetries ?? this.maxRetries,
       timeout: timeout ?? this.timeout,

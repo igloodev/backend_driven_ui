@@ -431,6 +431,14 @@ class ActionHandler {
           maxRetries: BduiConfig.defaultMaxRetries,
           timeout: BduiConfig.defaultTimeout,
         );
+      case HttpMethod.patch:
+        return await ApiClient.patch(
+          endpoint,
+          body: action.body,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
       case HttpMethod.delete:
         return await ApiClient.delete(
           endpoint,
@@ -438,8 +446,6 @@ class ActionHandler {
           maxRetries: BduiConfig.defaultMaxRetries,
           timeout: BduiConfig.defaultTimeout,
         );
-      default:
-        throw Exception('Unsupported HTTP method: ${method.value}');
     }
   }
 

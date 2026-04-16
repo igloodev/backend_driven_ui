@@ -118,15 +118,21 @@ void main() {
         expect(capturedMethod, 'DELETE');
       });
 
-      test('unsupported method throws ArgumentError', () {
-        const client = DefaultBduiHttpClient();
-        expect(
-          () => client.execute(const ApiRequest(
-            endpoint: 'https://api.example.com/data',
-            method: HttpMethod.patch,
-          )),
-          throwsA(isA<ArgumentError>()),
+      test('PATCH request routed correctly', () async {
+        String? capturedMethod;
+        ApiClient.setHttpClientForTesting(
+          MockClient((req) async {
+            capturedMethod = req.method;
+            return http.Response('{"ok":true}', 200);
+          }),
         );
+
+        const client = DefaultBduiHttpClient();
+        await client.execute(const ApiRequest(
+          endpoint: 'https://api.example.com/data/1',
+          method: HttpMethod.patch,
+        ));
+        expect(capturedMethod, 'PATCH');
       });
     });
 

@@ -249,6 +249,14 @@ class _ApiWidgetState extends State<ApiWidget> {
           maxRetries: effectiveRetries,
           timeout: effectiveTimeout,
         );
+      case HttpMethod.patch:
+        return client.patch(
+          widget.endpoint,
+          headers: widget.headers,
+          body: widget.body,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
       case HttpMethod.delete:
         return client.delete(
           widget.endpoint,
@@ -256,8 +264,6 @@ class _ApiWidgetState extends State<ApiWidget> {
           maxRetries: effectiveRetries,
           timeout: effectiveTimeout,
         );
-      default:
-        throw Exception('Unsupported HTTP method: ${widget.method.value}');
     }
   }
 

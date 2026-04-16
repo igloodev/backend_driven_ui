@@ -73,6 +73,15 @@ abstract class BduiHttpClient {
     Duration? timeout,
   });
 
+  /// Performs a PATCH request.
+  Future<ApiResponse> patch(
+    String url, {
+    Map<String, String>? headers,
+    dynamic body,
+    int? maxRetries,
+    Duration? timeout,
+  });
+
   /// Performs a DELETE request.
   Future<ApiResponse> delete(
     String url, {
@@ -167,6 +176,22 @@ class DefaultBduiHttpClient implements BduiHttpClient {
       );
 
   @override
+  Future<ApiResponse> patch(
+    String url, {
+    Map<String, String>? headers,
+    dynamic body,
+    int? maxRetries,
+    Duration? timeout,
+  }) =>
+      ApiClient.patch(
+        url,
+        headers: headers,
+        body: body,
+        maxRetries: maxRetries ?? BduiConfig.defaultMaxRetries,
+        timeout: timeout ?? BduiConfig.defaultTimeout,
+      );
+
+  @override
   Future<ApiResponse> delete(
     String url, {
     Map<String, String>? headers,
@@ -207,6 +232,14 @@ class DefaultBduiHttpClient implements BduiHttpClient {
           maxRetries: request.maxRetries,
           timeout: request.timeout,
         );
+      case HttpMethod.patch:
+        return patch(
+          request.endpoint,
+          headers: request.headers,
+          body: request.body,
+          maxRetries: request.maxRetries,
+          timeout: request.timeout,
+        );
       case HttpMethod.delete:
         return delete(
           request.endpoint,
@@ -214,9 +247,6 @@ class DefaultBduiHttpClient implements BduiHttpClient {
           maxRetries: request.maxRetries,
           timeout: request.timeout,
         );
-      default:
-        throw ArgumentError(
-            'Unsupported HTTP method: ${request.method.value}');
     }
   }
 }

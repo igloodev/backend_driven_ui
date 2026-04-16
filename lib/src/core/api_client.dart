@@ -164,6 +164,23 @@ class ApiClient {
     );
   }
 
+  /// PATCH request with retry
+  static Future<ApiResponse> patch(
+    String url, {
+    Map<String, String>? headers,
+    dynamic body,
+    int maxRetries = 3,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    url = resolveUrl(url);
+    return RetryHandler.retry(
+      action: () =>
+          _fetch('PATCH', url, headers: headers, body: body, timeout: timeout),
+      maxRetries: maxRetries,
+      shouldRetry: RetryHandler.defaultShouldRetry,
+    );
+  }
+
   /// DELETE request with retry
   static Future<ApiResponse> delete(
     String url, {
@@ -303,6 +320,13 @@ class ApiClient {
         case 'PUT':
           response = await client
               .put(uri,
+                  headers: effectiveHeaders,
+                  body: body != null ? jsonEncode(body) : null)
+              .timeout(timeout);
+          break;
+        case 'PATCH':
+          response = await client
+              .patch(uri,
                   headers: effectiveHeaders,
                   body: body != null ? jsonEncode(body) : null)
               .timeout(timeout);

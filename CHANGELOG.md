@@ -47,6 +47,8 @@ All notable changes to this project will be documented in this file.
 - `ApiWidget.didUpdateWidget` now also refetches when `headers` change, covering auth-token refresh without other param changes
 
 ### Maintenance
+- `HttpMethod.patch` now fully implemented across `ApiClient`, `BduiHttpClient`, `DefaultBduiHttpClient`, `ActionHandler`, `ApiWidget`, and `BackendDrivenScreen` — previously the enum value existed but all execution paths threw "Unsupported HTTP method: PATCH"
+- `ApiRequest.copyWith()` body sentinel fix — passing `body: null` now correctly clears the body on the copy; previously `null` was silently ignored and the original body was retained
 - Resolved all static analysis issues in test files — unused import removed, redundant `const` keywords fixed; `flutter analyze` now reports zero issues
 
 ### Exports

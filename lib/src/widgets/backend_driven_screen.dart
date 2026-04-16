@@ -180,6 +180,14 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
           maxRetries: effectiveRetries,
           timeout: effectiveTimeout,
         );
+      case HttpMethod.patch:
+        return await ApiClient.patch(
+          widget.endpoint,
+          headers: widget.headers,
+          body: widget.body,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
       case HttpMethod.delete:
         return await ApiClient.delete(
           widget.endpoint,
@@ -187,8 +195,6 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
           maxRetries: effectiveRetries,
           timeout: effectiveTimeout,
         );
-      default:
-        throw Exception('Unsupported HTTP method: ${widget.method.value}');
     }
   }
 
