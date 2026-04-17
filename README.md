@@ -11,7 +11,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ## ✨ Features
 
-- 🎯 **33 Built-in Widgets** - Fully interactive apps from JSON
+- 🎯 **65 Built-in Widget Types** - Fully interactive apps from JSON
 - ⚡ **Zero App Releases** - Update UI from backend JSON instantly
 - 🔓 **100% Open Source** - MIT licensed, yours forever
 - 📦 **ApiWidget** - FutureBuilder's smarter, faster cousin
@@ -36,7 +36,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ```yaml
 dependencies:
-  backend_driven_ui: ^0.3.0
+  backend_driven_ui: ^0.4.0
 ```
 
 ### Global Base URL (optional)

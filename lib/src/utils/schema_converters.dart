@@ -482,6 +482,27 @@ class SchemaConverters {
     return null;
   }
 
+  // ── Clip ──────────────────────────────────────────────────────────────────
+
+  /// Converts a JSON clip value to [Clip].
+  ///
+  /// Accepts: `"none"`, `"hardEdge"`, `"antiAlias"`, `"antiAliasWithSaveLayer"`.
+  /// Returns `null` for unrecognised values so callers can apply their own default.
+  static Clip? toClip(dynamic value) {
+    switch (value) {
+      case 'none':
+        return Clip.none;
+      case 'hardEdge':
+        return Clip.hardEdge;
+      case 'antiAlias':
+        return Clip.antiAlias;
+      case 'antiAliasWithSaveLayer':
+        return Clip.antiAliasWithSaveLayer;
+      default:
+        return null;
+    }
+  }
+
   // ── Text ──────────────────────────────────────────────────────────────────
 
   static FontWeight? toFontWeight(dynamic value) {
@@ -818,5 +839,32 @@ class SchemaConverters {
         );
         return Icons.help_outline;
     }
+  }
+
+  /// Converts a map of text style properties to a [TextStyle].
+  ///
+  /// Supported keys: `fontSize`, `fontWeight`, `color`, `backgroundColor`,
+  /// `letterSpacing`, `wordSpacing`, `lineHeight`, `fontStyle` (`italic`),
+  /// `decoration`, `decorationColor`, `decorationStyle`, `decorationThickness`,
+  /// `fontFamily`.
+  static TextStyle? toTextStyle(dynamic value) {
+    if (value is! Map) return null;
+    final props = value.map((k, v) => MapEntry(k.toString(), v));
+    return TextStyle(
+      fontSize: toDouble(props['fontSize']),
+      fontWeight: toFontWeight(props['fontWeight']),
+      color: toColor(props['color']),
+      backgroundColor: toColor(props['backgroundColor']),
+      letterSpacing: toDouble(props['letterSpacing']),
+      wordSpacing: toDouble(props['wordSpacing']),
+      height: toDouble(props['lineHeight']),
+      fontStyle:
+          props['fontStyle'] == 'italic' ? FontStyle.italic : null,
+      decoration: toTextDecoration(props['decoration']),
+      decorationColor: toColor(props['decorationColor']),
+      decorationStyle: toTextDecorationStyle(props['decorationStyle']),
+      decorationThickness: toDouble(props['decorationThickness']),
+      fontFamily: props['fontFamily'] as String?,
+    );
   }
 }

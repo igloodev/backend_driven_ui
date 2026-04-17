@@ -232,7 +232,7 @@ class ActionHandler {
 
     final message = action.params?['message'] as String? ?? '';
     final duration = Duration(
-      milliseconds: action.params?['duration'] as int? ?? 3000,
+      milliseconds: SchemaConverters.toDouble(action.params?['duration'])?.toInt() ?? 3000,
     );
     final actionLabel = action.params?['actionLabel'] as String?;
     final actionAction = toStringKeyedMap(action.params?['action']);

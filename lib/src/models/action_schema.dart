@@ -77,7 +77,7 @@ class ActionSchema {
     };
 
     // Collect extra keys into params (for convenience - allows flat action format)
-    Map<String, dynamic>? params = json['params'] as Map<String, dynamic>?;
+    Map<String, dynamic>? params = toStringKeyedMap(json['params']);
     final extraParams = <String, dynamic>{};
     for (final key in json.keys) {
       if (!reservedKeys.contains(key)) {
@@ -109,14 +109,14 @@ class ActionSchema {
     return ActionSchema(
       type: type,
       params: params,
-      route: json['route'] as String?,
-      endpoint: json['endpoint'] as String?,
-      method: json['method'] as String?,
+      route: json['route']?.toString(),
+      endpoint: json['endpoint']?.toString(),
+      method: json['method']?.toString(),
       body: json['body'],
       onSuccess: onSuccessMap != null ? ActionSchema.fromJson(onSuccessMap) : null,
       onError: onErrorMap != null ? ActionSchema.fromJson(onErrorMap) : null,
       actions: actionsList,
-      condition: json['condition'] as String?,
+      condition: json['condition']?.toString(),
       thenAction: thenMap != null ? ActionSchema.fromJson(thenMap) : null,
       elseAction: elseMap != null ? ActionSchema.fromJson(elseMap) : null,
     );

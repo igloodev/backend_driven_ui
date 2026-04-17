@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderFlex;
 
 import '../../models/widget_schema.dart';
 import '../../parser/schema_parser.dart';
@@ -6,8 +7,8 @@ import '../../utils/bdui_logger.dart';
 import '../../utils/schema_converters.dart';
 import '../../utils/url_validator.dart';
 
-/// Builders for layout widgets: Container, Column, Row, Stack, Padding,
-/// Center, SizedBox, Expanded, Flexible, Wrap, Spacer, AspectRatio.
+/// Builders for layout widgets: Container, Column, Row, Stack, Positioned,
+/// Padding, Center, SizedBox, Expanded, Flexible, Wrap, Spacer, AspectRatio.
 class LayoutBuilders {
   static Widget buildContainer(
     WidgetSchema schema,
@@ -58,6 +59,7 @@ class LayoutBuilders {
       margin: SchemaConverters.toEdgeInsets(props['margin']),
       alignment: SchemaConverters.toAlignment(props['alignment']),
       decoration: decoration,
+      clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.none,
       transform: SchemaConverters.toMatrix4(props['transform']),
       child: schema.child != null ? parser.parse(schema.child!, context) : null,
     );
@@ -69,10 +71,14 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    return Column(
+    // Use Flex directly so clipBehavior can be forwarded — Column's constructor
+    // does not expose the clipBehavior parameter.
+    return Flex(
+      direction: Axis.vertical,
       mainAxisAlignment: SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
       crossAxisAlignment: SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
       mainAxisSize: SchemaConverters.toMainAxisSize(props['mainAxisSize']),
+      clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.none,
       children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
@@ -83,10 +89,14 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    return Row(
+    // Use Flex directly so clipBehavior can be forwarded — Row's constructor
+    // does not expose the clipBehavior parameter.
+    return Flex(
+      direction: Axis.horizontal,
       mainAxisAlignment: SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
       crossAxisAlignment: SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
       mainAxisSize: SchemaConverters.toMainAxisSize(props['mainAxisSize']),
+      clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.none,
       children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
@@ -96,8 +106,29 @@ class LayoutBuilders {
     BuildContext context,
     SchemaParser parser,
   ) {
+    final props = schema.props ?? {};
     return Stack(
+      clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.hardEdge,
       children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+    );
+  }
+
+  static Widget buildPositioned(
+    WidgetSchema schema,
+    BuildContext context,
+    SchemaParser parser,
+  ) {
+    final props = schema.props ?? {};
+    return Positioned(
+      left: SchemaConverters.toDouble(props['left']),
+      top: SchemaConverters.toDouble(props['top']),
+      right: SchemaConverters.toDouble(props['right']),
+      bottom: SchemaConverters.toDouble(props['bottom']),
+      width: SchemaConverters.toDouble(props['width']),
+      height: SchemaConverters.toDouble(props['height']),
+      child: schema.child != null
+          ? parser.parse(schema.child!, context)
+          : const SizedBox.shrink(),
     );
   }
 
@@ -142,11 +173,18 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    return Expanded(
-      flex: props['flex'] as int? ?? 1,
-      child: schema.child != null
-          ? parser.parse(schema.child!, context)
-          : const SizedBox.shrink(),
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    return Builder(
+      builder: (ctx) {
+        final child = schema.child != null
+            ? parser.parse(schema.child!, ctx)
+            : const SizedBox.shrink();
+        if (!_isInsideFlex(ctx)) {
+          BduiLogger.warn('Expanded used outside Row/Column — rendering child directly');
+          return child;
+        }
+        return Expanded(flex: flex, child: child);
+      },
     );
   }
 
@@ -156,12 +194,19 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    return Flexible(
-      flex: props['flex'] as int? ?? 1,
-      fit: props['fit'] == 'loose' ? FlexFit.loose : FlexFit.tight,
-      child: schema.child != null
-          ? parser.parse(schema.child!, context)
-          : const SizedBox.shrink(),
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    final fit = props['fit'] == 'loose' ? FlexFit.loose : FlexFit.tight;
+    return Builder(
+      builder: (ctx) {
+        final child = schema.child != null
+            ? parser.parse(schema.child!, ctx)
+            : const SizedBox.shrink();
+        if (!_isInsideFlex(ctx)) {
+          BduiLogger.warn('Flexible used outside Row/Column — rendering child directly');
+          return child;
+        }
+        return Flexible(flex: flex, fit: fit, child: child);
+      },
     );
   }
 
@@ -181,7 +226,35 @@ class LayoutBuilders {
 
   static Widget buildSpacer(WidgetSchema schema, BuildContext context) {
     final props = schema.props ?? {};
-    return Spacer(flex: props['flex'] as int? ?? 1);
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    return Builder(
+      builder: (ctx) {
+        if (!_isInsideFlex(ctx)) {
+          BduiLogger.warn('Spacer used outside Row/Column — rendering SizedBox.shrink()');
+          return const SizedBox.shrink();
+        }
+        return Spacer(flex: flex);
+      },
+    );
+  }
+
+  /// Returns true if the nearest render-object ancestor is a [RenderFlex].
+  ///
+  /// [Expanded], [Flexible], and [Spacer] must be direct children of a
+  /// [Row] / [Column] / [Flex]. If they are not, Flutter throws a layout-time
+  /// assertion. This helper lets the builders detect the invalid placement and
+  /// fall back gracefully instead of crashing.
+  static bool _isInsideFlex(BuildContext ctx) {
+    bool result = false;
+    ctx.visitAncestorElements((element) {
+      final ro = element.renderObject;
+      if (ro != null) {
+        result = ro is RenderFlex;
+        return false; // stop at the first render-object ancestor
+      }
+      return true; // no render object on this element — keep walking
+    });
+    return result;
   }
 
   static Widget buildAspectRatio(

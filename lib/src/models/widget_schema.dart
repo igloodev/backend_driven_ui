@@ -93,7 +93,7 @@ class WidgetSchema {
       children: children,
       child: child,
       action: json['action'],
-      condition: json['condition'] as String?,
+      condition: json['condition']?.toString(),
     );
   }
 

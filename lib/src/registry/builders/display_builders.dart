@@ -5,7 +5,8 @@ import '../../utils/bdui_logger.dart';
 import '../../utils/schema_converters.dart';
 import '../../utils/url_validator.dart';
 
-/// Builders for display widgets: Text, Icon, Image, Divider.
+/// Builders for display widgets: Text, Icon, Image, Divider,
+/// CircularProgressIndicator, LinearProgressIndicator.
 class DisplayBuilders {
   static Widget buildText(WidgetSchema schema, BuildContext context) {
     final props = schema.props ?? {};
@@ -26,8 +27,8 @@ class DisplayBuilders {
         decorationThickness: SchemaConverters.toDouble(props['decorationThickness']),
         fontFamily: props['fontFamily'] as String?,
       ),
-      textAlign: SchemaConverters.toTextAlign(props['align']),
-      maxLines: props['maxLines'] as int?,
+      textAlign: SchemaConverters.toTextAlign(props['textAlign']),
+      maxLines: SchemaConverters.toDouble(props['maxLines'])?.toInt(),
       overflow: SchemaConverters.toTextOverflow(props['overflow']),
       softWrap: props['softWrap'] as bool?,
       textDirection: SchemaConverters.toTextDirection(props['textDirection']),
@@ -78,7 +79,61 @@ class DisplayBuilders {
     return Divider(
       height: SchemaConverters.toDouble(props['height']),
       thickness: SchemaConverters.toDouble(props['thickness']),
+      indent: SchemaConverters.toDouble(props['indent']),
+      endIndent: SchemaConverters.toDouble(props['endIndent']),
       color: SchemaConverters.toColor(props['color']),
+    );
+  }
+
+  /// [CircularProgressIndicator] — spinning progress ring.
+  ///
+  /// Props: `value` (0.0–1.0; omit for indeterminate), `color`,
+  /// `backgroundColor`, `strokeWidth` (default 4.0),
+  /// `strokeCap` (`butt` | `round` | `square`).
+  static Widget buildCircularProgressIndicator(
+    WidgetSchema schema,
+    BuildContext context,
+  ) {
+    final props = schema.props ?? {};
+
+    StrokeCap? strokeCap;
+    switch (props['strokeCap'] as String?) {
+      case 'round':
+        strokeCap = StrokeCap.round;
+        break;
+      case 'square':
+        strokeCap = StrokeCap.square;
+        break;
+      case 'butt':
+        strokeCap = StrokeCap.butt;
+        break;
+    }
+
+    return CircularProgressIndicator(
+      value: SchemaConverters.toDouble(props['value']),
+      color: SchemaConverters.toColor(props['color']),
+      backgroundColor: SchemaConverters.toColor(props['backgroundColor']),
+      strokeWidth: SchemaConverters.toDouble(props['strokeWidth']) ?? 4.0,
+      strokeCap: strokeCap,
+    );
+  }
+
+  /// [LinearProgressIndicator] — horizontal progress bar.
+  ///
+  /// Props: `value` (0.0–1.0; omit for indeterminate), `color`,
+  /// `backgroundColor`, `minHeight`, `borderRadius`.
+  static Widget buildLinearProgressIndicator(
+    WidgetSchema schema,
+    BuildContext context,
+  ) {
+    final props = schema.props ?? {};
+    return LinearProgressIndicator(
+      value: SchemaConverters.toDouble(props['value']),
+      color: SchemaConverters.toColor(props['color']),
+      backgroundColor: SchemaConverters.toColor(props['backgroundColor']),
+      minHeight: SchemaConverters.toDouble(props['minHeight']),
+      borderRadius: SchemaConverters.toBorderRadius(props['borderRadius']) ??
+          BorderRadius.zero,
     );
   }
 }

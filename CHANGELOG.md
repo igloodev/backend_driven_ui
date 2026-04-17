@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-04-17
+
+### Added
+- **Scaffold widgets**: `Scaffold`, `AppBar`, `SafeArea` — full screen layouts from JSON
+- **Input widgets**: `TextField`, `TextFormField`, `Switch`, `Checkbox` — form inputs driven by backend schema
+- **Navigation widgets**: `BottomNavigationBar`, `NavigationBar`, `DefaultTabController`, `TabBar`, `TabBarView` — tab and bottom-nav layouts from JSON
+- **Sliver widgets**: `CustomScrollView`, `SliverAppBar`, `SliverList`, `SliverGrid`, `SliverToBoxAdapter`, `SliverPadding`, `SliverFillRemaining`, `SliverFixedExtentList` — full sliver-based scroll layouts from JSON
+- `clipBehavior` prop support for `Container`, `Column`, `Row`, and `Stack` — accepts `"none"`, `"hardEdge"`, `"antiAlias"`, `"antiAliasWithSaveLayer"`
+- `SchemaConverters.toClip()` — new converter backing the `clipBehavior` prop
+- Total registered widget types raised from 33 to 65
+
+### Fixed
+- `Expanded`, `Flexible`, and `Spacer` used outside a `Row`/`Column`/`Flex` no longer crash at layout time — each builder now checks for a `RenderFlex` ancestor via `visitAncestorElements` and falls back to rendering the child directly (with a warning log) instead of triggering Flutter's `ParentDataWidget` layout assertion
+- `WidgetSchema.fromJson`: `condition` field now uses `?.toString()` — non-String values (e.g. `true`, `1`) no longer throw a `TypeError` at parse time
+- `ActionSchema.fromJson`: `params`, `route`, `endpoint`, `method`, and `condition` fields now use `toStringKeyedMap` / `?.toString()` — unsafe `as` casts replaced throughout
+- `Column` and `Row` builders now use `Flex(direction: ...)` internally so `clipBehavior` can be forwarded — `Column()` / `Row()` constructors do not expose that parameter
+
+### Maintenance
+- New builder files: `scaffold_builders.dart`, `input_builders.dart`, `navigation_builders.dart`, `sliver_builders.dart` — extends the SRP split started in v0.3.0
+- 105 new widget-builder crash tests added (`test/widget_builders_crash_test.dart`) — covers every builder with invalid / edge-case JSON to ensure no runtime crashes; total test suite now 304 tests
+
+---
+
 ## [0.3.0] - 2026-04-16
 
 ### Added
