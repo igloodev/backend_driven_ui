@@ -4,8 +4,10 @@ enum HttpMethod {
   post,
   put,
   delete,
-  patch;
+  patch,
+  head,
+  options;
 
-  /// Uppercase string representation — e.g. `'GET'`, `'POST'`.
+  /// Uppercase string representation — e.g. `'GET'`, `'POST'`, `'HEAD'`.
   String get value => name.toUpperCase();
 }

@@ -11,12 +11,18 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ## ✨ Features
 
-- 🎯 **65 Built-in Widget Types** - Fully interactive apps from JSON
+- 🎯 **80+ Built-in Widget Types** - Fully interactive apps from JSON
 - ⚡ **Zero App Releases** - Update UI from backend JSON instantly
 - 🔓 **100% Open Source** - MIT licensed, yours forever
 - 📦 **ApiWidget** - FutureBuilder's smarter, faster cousin
 - 🚀 **Lightweight & Fast** - Optimized parsing, lazy loading
 - 💎 **Production Ready** - Buttons, lists, gestures, caching
+- 🔗 **State Binding** - `${state.key}` in any prop, reactive rebuilds
+- 🎬 **Animations** - Entry animations on any widget via `animate` prop
+- 📄 **Form Validation** - `Form` widget + `submitForm` action from JSON
+- 🍎 **Cupertino Widgets** - iOS-native controls from JSON
+- ♿ **Accessibility** - `Semantics` widget for screen readers
+- 🌍 **i18n Validation** - Override all error messages globally
 
 ---
 
@@ -36,7 +42,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ```yaml
 dependencies:
-  backend_driven_ui: ^0.4.0
+  backend_driven_ui: ^0.5.0
 ```
 
 ### Global Base URL (optional)
@@ -245,6 +251,145 @@ parser.register('ProductCard', (schema, context) {
 
 ## 🎯 Advanced Features
 
+### State Binding
+
+Bind backend JSON to reactive state — widgets with `${state.key}` refs rebuild automatically when values change.
+
+```dart
+// Provide a shared state manager (optional — parser creates one automatically)
+final stateManager = BduiStateManager();
+final parser = SchemaParser(stateManager: stateManager);
+```
+
+**Backend JSON:**
+
+```json
+{
+  "type": "Column",
+  "children": [
+    {
+      "type": "TextField",
+      "props": { "hint": "Your name", "stateKey": "name" }
+    },
+    {
+      "type": "Text",
+      "props": { "text": "Hello, ${state.name}!" }
+    }
+  ]
+}
+```
+
+As the user types, the `Text` widget updates live — no `setState`, no streams.
+
+**`stateKey` prop** is supported on `TextField`, `TextFormField`, `Switch`, and `Checkbox`.
+
+**`setState` action** — set state from any button press:
+
+```json
+{
+  "type": "ElevatedButton",
+  "props": { "text": "Activate" },
+  "action": { "type": "setState", "params": { "key": "status", "value": "active" } }
+}
+```
+
+---
+
+### Form Validation
+
+```json
+{
+  "type": "Form",
+  "props": { "formKey": "login", "autovalidateMode": "onUserInteraction" },
+  "children": [
+    {
+      "type": "TextFormField",
+      "props": {
+        "hint": "Email",
+        "stateKey": "email",
+        "validators": ["required", "email"]
+      }
+    },
+    {
+      "type": "TextFormField",
+      "props": {
+        "hint": "Password",
+        "stateKey": "password",
+        "obscureText": true,
+        "validators": ["required", "minLength:8"]
+      }
+    },
+    {
+      "type": "ElevatedButton",
+      "props": { "text": "Sign In" },
+      "action": { "type": "submitForm", "params": { "formKey": "login" } }
+    }
+  ]
+}
+```
+
+**`autovalidateMode`**: `"disabled"` (default) | `"always"` | `"onUserInteraction"`
+
+---
+
+### Animations
+
+Add an entry animation to any widget with the `animate` prop:
+
+```json
+{
+  "type": "Card",
+  "props": { "animate": "slideUp" },
+  "child": { "type": "Text", "props": { "text": "Animated card" } }
+}
+```
+
+Full config with timing:
+
+```json
+{
+  "animate": {
+    "type": "fadeIn",
+    "duration": 400,
+    "delay": 150,
+    "curve": "easeOut"
+  }
+}
+```
+
+**Supported types:** `fadeIn`, `slideUp`, `slideDown`, `slideLeft`, `slideRight`, `scale`, `bounce`
+
+**Curves:** `linear`, `easeIn`, `easeOut`, `easeInOut`, `bounceIn`, `bounceOut`, `elasticIn`, `elasticOut`, `fastOutSlowIn`
+
+---
+
+### PageView
+
+Swipeable pages from backend JSON:
+
+```json
+{
+  "type": "PageView",
+  "props": { "scrollDirection": "horizontal" },
+  "children": [
+    { "type": "Text", "props": { "text": "Page 1" } },
+    { "type": "Text", "props": { "text": "Page 2" } }
+  ]
+}
+```
+
+Dynamic pages with `PageView.builder`:
+
+```json
+{
+  "type": "PageView.builder",
+  "props": { "itemCount": 10 },
+  "child": { "type": "Text", "props": { "text": "Page template" } }
+}
+```
+
+---
+
 ### Action Handling
 
 Execute actions from your backend schemas:
@@ -332,9 +477,128 @@ ApiWidget(
 
 ---
 
+### Accessibility (Semantics)
+
+Wrap any widget with a `Semantics` node to add screen reader support:
+
+```json
+{
+  "type": "Semantics",
+  "props": {
+    "label": "Submit login form",
+    "button": true,
+    "enabled": true
+  },
+  "child": {
+    "type": "ElevatedButton",
+    "props": { "text": "Sign In" },
+    "action": { "type": "submitForm", "params": { "formKey": "login" } }
+  }
+}
+```
+
+**Available props:** `label`, `hint`, `value`, `button`, `enabled`, `readOnly`, `checked`, `toggled`, `selected`, `header`, `image`, `liveRegion`, `excludeSemantics`.
+
+---
+
+### Validation i18n
+
+Override error message strings globally before `runApp`:
+
+```dart
+void main() {
+  // French
+  BduiValidatorMessages.required = 'Ce champ est obligatoire';
+  BduiValidatorMessages.email = 'Adresse e-mail invalide';
+  BduiValidatorMessages.minLength = (n) => 'Minimum $n caractères';
+  BduiValidatorMessages.phone = 'Numéro de téléphone invalide';
+  BduiValidatorMessages.url = 'URL invalide (doit commencer par http/https)';
+
+  runApp(MyApp());
+}
+```
+
+Restore English defaults at any time: `BduiValidatorMessages.reset()`.
+
+**Available message fields:** `required`, `email`, `numeric`, `phone`, `url` — and factory fields: `minLength(n)`, `maxLength(n)`, `min(n)`, `max(n)`.
+
+---
+
+### GoRouter Integration
+
+Pass GoRouter's navigation function as `onNavigate`:
+
+```dart
+BackendDrivenScreen(
+  endpoint: '/screens/home',
+  onNavigate: (route, {arguments}) {
+    context.go(route, extra: arguments);
+  },
+)
+```
+
+For `ApiWidget` with schema rendering, pass the same callback to `SchemaParser`:
+
+```dart
+final parser = SchemaParser(
+  onNavigate: (route, {arguments}) => context.go(route, extra: arguments),
+);
+```
+
+---
+
+### Riverpod Integration
+
+Expose `BduiStateManager` as a provider so Dart code and backend JSON share the same state:
+
+```dart
+final bduiStateProvider = ChangeNotifierProvider((_) => BduiStateManager());
+
+// In your widget tree:
+final stateManager = ref.watch(bduiStateProvider);
+final parser = SchemaParser(stateManager: stateManager);
+```
+
+Backend JSON can then write state with `setState` actions and your Riverpod listeners see the changes immediately — no extra plumbing required.
+
+---
+
+### Pagination with ApiWidget
+
+Combine `ApiWidget` with a page counter in `BduiStateManager` for infinite scroll:
+
+```dart
+final stateManager = BduiStateManager()..set('page', 1);
+final parser = SchemaParser(stateManager: stateManager);
+```
+
+Backend JSON drives the "Load more" button:
+
+```json
+{
+  "type": "ElevatedButton",
+  "props": { "text": "Load more" },
+  "action": {
+    "type": "setState",
+    "params": { "key": "page", "value": 2 }
+  }
+}
+```
+
+In Dart, watch the `page` key and re-fetch:
+
+```dart
+stateManager.addListener(() {
+  final page = stateManager.get('page') as int? ?? 1;
+  ref.read(productsProvider(page).notifier).fetch();
+});
+```
+
+---
+
 ## 📚 Schema Reference
 
-See the [Schema Reference](https://igloodev.in/docs/backend-driven-ui/schema) for complete documentation of all 33 widgets, props, actions, and conditions — also available as [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md).
+See the [Schema Reference](https://igloodev.in/docs/backend-driven-ui/schema) for complete documentation of all 80+ widgets, props, actions, and conditions — also available as [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md).
 
 ---
 

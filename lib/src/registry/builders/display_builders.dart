@@ -74,6 +74,59 @@ class DisplayBuilders {
     );
   }
 
+  /// [RichText] — inline text with mixed styles using `TextSpan` children.
+  ///
+  /// Props:
+  /// - `spans` (List) — each item is a map with: `text`, `color`, `fontSize`,
+  ///   `bold`, `italic`, `underline`, `strikethrough`, `letterSpacing`,
+  ///   `fontFamily`, `backgroundColor`. Nested `spans` are supported.
+  /// - `textAlign`, `maxLines`, `overflow`, `softWrap`, `textDirection`.
+  static Widget buildRichText(WidgetSchema schema, BuildContext context) {
+    final props = schema.props ?? {};
+    final spansList = props['spans'] as List<dynamic>? ?? const [];
+
+    return RichText(
+      text: TextSpan(
+        children: spansList.map(_parseSpan).toList(),
+      ),
+      textAlign: SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
+      maxLines: SchemaConverters.toDouble(props['maxLines'])?.toInt(),
+      overflow: SchemaConverters.toTextOverflow(props['overflow']) ?? TextOverflow.clip,
+      softWrap: props['softWrap'] as bool? ?? true,
+      textDirection: SchemaConverters.toTextDirection(props['textDirection']),
+    );
+  }
+
+  static TextSpan _parseSpan(dynamic raw) {
+    if (raw is! Map) return const TextSpan();
+    final m = raw.map((k, v) => MapEntry(k.toString(), v));
+    final text = m['text']?.toString();
+    final childSpans = (m['spans'] as List<dynamic>?)?.map(_parseSpan).toList();
+    final style = TextStyle(
+      color: SchemaConverters.toColor(m['color']),
+      fontSize: SchemaConverters.toDouble(m['fontSize']),
+      fontWeight: m['bold'] == true ? FontWeight.bold : null,
+      fontStyle: m['italic'] == true ? FontStyle.italic : null,
+      decoration: _spanDecoration(m),
+      letterSpacing: SchemaConverters.toDouble(m['letterSpacing']),
+      fontFamily: m['fontFamily'] as String?,
+      backgroundColor: SchemaConverters.toColor(m['backgroundColor']),
+    );
+    return TextSpan(text: text, style: style, children: childSpans);
+  }
+
+  static TextDecoration? _spanDecoration(Map<String, dynamic> m) {
+    final underline = m['underline'] == true;
+    final strikethrough = m['strikethrough'] == true;
+    if (underline && strikethrough) {
+      return TextDecoration.combine(
+          [TextDecoration.underline, TextDecoration.lineThrough]);
+    }
+    if (underline) return TextDecoration.underline;
+    if (strikethrough) return TextDecoration.lineThrough;
+    return null;
+  }
+
   static Widget buildDivider(WidgetSchema schema, BuildContext context) {
     final props = schema.props ?? {};
     return Divider(

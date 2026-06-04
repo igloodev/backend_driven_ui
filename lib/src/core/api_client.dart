@@ -196,6 +196,36 @@ class ApiClient {
     );
   }
 
+  /// HEAD request — returns status code and headers, no body.
+  static Future<ApiResponse> head(
+    String url, {
+    Map<String, String>? headers,
+    int maxRetries = 3,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    url = resolveUrl(url);
+    return RetryHandler.retry(
+      action: () => _fetch('HEAD', url, headers: headers, timeout: timeout),
+      maxRetries: maxRetries,
+      shouldRetry: RetryHandler.defaultShouldRetry,
+    );
+  }
+
+  /// OPTIONS request — queries supported methods for an endpoint.
+  static Future<ApiResponse> options(
+    String url, {
+    Map<String, String>? headers,
+    int maxRetries = 3,
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    url = resolveUrl(url);
+    return RetryHandler.retry(
+      action: () => _fetch('OPTIONS', url, headers: headers, timeout: timeout),
+      maxRetries: maxRetries,
+      shouldRetry: RetryHandler.defaultShouldRetry,
+    );
+  }
+
   /// GET with background refresh (stale-while-revalidate)
   static Future<ApiResponse> getWithRefresh(
     String url, {
@@ -336,6 +366,17 @@ class ApiClient {
               .delete(uri, headers: effectiveHeaders)
               .timeout(timeout);
           break;
+        case 'HEAD':
+          response = await client
+              .head(uri, headers: effectiveHeaders)
+              .timeout(timeout);
+          break;
+        case 'OPTIONS':
+          final req = http.Request('OPTIONS', uri);
+          req.headers.addAll(effectiveHeaders);
+          final streamed = await client.send(req).timeout(timeout);
+          response = await http.Response.fromStream(streamed);
+          break;
         default:
           throw ApiException(message: 'Unsupported HTTP method: $method');
       }
@@ -462,6 +503,10 @@ class ApiClient {
     }
     _httpClient?.close();
     _httpClient = null;
+    _activeRequests = 0;
+    _disposalRequested = false;
+    _isDisposing = false;
+    _cacheInstance = null;
   }
 
   /// Check if there are active requests (for testing)

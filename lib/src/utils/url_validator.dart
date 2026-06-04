@@ -36,7 +36,12 @@ class UrlValidator {
         return false;
       }
 
-      final host = uri.host.toLowerCase();
+      // Normalize host: strip IPv6 brackets so all downstream checks see the
+      // bare address (Uri.parse usually does this, but be explicit).
+      var host = uri.host.toLowerCase();
+      if (host.startsWith('[') && host.endsWith(']')) {
+        host = host.substring(1, host.length - 1);
+      }
 
       // Block metadata endpoints first (string match)
       if (_isMetadataEndpoint(host)) {

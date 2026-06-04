@@ -177,6 +177,87 @@ class InteractiveBuilders {
     );
   }
 
+  /// [Dismissible] — swipe-to-dismiss widget.
+  ///
+  /// Props:
+  /// - `dismissKey` (String, required for uniqueness — use item ID)
+  /// - `direction`: `horizontal` (default) | `vertical` | `endToStart` |
+  ///   `startToEnd` | `up` | `down`
+  /// - `resizeDuration` (ms, default 300)
+  /// - `movementDuration` (ms, default 200)
+  /// - `crossAxisEndOffset` (double)
+  /// - `background` / `secondaryBackground` — nested widget schema maps
+  ///
+  /// `action` — executed when the widget is dismissed.
+  static Widget buildDismissible(
+    WidgetSchema schema,
+    BuildContext context,
+    SchemaParser parser,
+  ) {
+    final props = schema.props ?? {};
+    final keyStr = props['dismissKey']?.toString() ??
+        'bdui_${schema.type}_${schema.hashCode}';
+
+    DismissDirection direction;
+    switch (props['direction'] as String?) {
+      case 'vertical':
+        direction = DismissDirection.vertical;
+        break;
+      case 'endToStart':
+        direction = DismissDirection.endToStart;
+        break;
+      case 'startToEnd':
+        direction = DismissDirection.startToEnd;
+        break;
+      case 'up':
+        direction = DismissDirection.up;
+        break;
+      case 'down':
+        direction = DismissDirection.down;
+        break;
+      default:
+        direction = DismissDirection.horizontal;
+    }
+
+    Widget? parseSlot(dynamic slotValue) {
+      if (slotValue is! Map) return null;
+      try {
+        final map = slotValue.map((k, v) => MapEntry(k.toString(), v));
+        return parser.parse(WidgetSchema.fromJson(map), context);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    final actionMap = toStringKeyedMap(schema.action);
+
+    return Dismissible(
+      key: ValueKey(keyStr),
+      direction: direction,
+      resizeDuration: Duration(
+        milliseconds:
+            SchemaConverters.toDouble(props['resizeDuration'])?.toInt() ?? 300,
+      ),
+      movementDuration: Duration(
+        milliseconds:
+            SchemaConverters.toDouble(props['movementDuration'])?.toInt() ?? 200,
+      ),
+      crossAxisEndOffset:
+          SchemaConverters.toDouble(props['crossAxisEndOffset']) ?? 0.0,
+      background: parseSlot(props['background']) ??
+          Container(color: Colors.red.shade400),
+      secondaryBackground: parseSlot(props['secondaryBackground']),
+      onDismissed: (direction) {
+        if (actionMap != null) {
+          _executeAction(actionMap, context, parser);
+        }
+      },
+      child: schema.child != null
+          ? parser.parse(schema.child!, context)
+          : const SizedBox.shrink(),
+    );
+  }
+
   static void _executeAction(
     Map<String, dynamic> action,
     BuildContext context,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../core/bdui_config.dart';
@@ -5,8 +7,10 @@ import '../handlers/action_handler.dart';
 import '../models/widget_schema.dart';
 import '../registry/builtin_widgets.dart';
 import '../registry/widget_registry.dart';
-import '../utils/helpers.dart';
+import '../utils/animation_wrapper.dart';
 import '../utils/bdui_logger.dart';
+import '../utils/bdui_state_manager.dart';
+import '../utils/helpers.dart';
 
 /// Parser for converting widget schemas to Flutter widgets
 class SchemaParser {
@@ -16,6 +20,17 @@ class SchemaParser {
 
   /// Maximum cached widgets to prevent memory leaks
   static const int _maxCacheSize = 200;
+
+  /// Reactive state store — enables `${state.key}` interpolation in props
+  /// and `stateKey` binding on input widgets.
+  ///
+  /// A new [BduiStateManager] is created automatically if one is not provided.
+  /// Access it directly to read/write state from app code.
+  final BduiStateManager stateManager;
+
+  /// Form keys keyed by the `formKey` prop value — used by [buildForm] and
+  /// the `submitForm` action.
+  final Map<String, GlobalKey<FormState>> _formKeys = {};
 
   /// Callback for custom action handling
   final CustomActionCallback? onCustomAction;
@@ -39,16 +54,22 @@ class SchemaParser {
   /// Each parser instance has its own registry to ensure callbacks
   /// (onCustomAction, onNavigate, etc.) are correctly bound.
   /// Pass [registry] to share a registry between parsers (advanced use).
+  ///
+  /// Provide [stateManager] to share state across multiple parsers or to
+  /// listen to state changes from app code. If omitted, a fresh
+  /// [BduiStateManager] is created automatically.
   SchemaParser({
     WidgetRegistry? registry,
     bool enableCache = true,
+    BduiStateManager? stateManager,
     this.onCustomAction,
     this.onNavigate,
     this.onApiSuccess,
     this.onApiError,
     this.onLaunchUrl,
   })  : _registry = registry ?? WidgetRegistry(),
-        _cacheEnabled = enableCache {
+        _cacheEnabled = enableCache,
+        stateManager = stateManager ?? BduiStateManager() {
     // Register built-in widgets to this parser's registry
     _registry.registerAll(BuiltinWidgets.getBuilders(this));
   }
@@ -62,7 +83,21 @@ class SchemaParser {
       onApiSuccess: onApiSuccess,
       onApiError: onApiError,
       onLaunchUrl: onLaunchUrl,
+      onSetState: (key, value) => stateManager.set(key, value),
+      onSubmitForm: (formKeyName) {
+        final key = _formKeys[formKeyName];
+        if (key == null) {
+          BduiLogger.warn('submitForm: no form registered with key "$formKeyName"');
+          return false;
+        }
+        return key.currentState?.validate() ?? false;
+      },
     );
+  }
+
+  /// Returns the [GlobalKey<FormState>] for [name], creating one if needed.
+  GlobalKey<FormState> getFormKey(String name) {
+    return _formKeys.putIfAbsent(name, () => GlobalKey<FormState>());
   }
 
   /// Current parsing depth (used to track recursion)
@@ -90,15 +125,16 @@ class SchemaParser {
     _currentDepth++;
 
     try {
+      final hasStateRefs = _hasStateRefs(schema.props);
+      final hasAnimate = schema.props?.containsKey('animate') ?? false;
+      // Skip cache for anything runtime-dependent
+      final skipCache =
+          hasStateRefs || hasAnimate || schema.condition != null || schema.action != null;
+
       // Check cache first.
-      // Widgets with conditions or actions are never cached because they depend
-      // on runtime context (platform, screen size, theme) or need a fresh
-      // BuildContext for action execution.
-      // Note: static cached widgets (no condition/action) are keyed by schema
-      // content only — they do NOT update when the theme or locale changes.
-      // Call [clearCache] after a theme switch if your schemas use
-      // context-dependent values like inherited styles.
-      if (_cacheEnabled && schema.condition == null && schema.action == null) {
+      // Widgets with conditions, actions, state refs, or animations are never
+      // cached because they depend on runtime context.
+      if (_cacheEnabled && !skipCache) {
         final cacheKey = _getCacheKey(schema);
         if (_widgetCache.containsKey(cacheKey)) {
           return _widgetCache[cacheKey]!;
@@ -113,11 +149,32 @@ class SchemaParser {
         }
       }
 
-      // Build widget
-      final widget = _registry.build(schema, context);
+      // Build widget — wrap in ListenableBuilder when props have state refs
+      Widget widget;
+      if (hasStateRefs) {
+        // Capture the state manager reference for the closure
+        final sm = stateManager;
+        widget = ListenableBuilder(
+          listenable: sm,
+          builder: (ctx, _) {
+            final resolved = _resolveStateProps(schema);
+            return _registry.build(resolved, ctx);
+          },
+        );
+      } else {
+        widget = _registry.build(schema, context);
+      }
 
-      // Cache if enabled and no condition/action (actions need fresh context)
-      if (_cacheEnabled && schema.condition == null && schema.action == null) {
+      // Wrap with entry animation when the `animate` prop is present
+      if (hasAnimate) {
+        widget = AnimationWrapper(
+          animateProp: schema.props!['animate'],
+          child: widget,
+        );
+      }
+
+      // Cache if enabled and no runtime dependencies
+      if (_cacheEnabled && !skipCache) {
         final cacheKey = _getCacheKey(schema);
 
         // LRU eviction if cache is full
@@ -143,7 +200,7 @@ class SchemaParser {
 
   /// Register a custom widget builder on this parser's registry.
   ///
-  /// Use this to extend the built-in 33 widgets with your own types:
+  /// Use this to extend the built-in widgets with your own types:
   /// ```dart
   /// final parser = SchemaParser();
   /// parser.register('ProductCard', (schema, context) {
@@ -166,6 +223,51 @@ class SchemaParser {
   void clearCache() {
     _widgetCache.clear();
   }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // State binding helpers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /// Returns true when at least one prop value contains a `${state.key}` ref.
+  bool _hasStateRefs(Map<String, dynamic>? props) {
+    if (props == null) return false;
+    for (final value in props.values) {
+      if (value is String && value.contains(r'${state.')) return true;
+    }
+    return false;
+  }
+
+  /// Returns a new [WidgetSchema] with all `${state.key}` refs resolved to
+  /// their current values. Non-string props are returned unchanged.
+  WidgetSchema _resolveStateProps(WidgetSchema schema) {
+    if (schema.props == null) return schema;
+    final resolved = <String, dynamic>{};
+    for (final entry in schema.props!.entries) {
+      resolved[entry.key] = entry.value is String
+          ? _interpolate(entry.value as String)
+          : entry.value;
+    }
+    return WidgetSchema(
+      type: schema.type,
+      props: resolved,
+      children: schema.children,
+      child: schema.child,
+      action: schema.action,
+      condition: schema.condition,
+    );
+  }
+
+  /// Replaces all `${state.key}` occurrences in [template] with current values.
+  String _interpolate(String template) {
+    return template.replaceAllMapped(
+      RegExp(r'\$\{state\.(\w+)\}'),
+      (m) => stateManager.get(m.group(1)!)?.toString() ?? '',
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Cache key helpers
+  // ──────────────────────────────────────────────────────────────────────────
 
   /// Generate a deterministic cache key for a schema.
   ///
@@ -199,12 +301,14 @@ class SchemaParser {
 
   /// Stable string key for a props map.
   ///
-  /// Sorts entries by key so insertion-order differences don't produce
-  /// different cache keys for semantically identical props.
+  /// Uses JSON encoding so values that contain the delimiter characters
+  /// (`:` / `;`) cannot produce collisions between different prop maps.
+  /// Keys are sorted so insertion-order differences don't matter.
   String _propsKey(Map<String, dynamic> props) {
-    final entries = props.entries.toList()
-      ..sort((a, b) => a.key.compareTo(b.key));
-    return entries.map((e) => '${e.key}:${e.value}').join(';');
+    final sorted = Map.fromEntries(
+      props.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+    );
+    return jsonEncode(sorted);
   }
 
   /// Polynomial hash for a schema's full content.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/widget_schema.dart';
 import '../parser/schema_parser.dart';
+import 'builders/cupertino_builders.dart';
 import 'builders/display_builders.dart';
 import 'builders/effects_builders.dart';
 import 'builders/interactive_builders.dart';
@@ -9,6 +10,7 @@ import 'builders/layout_builders.dart';
 import 'builders/material_builders.dart';
 import 'builders/input_builders.dart';
 import 'builders/navigation_builders.dart';
+import 'builders/pageview_builders.dart';
 import 'builders/scaffold_builders.dart';
 import 'builders/scrollable_builders.dart';
 import 'builders/sliver_builders.dart';
@@ -27,8 +29,10 @@ class BuiltinWidgets {
       'Scaffold':  (s, c) => ScaffoldBuilders.buildScaffold(s, c, parser),
       'AppBar':    (s, c) => ScaffoldBuilders.buildAppBar(s, c, parser),
       'SafeArea':  (s, c) => ScaffoldBuilders.buildSafeArea(s, c, parser),
+      'Form':      (s, c) => ScaffoldBuilders.buildForm(s, c, parser),
 
       // Display
+      'RichText':                    (s, c) => DisplayBuilders.buildRichText(s, c),
       'Text':                        (s, c) => DisplayBuilders.buildText(s, c),
       'Icon':                        (s, c) => DisplayBuilders.buildIcon(s, c),
       'Image':                       (s, c) => DisplayBuilders.buildImage(s, c),
@@ -67,6 +71,7 @@ class BuiltinWidgets {
       'Checkbox':      (s, c) => InputBuilders.buildCheckbox(s, c, parser),
 
       // Interactive
+      'Dismissible':     (s, c) => InteractiveBuilders.buildDismissible(s, c, parser),
       'Button':          (s, c) => InteractiveBuilders.buildButton(s, c, parser),
       'ElevatedButton':  (s, c) => InteractiveBuilders.buildButton(s, c, parser, buttonType: 'elevated'),
       'TextButton':      (s, c) => InteractiveBuilders.buildButton(s, c, parser, buttonType: 'text'),
@@ -107,7 +112,19 @@ class BuiltinWidgets {
       'TabBar':                 (s, c) => NavigationBuilders.buildTabBar(s, c, parser),
       'TabBarView':             (s, c) => NavigationBuilders.buildTabBarView(s, c, parser),
 
+      // PageView
+      'PageView':         (s, c) => PageViewBuilders.buildPageView(s, c, parser),
+      'PageView.builder': (s, c) => PageViewBuilders.buildPageViewBuilder(s, c, parser),
+
+      // Cupertino (iOS-native)
+      'CupertinoButton':            (s, c) => CupertinoBuilders.buildCupertinoButton(s, c, parser),
+      'CupertinoSwitch':            (s, c) => CupertinoBuilders.buildCupertinoSwitch(s, c, parser),
+      'CupertinoSlider':            (s, c) => CupertinoBuilders.buildCupertinoSlider(s, c, parser),
+      'CupertinoActivityIndicator': (s, c) => CupertinoBuilders.buildCupertinoActivityIndicator(s, c),
+      'CupertinoTextField':         (s, c) => CupertinoBuilders.buildCupertinoTextField(s, c, parser),
+
       // Effects
+      'Semantics':  (s, c) => EffectsBuilders.buildSemantics(s, c, parser),
       'Visibility': (s, c) => EffectsBuilders.buildVisibility(s, c, parser),
       'Opacity':    (s, c) => EffectsBuilders.buildOpacity(s, c, parser),
     };

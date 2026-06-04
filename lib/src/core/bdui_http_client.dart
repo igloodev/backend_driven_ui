@@ -90,7 +90,23 @@ abstract class BduiHttpClient {
     Duration? timeout,
   });
 
-  /// Executes an [ApiRequest] — routes to [get], [post], [put], or [delete]
+  /// Performs a HEAD request — returns status and headers, no body.
+  Future<ApiResponse> head(
+    String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  });
+
+  /// Performs an OPTIONS request — queries supported methods for an endpoint.
+  Future<ApiResponse> options(
+    String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  });
+
+  /// Executes an [ApiRequest] — routes to the correct method based on [ApiRequest.method].
   /// based on [ApiRequest.method].
   ///
   /// Prefer this over calling the individual methods directly when you already
@@ -206,6 +222,34 @@ class DefaultBduiHttpClient implements BduiHttpClient {
       );
 
   @override
+  Future<ApiResponse> head(
+    String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  }) =>
+      ApiClient.head(
+        url,
+        headers: headers,
+        maxRetries: maxRetries ?? BduiConfig.defaultMaxRetries,
+        timeout: timeout ?? BduiConfig.defaultTimeout,
+      );
+
+  @override
+  Future<ApiResponse> options(
+    String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  }) =>
+      ApiClient.options(
+        url,
+        headers: headers,
+        maxRetries: maxRetries ?? BduiConfig.defaultMaxRetries,
+        timeout: timeout ?? BduiConfig.defaultTimeout,
+      );
+
+  @override
   Future<ApiResponse> execute(ApiRequest request) {
     switch (request.method) {
       case HttpMethod.get:
@@ -242,6 +286,20 @@ class DefaultBduiHttpClient implements BduiHttpClient {
         );
       case HttpMethod.delete:
         return delete(
+          request.endpoint,
+          headers: request.headers,
+          maxRetries: request.maxRetries,
+          timeout: request.timeout,
+        );
+      case HttpMethod.head:
+        return head(
+          request.endpoint,
+          headers: request.headers,
+          maxRetries: request.maxRetries,
+          timeout: request.timeout,
+        );
+      case HttpMethod.options:
+        return options(
           request.endpoint,
           headers: request.headers,
           maxRetries: request.maxRetries,

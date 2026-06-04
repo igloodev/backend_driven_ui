@@ -111,6 +111,11 @@ class _ApiWidgetState extends State<ApiWidget> {
   /// Track if a request is in flight (prevents polling overlap)
   bool _isRequestInFlight = false;
 
+  /// Generation counter — each fetch increments this so only the latest
+  /// whenComplete can clear _isRequestInFlight, preventing a stale request
+  /// from unblocking polling too early.
+  int _fetchGeneration = 0;
+
   @override
   void initState() {
     super.initState();
@@ -127,7 +132,11 @@ class _ApiWidgetState extends State<ApiWidget> {
         oldWidget.method != widget.method ||
         oldWidget.headers != widget.headers ||
         oldWidget.body != widget.body) {
-      _fetchData();
+      // Force a new fetch even if a prior request is still in-flight.
+      // The old future becomes stale — FutureBuilder ignores it once
+      // _future is replaced. The generation counter ensures only the
+      // latest whenComplete clears the in-flight flag.
+      _fetchData(force: true);
     }
 
     if (oldWidget.pollInterval != widget.pollInterval) {
@@ -156,13 +165,15 @@ class _ApiWidgetState extends State<ApiWidget> {
     }
   }
 
-  void _fetchData() {
-    if (!mounted || _isRequestInFlight) return;
+  void _fetchData({bool force = false}) {
+    if (!mounted) return;
+    if (_isRequestInFlight && !force) return;
 
+    final gen = ++_fetchGeneration;
     _isRequestInFlight = true;
     setState(() {
       _future = _makeRequest().whenComplete(() {
-        _isRequestInFlight = false;
+        if (gen == _fetchGeneration) _isRequestInFlight = false;
       });
     });
   }
@@ -259,6 +270,20 @@ class _ApiWidgetState extends State<ApiWidget> {
         );
       case HttpMethod.delete:
         return client.delete(
+          widget.endpoint,
+          headers: widget.headers,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
+      case HttpMethod.head:
+        return client.head(
+          widget.endpoint,
+          headers: widget.headers,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
+      case HttpMethod.options:
+        return client.options(
           widget.endpoint,
           headers: widget.headers,
           maxRetries: effectiveRetries,

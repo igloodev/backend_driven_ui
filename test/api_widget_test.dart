@@ -85,6 +85,28 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
+  Future<ApiResponse> head(String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  }) {
+    callCount++;
+    lastUrl = url;
+    return _handler(url);
+  }
+
+  @override
+  Future<ApiResponse> options(String url, {
+    Map<String, String>? headers,
+    int? maxRetries,
+    Duration? timeout,
+  }) {
+    callCount++;
+    lastUrl = url;
+    return _handler(url);
+  }
+
+  @override
   Future<ApiResponse> execute(ApiRequest request) => get(request.endpoint);
 }
 

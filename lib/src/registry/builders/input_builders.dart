@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../models/widget_schema.dart';
 import '../../parser/schema_parser.dart';
+import '../../utils/bdui_validator_messages.dart';
 import '../../utils/helpers.dart';
 import '../../utils/schema_converters.dart';
 
@@ -180,23 +181,47 @@ String? _runValidators(String? value, List<dynamic> rules) {
   for (final rule in rules) {
     final r = rule.toString();
     if (r == 'required' && text.trim().isEmpty) {
-      return 'This field is required';
+      return BduiValidatorMessages.required;
     }
     if (r == 'email' &&
         text.isNotEmpty &&
         !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(text)) {
-      return 'Enter a valid email address';
+      return BduiValidatorMessages.email;
     }
     if (r == 'numeric' && text.isNotEmpty && double.tryParse(text) == null) {
-      return 'Enter a valid number';
+      return BduiValidatorMessages.numeric;
+    }
+    if (r == 'phone' &&
+        text.isNotEmpty &&
+        !RegExp(r'^\+?[\d\s\-().]{7,}$').hasMatch(text)) {
+      return BduiValidatorMessages.phone;
+    }
+    if (r == 'url' &&
+        text.isNotEmpty &&
+        !RegExp(r'^https?://').hasMatch(text)) {
+      return BduiValidatorMessages.url;
     }
     if (r.startsWith('minLength:')) {
       final n = int.tryParse(r.substring(10)) ?? 0;
-      if (text.length < n) return 'Minimum $n characters required';
+      if (text.length < n) return BduiValidatorMessages.minLength(n);
     }
     if (r.startsWith('maxLength:')) {
       final n = int.tryParse(r.substring(10)) ?? 0;
-      if (text.length > n) return 'Maximum $n characters allowed';
+      if (text.length > n) return BduiValidatorMessages.maxLength(n);
+    }
+    if (r.startsWith('min:')) {
+      final n = num.tryParse(r.substring(4));
+      if (n != null) {
+        final parsed = num.tryParse(text);
+        if (parsed == null || parsed < n) return BduiValidatorMessages.min(n);
+      }
+    }
+    if (r.startsWith('max:')) {
+      final n = num.tryParse(r.substring(4));
+      if (n != null) {
+        final parsed = num.tryParse(text);
+        if (parsed == null || parsed > n) return BduiValidatorMessages.max(n);
+      }
     }
   }
   return null;
@@ -227,8 +252,23 @@ class _BduiTextFieldState extends State<_BduiTextField> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        TextEditingController(text: widget.props['value'] as String? ?? '');
+    final stateKey = widget.props['stateKey'] as String?;
+    final initialValue = widget.props['value'] as String? ??
+        (stateKey != null
+            ? widget.parser.stateManager.get(stateKey)?.toString()
+            : null) ??
+        '';
+    _controller = TextEditingController(text: initialValue);
+  }
+
+  @override
+  void didUpdateWidget(_BduiTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newValue = widget.props['value'] as String?;
+    final oldValue = oldWidget.props['value'] as String?;
+    if (newValue != null && newValue != oldValue && newValue != _controller.text) {
+      _controller.text = newValue;
+    }
   }
 
   @override
@@ -272,6 +312,7 @@ class _BduiTextFieldState extends State<_BduiTextField> {
       maxLines = minLines;
     }
 
+    final stateKey = props['stateKey'] as String?;
     final onChangedAction = toStringKeyedMap(props['onChanged']);
     final onSubmittedAction = toStringKeyedMap(schema.action);
 
@@ -299,9 +340,12 @@ class _BduiTextFieldState extends State<_BduiTextField> {
       inputFormatters: props['keyboardType'] == 'number'
           ? [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))]
           : null,
-      onChanged: onChangedAction != null
-          ? (_) => _execute(onChangedAction)
-          : null,
+      onChanged: (value) {
+        if (stateKey != null) {
+          widget.parser.stateManager.set(stateKey, value);
+        }
+        if (onChangedAction != null) _execute(onChangedAction);
+      },
       onSubmitted: onSubmittedAction != null
           ? (_) => _execute(onSubmittedAction)
           : null,
@@ -330,8 +374,23 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        TextEditingController(text: widget.props['value'] as String? ?? '');
+    final stateKey = widget.props['stateKey'] as String?;
+    final initialValue = widget.props['value'] as String? ??
+        (stateKey != null
+            ? widget.parser.stateManager.get(stateKey)?.toString()
+            : null) ??
+        '';
+    _controller = TextEditingController(text: initialValue);
+  }
+
+  @override
+  void didUpdateWidget(_BduiTextFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newValue = widget.props['value'] as String?;
+    final oldValue = oldWidget.props['value'] as String?;
+    if (newValue != null && newValue != oldValue && newValue != _controller.text) {
+      _controller.text = newValue;
+    }
   }
 
   @override
@@ -375,6 +434,7 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
       maxLines = minLines;
     }
 
+    final stateKey = props['stateKey'] as String?;
     final onChangedAction = toStringKeyedMap(props['onChanged']);
     final onSubmittedAction = toStringKeyedMap(schema.action);
     final validators = props['validators'] as List<dynamic>? ?? const [];
@@ -406,9 +466,12 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
       validator: validators.isNotEmpty
           ? (value) => _runValidators(value, validators)
           : null,
-      onChanged: onChangedAction != null
-          ? (_) => _execute(onChangedAction)
-          : null,
+      onChanged: (value) {
+        if (stateKey != null) {
+          widget.parser.stateManager.set(stateKey, value);
+        }
+        if (onChangedAction != null) _execute(onChangedAction);
+      },
       onFieldSubmitted: onSubmittedAction != null
           ? (_) => _execute(onSubmittedAction)
           : null,
@@ -445,9 +508,20 @@ class _BduiSwitchState extends State<_BduiSwitch> {
   }
 
   @override
+  void didUpdateWidget(_BduiSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newValue = widget.props['value'] as bool?;
+    if (newValue != null && newValue != (oldWidget.props['value'] as bool?)) {
+      setState(() => _value = newValue);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final props = widget.props;
     final actionMap = toStringKeyedMap(widget.schema.action);
+
+    final stateKey = props['stateKey'] as String?;
 
     return Switch(
       value: _value,
@@ -459,6 +533,9 @@ class _BduiSwitchState extends State<_BduiSwitch> {
           SchemaConverters.toColor(props['inactiveTrackColor']),
       onChanged: (newValue) {
         setState(() => _value = newValue);
+        if (stateKey != null) {
+          widget.parser.stateManager.set(stateKey, newValue);
+        }
         if (actionMap != null) {
           widget.parser
               .createActionHandler(context)
@@ -498,6 +575,15 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
   }
 
   @override
+  void didUpdateWidget(_BduiCheckbox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newValue = widget.props['value'] as bool?;
+    if (newValue != null && newValue != (oldWidget.props['value'] as bool?)) {
+      setState(() => _value = newValue);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final props = widget.props;
     final tristate = props['tristate'] as bool? ?? false;
@@ -524,6 +610,8 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
         break;
     }
 
+    final stateKey = props['stateKey'] as String?;
+
     return Checkbox(
       value: _value,
       tristate: tristate,
@@ -538,6 +626,9 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
       visualDensity: visualDensity,
       onChanged: (newValue) {
         setState(() => _value = newValue);
+        if (stateKey != null) {
+          widget.parser.stateManager.set(stateKey, newValue);
+        }
         if (actionMap != null) {
           widget.parser
               .createActionHandler(context)

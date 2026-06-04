@@ -153,6 +153,9 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
   }
 
   Future<dynamic> _makeApiCall() async {
+    if (widget.endpoint.isEmpty) {
+      throw ArgumentError('BackendDrivenScreen: endpoint must not be empty.');
+    }
     final effectiveRetries = widget.maxRetries ?? BduiConfig.defaultMaxRetries;
     final effectiveTimeout = widget.timeout ?? BduiConfig.defaultTimeout;
     switch (widget.method) {
@@ -190,6 +193,20 @@ class _BackendDrivenScreenState extends State<BackendDrivenScreen> {
         );
       case HttpMethod.delete:
         return await ApiClient.delete(
+          widget.endpoint,
+          headers: widget.headers,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
+      case HttpMethod.head:
+        return await ApiClient.head(
+          widget.endpoint,
+          headers: widget.headers,
+          maxRetries: effectiveRetries,
+          timeout: effectiveTimeout,
+        );
+      case HttpMethod.options:
+        return await ApiClient.options(
           widget.endpoint,
           headers: widget.headers,
           maxRetries: effectiveRetries,

@@ -46,6 +46,14 @@ class ActionHandler {
   /// and optional params map.
   final CustomActionCallback? onCustomAction;
 
+  /// Called when a `setState` action is triggered. Sets a key in
+  /// [BduiStateManager] to trigger reactive UI updates.
+  final SetStateCallback? onSetState;
+
+  /// Called when a `submitForm` action is triggered. Validates and saves
+  /// the named form. Returns `true` if validation passed.
+  final SubmitFormCallback? onSubmitForm;
+
   /// Creates an [ActionHandler] with the given [context] and optional
   /// callbacks for navigation, URL launching, API results, and custom actions.
   ActionHandler({
@@ -55,6 +63,8 @@ class ActionHandler {
     this.onApiSuccess,
     this.onApiError,
     this.onCustomAction,
+    this.onSetState,
+    this.onSubmitForm,
   });
 
   /// Check if context is still valid (widget not unmounted)
@@ -143,6 +153,14 @@ class ActionHandler {
           break;
         case 'conditional':
           await _handleConditional(action, depth);
+          break;
+
+        // State actions
+        case 'setState':
+          _handleSetState(action);
+          break;
+        case 'submitForm':
+          _handleSubmitForm(action);
           break;
 
         // Custom actions
@@ -349,6 +367,9 @@ class ActionHandler {
         ),
       ),
     );
+
+    // Check context after async operation (widget may have unmounted while sheet was open)
+    if (!_isContextMounted) return;
   }
 
   // ============ API Actions ============
@@ -378,22 +399,26 @@ class ActionHandler {
     } catch (e) {
       final errorMessage = e.toString();
 
-      // Call API error callback if registered
+      // Call the widget-level API error callback if registered.
       if (onApiError != null) {
         onApiError!(endpoint, errorMessage);
       }
 
-      // Show default error snackbar only when no error handler is registered
-      // at either the action level or the widget/handler level.
-      if (action.onError == null && onApiError == null) {
+      // If the action schema defines an onError branch, rethrow so the
+      // outer execute() catch block can run it. Do NOT also show a snackbar
+      // — the onError action is the intended handler.
+      if (action.onError != null) {
+        rethrow;
+      }
+
+      // No handler at any level — show a default snackbar as last resort.
+      if (onApiError == null) {
         _handleShowSnackBar(ActionSchema(
           type: 'showSnackBar',
           params: {'message': 'Request failed: $errorMessage'},
         ));
       }
-
-      // Re-throw so execute() can handle onError action
-      rethrow;
+      // Do not rethrow: error is fully handled (callback or snackbar).
     }
   }
 
@@ -441,6 +466,20 @@ class ActionHandler {
         );
       case HttpMethod.delete:
         return await ApiClient.delete(
+          endpoint,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
+      case HttpMethod.head:
+        return await ApiClient.head(
+          endpoint,
+          headers: stringHeaders,
+          maxRetries: BduiConfig.defaultMaxRetries,
+          timeout: BduiConfig.defaultTimeout,
+        );
+      case HttpMethod.options:
+        return await ApiClient.options(
           endpoint,
           headers: stringHeaders,
           maxRetries: BduiConfig.defaultMaxRetries,
@@ -541,6 +580,34 @@ class ActionHandler {
       await execute(action.thenAction!, depth: depth + 1);
     } else if (!shouldExecute && action.elseAction != null) {
       await execute(action.elseAction!, depth: depth + 1);
+    }
+  }
+
+  // ============ State Actions ============
+
+  void _handleSetState(ActionSchema action) {
+    final key = action.params?['key'] as String?;
+    final value = action.params?['value'];
+    if (key == null) {
+      BduiLogger.warn('setState action requires "key" parameter');
+      return;
+    }
+    if (onSetState != null) {
+      onSetState!(key, value);
+    } else {
+      BduiLogger.warn('setState action called but no onSetState handler registered');
+    }
+  }
+
+  void _handleSubmitForm(ActionSchema action) {
+    final formKey = action.params?['formKey'] as String? ?? '_default';
+    if (onSubmitForm != null) {
+      final valid = onSubmitForm!(formKey);
+      if (!valid) {
+        BduiLogger.warn('submitForm: validation failed for form "$formKey"');
+      }
+    } else {
+      BduiLogger.warn('submitForm action called but no onSubmitForm handler registered');
     }
   }
 

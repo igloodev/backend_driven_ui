@@ -1,3 +1,5 @@
+import '../utils/bdui_logger.dart';
+
 /// Cache policy from backend response
 enum CachePolicy {
   /// Use cached data if available, otherwise fetch fresh
@@ -61,8 +63,13 @@ class CacheControl {
           policy = CachePolicy.refresh;
           break;
         case 'cache':
-        default:
           policy = CachePolicy.cache;
+          break;
+        default:
+          BduiLogger.warn(
+            'CacheControl: unknown cachePolicy "$policyStr", defaulting to noCache',
+          );
+          policy = CachePolicy.noCache;
       }
     }
 

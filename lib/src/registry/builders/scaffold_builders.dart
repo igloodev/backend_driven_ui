@@ -144,6 +144,53 @@ class ScaffoldBuilders {
     );
   }
 
+  /// [Form] — wraps form fields and provides validation coordination.
+  ///
+  /// Props: `formKey` (string ID used with `submitForm` action, default
+  /// `"_default"`), `autovalidateMode` (`"disabled"` | `"always"` |
+  /// `"onUserInteraction"`, default `"disabled"`).
+  ///
+  /// `child` or `children` — the form field widgets. Multiple `children`
+  /// are wrapped in a [Column].
+  static Widget buildForm(
+    WidgetSchema schema,
+    BuildContext context,
+    SchemaParser parser,
+  ) {
+    final props = schema.props ?? {};
+    final formKeyName = props['formKey'] as String? ?? '_default';
+
+    AutovalidateMode autovalidateMode;
+    switch (props['autovalidateMode'] as String?) {
+      case 'always':
+        autovalidateMode = AutovalidateMode.always;
+        break;
+      case 'onUserInteraction':
+        autovalidateMode = AutovalidateMode.onUserInteraction;
+        break;
+      default:
+        autovalidateMode = AutovalidateMode.disabled;
+    }
+
+    Widget child;
+    if (schema.child != null) {
+      child = parser.parse(schema.child!, context);
+    } else if (schema.children != null && schema.children!.isNotEmpty) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: parser.parseList(schema.children!, context),
+      );
+    } else {
+      child = const SizedBox.shrink();
+    }
+
+    return Form(
+      key: parser.getFormKey(formKeyName),
+      autovalidateMode: autovalidateMode,
+      child: child,
+    );
+  }
+
   /// [SafeArea] — insets its child to avoid OS intrusions (notch, home bar).
   ///
   /// Props: `top`, `bottom`, `left`, `right` (all `bool`, default `true`),

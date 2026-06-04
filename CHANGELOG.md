@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-06-05
+
+### Added
+
+- **State binding** — `${state.key}` interpolation in any string prop; widgets with state refs rebuild automatically via `ListenableBuilder` when state changes. Example: `"text": "${state.name}"`.
+- **`BduiStateManager`** — `ChangeNotifier`-based reactive key-value store. `SchemaParser` creates one automatically; pass your own via `SchemaParser(stateManager: ...)`. Public API: `get()`, `set()`, `setAll()`, `remove()`, `reset()`, `snapshot`.
+- **`stateKey` prop** on `TextField`, `TextFormField`, `Switch`, and `Checkbox` — writes the field's current value to `stateManager` on every change. Pre-fills from state when no `value` prop is given.
+- **`Form` widget** — wraps form fields for coordinated validation. Props: `formKey` (string ID), `autovalidateMode` (`"disabled"` | `"always"` | `"onUserInteraction"`). Multiple `children` are auto-wrapped in a `Column`.
+- **`submitForm` action** — validates and saves a named form. `{"type": "submitForm", "params": {"formKey": "login"}}`. Returns form errors to the UI when validation fails.
+- **`setState` action** — sets a `BduiStateManager` key from any action. `{"type": "setState", "params": {"key": "tab", "value": 1}}`.
+- **`PageView` widget** — horizontal/vertical swipeable pages from `children`. Props: `scrollDirection`, `reverse`, `physics`, `padEnds`.
+- **`PageView.builder` widget** — lazy page builder. Props: `itemCount` (omit for infinite), `scrollDirection`, `reverse`, `physics`, `padEnds`. Uses `child` schema as the page template.
+- **`animate` prop** on any widget — entry animation without writing a single line of Dart. Accepts a string shorthand (`"fadeIn"`) or a config map: `{"type": "slideUp", "duration": 400, "delay": 100, "curve": "easeInOut"}`. Supported types: `fadeIn`, `slideUp`, `slideDown`, `slideLeft`, `slideRight`, `scale`, `bounce`.
+- **Icon expansion** — `Icons.*` mapping expanded from 35 → 120+ icons across 16 categories (navigation, status, people, favorites, communication, media, files, commerce, location, time, device, security, analytics, layout, cloud, misc).
+- **`RichText` widget** — renders inline styled text via `TextSpan` trees. Each span supports `bold`, `italic`, `underline`, `strikethrough`, `color`, `fontSize`, `letterSpacing`, `fontFamily`, `backgroundColor`, and nested `spans`.
+- **`Dismissible` widget** — swipe-to-dismiss with `dismissKey`, `direction` (`horizontal` | `vertical` | `startToEnd` | `endToStart`), `background` / `secondaryBackground` slots, and an action fired on dismiss.
+- **Cupertino widgets** (5 new types): `CupertinoButton`, `CupertinoSwitch`, `CupertinoSlider`, `CupertinoActivityIndicator`, `CupertinoTextField` — all support `stateKey` integration where applicable.
+- **`Semantics` widget** — full accessibility wrapper. Props: `label`, `hint`, `value`, `button`, `enabled`, `readOnly`, `checked`, `toggled`, `selected`, `header`, `image`, `liveRegion`, `excludeSemantics`.
+- **`HttpMethod.head` and `HttpMethod.options`** — two new HTTP verb values; all exhaustive switches updated across `ApiWidget`, `BackendDrivenScreen`, `BduiHttpClient`, `DefaultBduiHttpClient`, and `ActionHandler`. `ApiClient` gains `head()` and `options()` static methods.
+- **`BduiValidatorMessages`** — static, globally overridable validation message strings for i18n. Override any field before app launch (e.g. `BduiValidatorMessages.required = 'Champ requis'`). Exported from the public library.
+- **New validators** — `phone` (E.164-style regex), `url` (must start with `http://` or `https://`), `min:n` (numeric minimum), `max:n` (numeric maximum). All messages go through `BduiValidatorMessages`.
+
+### Fixed
+
+- **`ApiWidget` race condition** — endpoint changes now always issue a new request even when one is in-flight. A generation counter ensures only the latest `whenComplete` clears `_isRequestInFlight`, so polling cannot overlap and stale responses from superseded requests are discarded by `FutureBuilder`.
+- **`SchemaParser` cache key collision** — `_propsKey()` now uses `jsonEncode` (sorted keys) instead of raw `:` / `;` delimiters, preventing collisions between props whose values contain those characters.
+- **`ActionHandler` double error handling** — `_handleApi()` catch block restructured: the `onError` action branch rethrows so `execute()` runs it; a fallback snackbar is only shown when no `onApiError` callback and no `onError` action are registered. Errors are never handled twice.
+- **`CacheControl` unknown policy** — unrecognised `cachePolicy` strings now default to `CachePolicy.noCache` (fail-closed) with a logged warning, instead of silently falling through to `CachePolicy.cache`.
+- **`UrlValidator` IPv6 bracket bypass** — host brackets are stripped before `_isMetadataEndpoint` is checked, so `[fd00:ec2::254]` cannot bypass the AWS IPv6 metadata block.
+- **`ActionHandler.showModalBottomSheet` unmount safety** — `if (!_isContextMounted) return;` added after `await showModalBottomSheet(...)`, consistent with the same guard already in `_handleShowDialog`.
+- **`didUpdateWidget` on all input widgets** — `_BduiTextField`, `_BduiTextFormField`, `_BduiSwitch`, `_BduiCheckbox`, `_CupertinoSwitchWidget`, `_CupertinoSliderWidget`, and `_CupertinoTextFieldWidget` now sync controller / state when the parent rebuilds with a new `value` prop.
+- **`BduiStateManager` unnecessary rebuilds** — `set()`, `setAll()`, and `remove()` skip `notifyListeners()` when the value is unchanged.
+- **`ApiClient.reset()`** — now clears all static fields (`_httpClient`, `_activeRequests`, `_disposalRequested`, `_isDisposing`, `_cacheInstance`) for a clean slate between tests.
+- **`BackendDrivenScreen` empty endpoint guard** — `_makeApiCall()` throws `ArgumentError` immediately when `endpoint` is empty, preventing silent network errors.
+- **`AnimationWrapper` `CurvedAnimation` leak** — `_curve` and `_bounceCurve` are created in `initState()` and disposed in `dispose()` instead of being recreated on every `build()`.
+
+### Maintenance
+
+- `AnimationWrapper` (`lib/src/utils/animation_wrapper.dart`) — new file, `StatefulWidget` with `SingleTickerProviderStateMixin`.
+- `BduiStateManager` (`lib/src/utils/bdui_state_manager.dart`) — exported from the public library.
+- `BduiValidatorMessages` (`lib/src/utils/bdui_validator_messages.dart`) — new utility, exported from the public library.
+- `PageViewBuilders` (`lib/src/registry/builders/pageview_builders.dart`) — new builder file.
+- `CupertinoBuilders` (`lib/src/registry/builders/cupertino_builders.dart`) — new builder file.
+- `SchemaParser.getFormKey(name)` — returns (or creates) a `GlobalKey<FormState>` by name.
+- `ActionHandler` gains `onSetState` and `onSubmitForm` callback fields; both are wired automatically by `SchemaParser.createActionHandler()`.
+- Widgets with `animate`, state refs, conditions, or actions are excluded from the widget cache.
+
+---
+
 ## [0.4.0] - 2026-04-17
 
 ### Added

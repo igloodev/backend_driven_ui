@@ -46,6 +46,13 @@ export 'src/registry/widget_registry.dart';
 
 // Handlers (for custom action handling)
 export 'src/handlers/action_handler.dart';
+export 'src/handlers/action_callbacks.dart';
 
 // Parser (for advanced usage)
 export 'src/parser/schema_parser.dart';
+
+// State management
+export 'src/utils/bdui_state_manager.dart';
+
+// i18n
+export 'src/utils/bdui_validator_messages.dart';

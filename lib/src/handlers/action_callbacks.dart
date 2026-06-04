@@ -27,3 +27,10 @@ typedef ApiCallback = void Function(String endpoint, dynamic data);
 
 /// Callback invoked when an `api` action fails.
 typedef ApiErrorCallback = void Function(String endpoint, String error);
+
+/// Callback for `setState` actions — sets a key in [BduiStateManager].
+typedef SetStateCallback = void Function(String key, dynamic value);
+
+/// Callback for `submitForm` actions — validates and saves the named form.
+/// Returns `true` if the form validated successfully.
+typedef SubmitFormCallback = bool Function(String formKey);
