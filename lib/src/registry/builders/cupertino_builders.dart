@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import '../../models/widget_schema.dart';
 import '../../parser/schema_parser.dart';
@@ -53,12 +52,17 @@ class CupertinoBuilders {
             }
           };
 
+    // `minSize` (JSON prop) is a single double — map to a square Size for the
+    // current Flutter API (`minimumSize`). 44.0 default matches the iOS HIG
+    // minimum tap target.
+    final minimum = Size.square(minSize);
+
     if (filled) {
       return CupertinoButton.filled(
         onPressed: onPressed,
         borderRadius: borderRadius,
         padding: padding,
-        minSize: minSize,
+        minimumSize: minimum,
         child: child,
       );
     }
@@ -68,7 +72,7 @@ class CupertinoBuilders {
       color: color,
       borderRadius: borderRadius,
       padding: padding,
-      minSize: minSize,
+      minimumSize: minimum,
       child: child,
     );
   }
@@ -178,8 +182,11 @@ class _CupertinoSwitchState extends State<_CupertinoSwitchWidget> {
 
     return CupertinoSwitch(
       value: _value,
-      activeColor: SchemaConverters.toColor(props['activeColor']),
-      trackColor: SchemaConverters.toColor(props['trackColor']),
+      // JSON props `activeColor` / `trackColor` are kept for backward compat;
+      // they map to CupertinoSwitch's renamed `activeTrackColor` /
+      // `inactiveTrackColor` parameters (Flutter 3.24+).
+      activeTrackColor: SchemaConverters.toColor(props['activeColor']),
+      inactiveTrackColor: SchemaConverters.toColor(props['trackColor']),
       thumbColor: SchemaConverters.toColor(props['thumbColor']),
       onChanged: (v) {
         setState(() => _value = v);

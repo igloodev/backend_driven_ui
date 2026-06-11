@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2026-06-11
+
+### Fixed
+
+- **Pana static-analysis lints in `cupertino_builders.dart`** — removed the
+  redundant `package:flutter/material.dart` import; updated
+  `CupertinoButton` to use `minimumSize: Size.square(...)` instead of the
+  deprecated `minSize` parameter; updated `CupertinoSwitch` to use
+  `activeTrackColor` / `inactiveTrackColor` instead of the deprecated
+  `activeColor` / `trackColor` parameters. JSON prop names (`activeColor`,
+  `trackColor`, `minSize`) are preserved for backward compatibility.
+- Restores pub.dev pana score from 150/160 to 160/160 (the 10 missing
+  points were all from these info-level lints).
+
 ## [0.5.0] - 2026-06-05
 
 ### Added

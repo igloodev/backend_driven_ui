@@ -42,7 +42,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 ```yaml
 dependencies:
-  backend_driven_ui: ^0.5.0
+  backend_driven_ui: ^0.5.1
 ```
 
 ### Global Base URL (optional)
