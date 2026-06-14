@@ -21,7 +21,8 @@ class _ControllableClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> get(String url, {
+  Future<ApiResponse> get(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
@@ -34,58 +35,72 @@ class _ControllableClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> getWithRefresh(String url, {
+  Future<ApiResponse> getWithRefresh(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
     Duration? timeout,
     void Function(ApiResponse)? onRefresh,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> post(String url, {
+  Future<ApiResponse> post(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> put(String url, {
+  Future<ApiResponse> put(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> patch(String url, {
+  Future<ApiResponse> patch(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> delete(String url, {
+  Future<ApiResponse> delete(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> head(String url, {
+  Future<ApiResponse> head(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> options(String url, {
+  Future<ApiResponse> options(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
   Future<ApiResponse> execute(ApiRequest request) => get(request.endpoint);
@@ -100,7 +115,8 @@ class _OrderedClient implements BduiHttpClient {
   _OrderedClient(this._responses);
 
   @override
-  Future<ApiResponse> get(String url, {
+  Future<ApiResponse> get(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
@@ -111,21 +127,51 @@ class _OrderedClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> getWithRefresh(String url, {
+  Future<ApiResponse> getWithRefresh(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
     Duration? timeout,
     void Function(ApiResponse)? onRefresh,
-  }) => get(url);
+  }) =>
+      get(url);
 
-  @override Future<ApiResponse> post(String url, {Map<String, String>? headers, dynamic body, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> put(String url, {Map<String, String>? headers, dynamic body, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> patch(String url, {Map<String, String>? headers, dynamic body, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> delete(String url, {Map<String, String>? headers, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> head(String url, {Map<String, String>? headers, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> options(String url, {Map<String, String>? headers, int? maxRetries, Duration? timeout}) => get(url);
-  @override Future<ApiResponse> execute(ApiRequest request) => get(request.endpoint);
+  @override
+  Future<ApiResponse> post(String url,
+          {Map<String, String>? headers,
+          dynamic body,
+          int? maxRetries,
+          Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> put(String url,
+          {Map<String, String>? headers,
+          dynamic body,
+          int? maxRetries,
+          Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> patch(String url,
+          {Map<String, String>? headers,
+          dynamic body,
+          int? maxRetries,
+          Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> delete(String url,
+          {Map<String, String>? headers, int? maxRetries, Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> head(String url,
+          {Map<String, String>? headers, int? maxRetries, Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> options(String url,
+          {Map<String, String>? headers, int? maxRetries, Duration? timeout}) =>
+      get(url);
+  @override
+  Future<ApiResponse> execute(ApiRequest request) => get(request.endpoint);
 }
 
 // ── Helper ────────────────────────────────────────────────────────────────────
@@ -289,8 +335,8 @@ void main() {
 
         // Resolve the stale slow request — UI should not change because
         // _future already points to req2's future.
-        slowCompleter.complete(
-            const ApiResponse(statusCode: 200, data: {'page': 'A'}));
+        slowCompleter
+            .complete(const ApiResponse(statusCode: 200, data: {'page': 'A'}));
         await tester.pump();
         await tester.pump();
         expect(find.text('B'), findsOneWidget);
@@ -357,7 +403,8 @@ void main() {
         // No exception = test passes
       });
 
-      testWidgets('widget disposed while request in-flight errors does not crash',
+      testWidgets(
+          'widget disposed while request in-flight errors does not crash',
           (tester) async {
         final client = _ControllableClient();
 
@@ -383,8 +430,7 @@ void main() {
           (tester) async {
         int successCount = 0;
         final client = _OrderedClient([
-          () async =>
-              const ApiResponse(statusCode: 200, data: {'id': 42}),
+          () async => const ApiResponse(statusCode: 200, data: {'id': 42}),
         ]);
 
         await tester.pumpWidget(_wrap(ApiWidget(
@@ -430,10 +476,8 @@ void main() {
           (tester) async {
         int successCount = 0;
         final client = _OrderedClient([
-          () async =>
-              const ApiResponse(statusCode: 200, data: {'v': 1}),
-          () async =>
-              const ApiResponse(statusCode: 200, data: {'v': 2}),
+          () async => const ApiResponse(statusCode: 200, data: {'v': 1}),
+          () async => const ApiResponse(statusCode: 200, data: {'v': 2}),
         ]);
 
         await tester.pumpWidget(_wrap(ApiWidget(

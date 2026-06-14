@@ -19,7 +19,9 @@ class ScrollableBuilders {
 
     return ListView.builder(
       shrinkWrap: props['shrinkWrap'] as bool? ?? false,
-      physics: props['physics'] == 'never' ? const NeverScrollableScrollPhysics() : null,
+      physics: props['physics'] == 'never'
+          ? const NeverScrollableScrollPhysics()
+          : null,
       padding: SchemaConverters.toEdgeInsets(props['padding']),
       itemCount: children.length,
       itemBuilder: (context, index) {
@@ -113,19 +115,27 @@ class ScrollableBuilders {
   ) {
     final props = schema.props ?? {};
     final children = schema.children;
-    final crossAxisCount = (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2).clamp(1, 99999);
+    final crossAxisCount =
+        (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2)
+            .clamp(1, 99999);
 
     if (children == null || children.isEmpty) return const SizedBox.shrink();
 
     return GridView.builder(
       shrinkWrap: props['shrinkWrap'] as bool? ?? false,
-      physics: props['physics'] == 'never' ? const NeverScrollableScrollPhysics() : null,
+      physics: props['physics'] == 'never'
+          ? const NeverScrollableScrollPhysics()
+          : null,
       padding: SchemaConverters.toEdgeInsets(props['padding']),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        mainAxisSpacing: SchemaConverters.toDouble(props['mainAxisSpacing']) ?? 0.0,
-        crossAxisSpacing: SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
-        childAspectRatio: (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+        mainAxisSpacing:
+            SchemaConverters.toDouble(props['mainAxisSpacing']) ?? 0.0,
+        crossAxisSpacing:
+            SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
+        childAspectRatio:
+            (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+                .clamp(0.01, double.infinity),
       ),
       itemCount: children.length,
       itemBuilder: (context, index) {
@@ -157,13 +167,16 @@ class ScrollableBuilders {
           ? const NeverScrollableScrollPhysics()
           : null,
       padding: SchemaConverters.toEdgeInsets(props['padding']),
-      crossAxisCount: (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2).clamp(1, 99999),
+      crossAxisCount:
+          (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2)
+              .clamp(1, 99999),
       mainAxisSpacing:
           SchemaConverters.toDouble(props['mainAxisSpacing']) ?? 0.0,
       crossAxisSpacing:
           SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
       childAspectRatio:
-          (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+          (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+              .clamp(0.01, double.infinity),
       children: children.map((c) => parser.parse(c, context)).toList(),
     );
   }
@@ -194,7 +207,8 @@ class ScrollableBuilders {
       crossAxisSpacing:
           SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
       childAspectRatio:
-          (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+          (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+              .clamp(0.01, double.infinity),
       children: children.map((c) => parser.parse(c, context)).toList(),
     );
   }
@@ -223,16 +237,21 @@ class ScrollableBuilders {
             crossAxisSpacing:
                 SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
             childAspectRatio:
-                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+                    .clamp(0.01, double.infinity),
           )
         : SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2).clamp(1, 99999),
+            crossAxisCount:
+                (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ??
+                        2)
+                    .clamp(1, 99999),
             mainAxisSpacing:
                 SchemaConverters.toDouble(props['mainAxisSpacing']) ?? 0.0,
             crossAxisSpacing:
                 SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
             childAspectRatio:
-                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+                    .clamp(0.01, double.infinity),
           );
 
     return GridView.custom(

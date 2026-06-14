@@ -129,8 +129,7 @@ class ApiCache with WidgetsBindingObserver {
     if (_cache.isEmpty) return;
 
     final targetSize = _cache.length ~/ 2;
-    final keysToRemove =
-        _cache.keys.take(_cache.length - targetSize).toList();
+    final keysToRemove = _cache.keys.take(_cache.length - targetSize).toList();
     for (final key in keysToRemove) {
       _cache.remove(key);
     }

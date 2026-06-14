@@ -71,11 +71,13 @@ class MaterialBuilders {
       leading: parseSlot(schema.props?['leading']),
       trailing: parseSlot(schema.props?['trailing']),
       title: props['title'] != null ? Text(props['title'].toString()) : null,
-      subtitle: props['subtitle'] != null ? Text(props['subtitle'].toString()) : null,
+      subtitle:
+          props['subtitle'] != null ? Text(props['subtitle'].toString()) : null,
       dense: props['dense'] as bool? ?? false,
       enabled: props['enabled'] as bool? ?? true,
       selected: props['selected'] as bool? ?? false,
-      isThreeLine: props['subtitle'] != null && (props['isThreeLine'] as bool? ?? false),
+      isThreeLine:
+          props['subtitle'] != null && (props['isThreeLine'] as bool? ?? false),
       tileColor: SchemaConverters.toColor(props['tileColor']),
       selectedTileColor: SchemaConverters.toColor(props['selectedTileColor']),
       selectedColor: SchemaConverters.toColor(props['selectedColor']),
@@ -83,7 +85,8 @@ class MaterialBuilders {
       textColor: SchemaConverters.toColor(props['textColor']),
       contentPadding: SchemaConverters.toEdgeInsets(props['contentPadding']),
       minLeadingWidth: SchemaConverters.toDouble(props['minLeadingWidth']),
-      minVerticalPadding: SchemaConverters.toDouble(props['minVerticalPadding']),
+      minVerticalPadding:
+          SchemaConverters.toDouble(props['minVerticalPadding']),
       onTap: actionMap != null
           ? () => parser.createActionHandler(context).executeFromMap(actionMap)
           : null,
@@ -102,7 +105,8 @@ class MaterialBuilders {
 
     if (imageUrl != null) {
       if (!UrlValidator.isUrlSafe(imageUrl)) {
-        BduiLogger.warn('CircleAvatar image blocked: URL failed security validation: $imageUrl');
+        BduiLogger.warn(
+            'CircleAvatar image blocked: URL failed security validation: $imageUrl');
         return CircleAvatar(
           radius: radius,
           backgroundColor: backgroundColor ?? Colors.grey[200],
@@ -296,9 +300,8 @@ class MaterialBuilders {
 
     return ExpansionTile(
       title: Text(props['title']?.toString() ?? ''),
-      subtitle: props['subtitle'] != null
-          ? Text(props['subtitle'].toString())
-          : null,
+      subtitle:
+          props['subtitle'] != null ? Text(props['subtitle'].toString()) : null,
       leading: parseSlot(props['leading']),
       trailing: parseSlot(props['trailing']),
       initiallyExpanded: props['initiallyExpanded'] as bool? ?? false,
@@ -314,7 +317,8 @@ class MaterialBuilders {
       childrenPadding: SchemaConverters.toEdgeInsets(props['childrenPadding']),
       dense: props['dense'] as bool? ?? false,
       enableFeedback: props['enableFeedback'] as bool?,
-      expandedAlignment: SchemaConverters.toAlignment(props['expandedAlignment']),
+      expandedAlignment:
+          SchemaConverters.toAlignment(props['expandedAlignment']),
       onExpansionChanged: actionMap != null
           ? (_) => parser.createActionHandler(context).executeFromMap(actionMap)
           : null,

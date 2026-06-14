@@ -4,7 +4,6 @@ import '../utils/bdui_logger.dart';
 
 /// Widget schema from backend JSON
 class WidgetSchema {
-
   /// Widget type (e.g., 'Column', 'Text', 'Button')
   final String type;
 
@@ -51,9 +50,12 @@ class WidgetSchema {
         if (childrenList != null) {
           // Security: Limit children count to prevent memory exhaustion
           if (childrenList.length > BduiConfig.maxChildren) {
-            BduiLogger.warn('Children count (${childrenList.length}) exceeds limit (${BduiConfig.maxChildren}), truncating');
+            BduiLogger.warn(
+                'Children count (${childrenList.length}) exceeds limit (${BduiConfig.maxChildren}), truncating');
           }
-          final limitedCount = childrenList.length > BduiConfig.maxChildren ? BduiConfig.maxChildren : childrenList.length;
+          final limitedCount = childrenList.length > BduiConfig.maxChildren
+              ? BduiConfig.maxChildren
+              : childrenList.length;
 
           children = [];
           for (var i = 0; i < limitedCount; i++) {

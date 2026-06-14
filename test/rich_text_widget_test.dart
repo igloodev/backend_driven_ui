@@ -73,12 +73,15 @@ void main() {
           'textAlign': 'center',
           'maxLines': 2,
           'overflow': 'ellipsis',
-          'spans': [{'text': 'Styled rich text'}],
+          'spans': [
+            {'text': 'Styled rich text'}
+          ],
         },
       }));
     });
 
-    testWidgets('fontFamily, letterSpacing, backgroundColor in span', (tester) async {
+    testWidgets('fontFamily, letterSpacing, backgroundColor in span',
+        (tester) async {
       await tester.pumpWidget(_build({
         'type': 'RichText',
         'props': {

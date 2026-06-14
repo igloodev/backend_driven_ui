@@ -38,7 +38,8 @@ void main() {
       );
     });
 
-    test('relative path prepended with baseUrl (no trailing slash on base)', () {
+    test('relative path prepended with baseUrl (no trailing slash on base)',
+        () {
       BduiConfig.baseUrl = 'https://api.example.com';
       expect(
         ApiClient.resolveUrl('/products'),
@@ -82,6 +83,30 @@ void main() {
         ApiClient.isUrlSafe('http://169.254.169.254/latest/meta-data/'),
         isFalse,
       );
+    });
+
+    // These exercise the native (dart:io InternetAddress) IP-literal path,
+    // locking in IPv6/IPv4-mapped SSRF coverage that the string fallback alone
+    // does not provide.
+    test('isUrlSafe rejects IPv6 loopback (::1)', () {
+      expect(ApiClient.isUrlSafe('http://[::1]/admin'), isFalse);
+    });
+
+    test('isUrlSafe rejects IPv6 unique-local (fc00::/7)', () {
+      expect(ApiClient.isUrlSafe('http://[fc00::1]/x'), isFalse);
+      expect(ApiClient.isUrlSafe('http://[fd12:3456::1]/x'), isFalse);
+    });
+
+    test('isUrlSafe rejects IPv6 link-local (fe80::/10)', () {
+      expect(ApiClient.isUrlSafe('http://[fe80::1]/x'), isFalse);
+    });
+
+    test('isUrlSafe rejects IPv4-mapped IPv6 private address', () {
+      expect(ApiClient.isUrlSafe('http://[::ffff:10.0.0.1]/x'), isFalse);
+    });
+
+    test('isUrlSafe accepts a public IPv6 address', () {
+      expect(ApiClient.isUrlSafe('http://[2001:4860:4860::8888]/x'), isTrue);
     });
 
     test('isUrlSafe skipped when validation disabled', () {

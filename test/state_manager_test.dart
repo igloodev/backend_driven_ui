@@ -121,20 +121,27 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {r'text': r'${state.name}'}},
+        {
+          'type': 'Text',
+          'props': {r'text': r'${state.name}'}
+        },
         parser: parser,
       ));
 
       expect(find.text('Alice'), findsOneWidget);
     });
 
-    testWidgets('Text with state ref updates when state changes', (tester) async {
+    testWidgets('Text with state ref updates when state changes',
+        (tester) async {
       final sm = BduiStateManager();
       sm.set('greeting', 'Hello');
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {r'text': r'${state.greeting}'}},
+        {
+          'type': 'Text',
+          'props': {r'text': r'${state.greeting}'}
+        },
         parser: parser,
       ));
 
@@ -149,7 +156,10 @@ void main() {
 
     testWidgets('unknown state ref renders empty string', (tester) async {
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {r'text': r'${state.missing}'}},
+        {
+          'type': 'Text',
+          'props': {r'text': r'${state.missing}'}
+        },
       ));
       expect(find.text(''), findsOneWidget);
     });
@@ -160,7 +170,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {r'text': r'Hello, ${state.user}!'}},
+        {
+          'type': 'Text',
+          'props': {r'text': r'Hello, ${state.user}!'}
+        },
         parser: parser,
       ));
 
@@ -174,7 +187,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {r'text': r'${state.first} ${state.last}'}},
+        {
+          'type': 'Text',
+          'props': {r'text': r'${state.first} ${state.last}'}
+        },
         parser: parser,
       ));
 
@@ -183,7 +199,10 @@ void main() {
 
     testWidgets('non-string props are not interpolated', (tester) async {
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {'text': 'hello', 'fontSize': 14}},
+        {
+          'type': 'Text',
+          'props': {'text': 'hello', 'fontSize': 14}
+        },
       ));
       expect(find.text('hello'), findsOneWidget);
     });
@@ -195,7 +214,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'TextField', 'props': {'stateKey': 'email'}},
+        {
+          'type': 'TextField',
+          'props': {'stateKey': 'email'}
+        },
         parser: parser,
       ));
 
@@ -205,13 +227,17 @@ void main() {
       expect(sm.get('email'), 'user@example.com');
     });
 
-    testWidgets('initialises from stateManager when value prop absent', (tester) async {
+    testWidgets('initialises from stateManager when value prop absent',
+        (tester) async {
       final sm = BduiStateManager();
       sm.set('name', 'Prefilled');
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'TextField', 'props': {'stateKey': 'name'}},
+        {
+          'type': 'TextField',
+          'props': {'stateKey': 'name'}
+        },
         parser: parser,
       ));
 
@@ -231,7 +257,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'TextFormField', 'props': {'stateKey': 'username'}},
+        {
+          'type': 'TextFormField',
+          'props': {'stateKey': 'username'}
+        },
         parser: parser,
       ));
 
@@ -248,7 +277,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Switch', 'props': {'value': false, 'stateKey': 'rememberMe'}},
+        {
+          'type': 'Switch',
+          'props': {'value': false, 'stateKey': 'rememberMe'}
+        },
         parser: parser,
       ));
 
@@ -265,7 +297,10 @@ void main() {
       final parser = SchemaParser(stateManager: sm);
 
       await tester.pumpWidget(_build(
-        {'type': 'Checkbox', 'props': {'value': false, 'stateKey': 'agreed'}},
+        {
+          'type': 'Checkbox',
+          'props': {'value': false, 'stateKey': 'agreed'}
+        },
         parser: parser,
       ));
 
@@ -277,7 +312,8 @@ void main() {
   });
 
   group('setState action', () {
-    testWidgets('ElevatedButton with setState action updates state', (tester) async {
+    testWidgets('ElevatedButton with setState action updates state',
+        (tester) async {
       final sm = BduiStateManager();
       final parser = SchemaParser(stateManager: sm);
 
@@ -285,7 +321,10 @@ void main() {
         {
           'type': 'ElevatedButton',
           'props': {'text': 'Press'},
-          'action': {'type': 'setState', 'params': {'key': 'clicked', 'value': true}},
+          'action': {
+            'type': 'setState',
+            'params': {'key': 'clicked', 'value': true}
+          },
         },
         parser: parser,
       ));
@@ -304,7 +343,10 @@ void main() {
         {
           'type': 'ElevatedButton',
           'props': {'text': 'Set'},
-          'action': {'type': 'setState', 'params': {'key': 'status', 'value': 'active'}},
+          'action': {
+            'type': 'setState',
+            'params': {'key': 'status', 'value': 'active'}
+          },
         },
         parser: parser,
       ));
@@ -320,7 +362,10 @@ void main() {
         {
           'type': 'ElevatedButton',
           'props': {'text': 'Go'},
-          'action': {'type': 'setState', 'params': {'value': 'oops'}},
+          'action': {
+            'type': 'setState',
+            'params': {'value': 'oops'}
+          },
         },
       ));
 
@@ -329,17 +374,25 @@ void main() {
     });
   });
 
-  group('Regression — state binding changes do not affect existing widgets', () {
-    testWidgets('Text still renders without animate or stateKey', (tester) async {
+  group('Regression — state binding changes do not affect existing widgets',
+      () {
+    testWidgets('Text still renders without animate or stateKey',
+        (tester) async {
       await tester.pumpWidget(_build(
-        {'type': 'Text', 'props': {'text': 'Static'}},
+        {
+          'type': 'Text',
+          'props': {'text': 'Static'}
+        },
       ));
       expect(find.text('Static'), findsOneWidget);
     });
 
     testWidgets('TextField without stateKey still works', (tester) async {
       await tester.pumpWidget(_build(
-        {'type': 'TextField', 'props': {'hint': 'Enter text'}},
+        {
+          'type': 'TextField',
+          'props': {'hint': 'Enter text'}
+        },
       ));
       expect(find.byType(TextField), findsOneWidget);
     });
@@ -348,8 +401,14 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Column',
         'children': [
-          {'type': 'Text', 'props': {'text': 'A'}},
-          {'type': 'Text', 'props': {'text': 'B'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'A'}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'B'}
+          },
         ],
       }));
       expect(find.text('A'), findsOneWidget);

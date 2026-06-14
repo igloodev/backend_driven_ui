@@ -19,7 +19,8 @@ class RetryHandler {
     bool Function(dynamic error)? shouldRetry,
   }) async {
     // Cap maxRetries to prevent abuse (uses BduiConfig for configurable limit)
-    final effectiveMaxRetries = maxRetries.clamp(0, BduiConfig.maxAllowedRetries);
+    final effectiveMaxRetries =
+        maxRetries.clamp(0, BduiConfig.maxAllowedRetries);
     final effectiveMaxDuration = maxDuration ?? BduiConfig.maxRetryDuration;
     final startTime = DateTime.now();
 
@@ -35,7 +36,8 @@ class RetryHandler {
         // Check total duration limit
         final elapsed = DateTime.now().difference(startTime);
         if (elapsed >= effectiveMaxDuration) {
-          BduiLogger.warn('Retry timeout: exceeded max duration of ${effectiveMaxDuration.inSeconds}s');
+          BduiLogger.warn(
+              'Retry timeout: exceeded max duration of ${effectiveMaxDuration.inSeconds}s');
           rethrow;
         }
 
@@ -50,7 +52,8 @@ class RetryHandler {
           rethrow;
         }
 
-        BduiLogger.debug('Retry attempt $attempt/$effectiveMaxRetries after ${delay.inMilliseconds}ms');
+        BduiLogger.debug(
+            'Retry attempt $attempt/$effectiveMaxRetries after ${delay.inMilliseconds}ms');
 
         // Wait with exponential backoff
         await Future.delayed(delay);
@@ -81,8 +84,10 @@ class RetryHandler {
     if (error is ApiException) {
       final code = error.statusCode;
       if (code != null) {
-        if (code >= 400 && code < 500) return false; // client error — don't retry
-        if (code >= 500) return true;                 // server error — retry
+        if (code >= 400 && code < 500) {
+          return false; // client error — don't retry
+        }
+        if (code >= 500) return true; // server error — retry
         return false;
       }
       // No status code → network/timeout error from ApiException message

@@ -22,8 +22,14 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'Column',
           'children': [
-            {'type': 'Text', 'props': {'text': 'First'}},
-            {'type': 'Text', 'props': {'text': 'Second'}},
+            {
+              'type': 'Text',
+              'props': {'text': 'First'}
+            },
+            {
+              'type': 'Text',
+              'props': {'text': 'Second'}
+            },
           ],
         }),
       ));
@@ -36,7 +42,10 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'SizedBox',
           'props': {'width': 100, 'height': 50},
-          'child': {'type': 'Text', 'props': {'text': 'Inside'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'Inside'}
+          },
         }),
       ));
       expect(find.text('Inside'), findsOneWidget);
@@ -46,21 +55,26 @@ void main() {
       await tester.pumpWidget(_wrap(
         SchemaWidget.fromJson(const {
           'type': 'Center',
-          'child': {'type': 'Text', 'props': {'text': 'Centered'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'Centered'}
+          },
         }),
       ));
       expect(find.text('Centered'), findsOneWidget);
       expect(find.byType(Center), findsWidgets);
     });
 
-    testWidgets('unknown widget type shows fallback, does not crash', (tester) async {
+    testWidgets('unknown widget type shows fallback, does not crash',
+        (tester) async {
       await tester.pumpWidget(_wrap(
         SchemaWidget.fromJson(const {'type': 'UnknownWidget123'}),
       ));
       expect(find.byType(SchemaWidget), findsOneWidget);
     });
 
-    testWidgets('conditional rendering hides widget when false', (tester) async {
+    testWidgets('conditional rendering hides widget when false',
+        (tester) async {
       await tester.pumpWidget(_wrap(
         SchemaWidget.fromJson(const {
           'type': 'Text',
@@ -127,7 +141,10 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'Container',
           'props': {'padding': 16},
-          'child': {'type': 'Text', 'props': {'text': 'Padded'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'Padded'}
+          },
         }),
       ));
       expect(find.text('Padded'), findsOneWidget);
@@ -138,8 +155,14 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'Row',
           'children': [
-            {'type': 'Text', 'props': {'text': 'Left'}},
-            {'type': 'Text', 'props': {'text': 'Right'}},
+            {
+              'type': 'Text',
+              'props': {'text': 'Left'}
+            },
+            {
+              'type': 'Text',
+              'props': {'text': 'Right'}
+            },
           ],
         }),
       ));
@@ -152,7 +175,10 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'Padding',
           'props': {'padding': 8},
-          'child': {'type': 'Text', 'props': {'text': 'Padded Text'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'Padded Text'}
+          },
         }),
       ));
       expect(find.text('Padded Text'), findsOneWidget);
@@ -180,7 +206,10 @@ void main() {
         SchemaWidget.fromJson(const {
           'type': 'Opacity',
           'props': {'opacity': 0.5},
-          'child': {'type': 'Text', 'props': {'text': 'Faded'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'Faded'}
+          },
         }),
       ));
       expect(find.text('Faded'), findsOneWidget);
@@ -220,7 +249,8 @@ void main() {
       expect(find.text('VIP'), findsOneWidget);
     });
 
-    testWidgets('overriding a built-in type uses custom builder', (tester) async {
+    testWidgets('overriding a built-in type uses custom builder',
+        (tester) async {
       final parser = SchemaParser();
       parser.register(
         'Text',

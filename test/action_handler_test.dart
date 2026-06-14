@@ -40,7 +40,8 @@ void main() {
         expect(find.text('Detail'), findsOneWidget);
       });
 
-      testWidgets('onNavigate callback is called instead of Navigator when provided',
+      testWidgets(
+          'onNavigate callback is called instead of Navigator when provided',
           (tester) async {
         String? navigatedRoute;
         late ActionHandler handler;
@@ -201,12 +202,9 @@ void main() {
         await handler.execute(const ActionSchema(
           type: 'sequence',
           actions: [
-            ActionSchema(
-                type: 'custom', params: {'name': 'first'}),
-            ActionSchema(
-                type: 'custom', params: {'name': 'second'}),
-            ActionSchema(
-                type: 'custom', params: {'name': 'third'}),
+            ActionSchema(type: 'custom', params: {'name': 'first'}),
+            ActionSchema(type: 'custom', params: {'name': 'second'}),
+            ActionSchema(type: 'custom', params: {'name': 'third'}),
           ],
         ));
 
@@ -308,8 +306,7 @@ void main() {
           return const Scaffold(body: Text('Start'));
         }));
 
-        await handler.execute(
-            const ActionSchema(type: 'unknownActionType'));
+        await handler.execute(const ActionSchema(type: 'unknownActionType'));
         // No crash is the assertion
       });
     });

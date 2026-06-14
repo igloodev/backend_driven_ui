@@ -4,6 +4,7 @@ import 'package:http/testing.dart';
 import 'package:backend_driven_ui/src/core/api_client.dart';
 import 'package:backend_driven_ui/src/core/bdui_config.dart';
 import 'package:backend_driven_ui/src/core/bdui_http_client.dart';
+import 'package:backend_driven_ui/src/models/api_exception.dart';
 import 'package:backend_driven_ui/src/models/api_request.dart';
 import 'package:backend_driven_ui/src/models/http_method.dart';
 
@@ -48,6 +49,26 @@ void main() {
       const client = DefaultBduiHttpClient();
       final response = await client.delete('https://api.example.com/items/1');
       expect(response.isSuccess, isTrue);
+    });
+
+    test('maps an http.ClientException to a "No internet" ApiException',
+        () async {
+      // Network-layer failure path — works the same on native and web (the
+      // browser client throws ClientException directly; IOClient wraps
+      // SocketException into it).
+      ApiClient.setHttpClientForTesting(
+        MockClient((req) async => throw http.ClientException('offline')),
+      );
+      await expectLater(
+        ApiClient.get('https://api.example.com/items', maxRetries: 0),
+        throwsA(
+          isA<ApiException>().having(
+            (e) => e.message,
+            'message',
+            contains('No internet connection'),
+          ),
+        ),
+      );
     });
 
     group('execute routes by HttpMethod', () {

@@ -128,7 +128,8 @@ void main() {
 
     test('map with individual sides', () {
       expect(
-        SchemaConverters.toEdgeInsets({'top': 4, 'bottom': 8, 'left': 2, 'right': 6}),
+        SchemaConverters.toEdgeInsets(
+            {'top': 4, 'bottom': 8, 'left': 2, 'right': 6}),
         const EdgeInsets.fromLTRB(2, 4, 6, 8),
       );
     });

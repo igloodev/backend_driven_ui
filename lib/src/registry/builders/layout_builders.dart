@@ -33,17 +33,21 @@ class LayoutBuilders {
             fit: SchemaConverters.toBoxFit(props['backgroundFit']),
           );
         } else {
-          BduiLogger.warn('Container backgroundImage blocked: URL failed security validation: $bgImageUrl');
+          BduiLogger.warn(
+              'Container backgroundImage blocked: URL failed security validation: $bgImageUrl');
         }
       }
 
       decoration = BoxDecoration(
-        color: props['gradient'] == null ? SchemaConverters.toColor(props['color']) : null,
+        color: props['gradient'] == null
+            ? SchemaConverters.toColor(props['color'])
+            : null,
         gradient: SchemaConverters.toGradient(props['gradient']),
         borderRadius: SchemaConverters.toBorderRadius(props['borderRadius']),
         border: props['border'] != null
             ? Border.all(
-                color: SchemaConverters.toColor(props['borderColor']) ?? Colors.black,
+                color: SchemaConverters.toColor(props['borderColor']) ??
+                    Colors.black,
                 width: SchemaConverters.toDouble(props['borderWidth']) ?? 1.0,
               )
             : null,
@@ -75,11 +79,14 @@ class LayoutBuilders {
     // does not expose the clipBehavior parameter.
     return Flex(
       direction: Axis.vertical,
-      mainAxisAlignment: SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
-      crossAxisAlignment: SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
+      mainAxisAlignment:
+          SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
+      crossAxisAlignment:
+          SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
       mainAxisSize: SchemaConverters.toMainAxisSize(props['mainAxisSize']),
       clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.none,
-      children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+      children:
+          schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
 
@@ -93,11 +100,14 @@ class LayoutBuilders {
     // does not expose the clipBehavior parameter.
     return Flex(
       direction: Axis.horizontal,
-      mainAxisAlignment: SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
-      crossAxisAlignment: SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
+      mainAxisAlignment:
+          SchemaConverters.toMainAxisAlignment(props['mainAxisAlignment']),
+      crossAxisAlignment:
+          SchemaConverters.toCrossAxisAlignment(props['crossAxisAlignment']),
       mainAxisSize: SchemaConverters.toMainAxisSize(props['mainAxisSize']),
       clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.none,
-      children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+      children:
+          schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
 
@@ -108,8 +118,10 @@ class LayoutBuilders {
   ) {
     final props = schema.props ?? {};
     return Stack(
-      clipBehavior: SchemaConverters.toClip(props['clipBehavior']) ?? Clip.hardEdge,
-      children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+      clipBehavior:
+          SchemaConverters.toClip(props['clipBehavior']) ?? Clip.hardEdge,
+      children:
+          schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
 
@@ -139,7 +151,8 @@ class LayoutBuilders {
   ) {
     final props = schema.props ?? {};
     return Padding(
-      padding: SchemaConverters.toEdgeInsets(props['padding']) ?? EdgeInsets.zero,
+      padding:
+          SchemaConverters.toEdgeInsets(props['padding']) ?? EdgeInsets.zero,
       child: schema.child != null ? parser.parse(schema.child!, context) : null,
     );
   }
@@ -173,14 +186,16 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1)
+        .clamp(1, 99999);
     return Builder(
       builder: (ctx) {
         final child = schema.child != null
             ? parser.parse(schema.child!, ctx)
             : const SizedBox.shrink();
         if (!_isInsideFlex(ctx)) {
-          BduiLogger.warn('Expanded used outside Row/Column — rendering child directly');
+          BduiLogger.warn(
+              'Expanded used outside Row/Column — rendering child directly');
           return child;
         }
         return Expanded(flex: flex, child: child);
@@ -194,7 +209,8 @@ class LayoutBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1)
+        .clamp(1, 99999);
     final fit = props['fit'] == 'loose' ? FlexFit.loose : FlexFit.tight;
     return Builder(
       builder: (ctx) {
@@ -202,7 +218,8 @@ class LayoutBuilders {
             ? parser.parse(schema.child!, ctx)
             : const SizedBox.shrink();
         if (!_isInsideFlex(ctx)) {
-          BduiLogger.warn('Flexible used outside Row/Column — rendering child directly');
+          BduiLogger.warn(
+              'Flexible used outside Row/Column — rendering child directly');
           return child;
         }
         return Flexible(flex: flex, fit: fit, child: child);
@@ -220,17 +237,20 @@ class LayoutBuilders {
       spacing: SchemaConverters.toDouble(props['spacing']) ?? 0.0,
       runSpacing: SchemaConverters.toDouble(props['runSpacing']) ?? 0.0,
       alignment: SchemaConverters.toWrapAlignment(props['alignment']),
-      children: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+      children:
+          schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
 
   static Widget buildSpacer(WidgetSchema schema, BuildContext context) {
     final props = schema.props ?? {};
-    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1).clamp(1, 99999);
+    final flex = (SchemaConverters.toDouble(props['flex'])?.toInt() ?? 1)
+        .clamp(1, 99999);
     return Builder(
       builder: (ctx) {
         if (!_isInsideFlex(ctx)) {
-          BduiLogger.warn('Spacer used outside Row/Column — rendering SizedBox.shrink()');
+          BduiLogger.warn(
+              'Spacer used outside Row/Column — rendering SizedBox.shrink()');
           return const SizedBox.shrink();
         }
         return Spacer(flex: flex);

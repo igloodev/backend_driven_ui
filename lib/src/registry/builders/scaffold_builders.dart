@@ -78,7 +78,8 @@ class ScaffoldBuilders {
 
     return Scaffold(
       backgroundColor: SchemaConverters.toColor(props['backgroundColor']),
-      resizeToAvoidBottomInset: props['resizeToAvoidBottomInset'] as bool? ?? true,
+      resizeToAvoidBottomInset:
+          props['resizeToAvoidBottomInset'] as bool? ?? true,
       extendBody: props['extendBody'] as bool? ?? false,
       extendBodyBehindAppBar: props['extendBodyBehindAppBar'] as bool? ?? false,
       appBar: appBarWidget is PreferredSizeWidget ? appBarWidget : null,
@@ -206,7 +207,8 @@ class ScaffoldBuilders {
       bottom: props['bottom'] as bool? ?? true,
       left: props['left'] as bool? ?? true,
       right: props['right'] as bool? ?? true,
-      minimum: SchemaConverters.toEdgeInsets(props['minimum']) ?? EdgeInsets.zero,
+      minimum:
+          SchemaConverters.toEdgeInsets(props['minimum']) ?? EdgeInsets.zero,
       child: schema.child != null
           ? parser.parse(schema.child!, context)
           : const SizedBox.shrink(),

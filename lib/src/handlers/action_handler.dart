@@ -94,13 +94,15 @@ class ActionHandler {
   Future<void> execute(ActionSchema action, {int depth = 0}) async {
     // Safety check: prevent infinite recursion
     if (depth > BduiConfig.maxActionDepth) {
-      BduiLogger.warn('ActionHandler: Max action depth (${BduiConfig.maxActionDepth}) exceeded, stopping execution');
+      BduiLogger.warn(
+          'ActionHandler: Max action depth (${BduiConfig.maxActionDepth}) exceeded, stopping execution');
       return;
     }
 
     // Safety check: don't execute if context is no longer valid
     if (!_isContextMounted) {
-      BduiLogger.warn('ActionHandler: Context no longer mounted, skipping action ${action.type}');
+      BduiLogger.warn(
+          'ActionHandler: Context no longer mounted, skipping action ${action.type}');
       return;
     }
 
@@ -250,7 +252,9 @@ class ActionHandler {
 
     final message = action.params?['message'] as String? ?? '';
     final duration = Duration(
-      milliseconds: SchemaConverters.toDouble(action.params?['duration'])?.toInt() ?? 3000,
+      milliseconds:
+          SchemaConverters.toDouble(action.params?['duration'])?.toInt() ??
+              3000,
     );
     final actionLabel = action.params?['actionLabel'] as String?;
     final actionAction = toStringKeyedMap(action.params?['action']);
@@ -381,8 +385,9 @@ class ActionHandler {
       return;
     }
 
-    final methodStr = (action.method ?? action.params?['method'] as String? ?? 'GET')
-        .toUpperCase();
+    final methodStr =
+        (action.method ?? action.params?['method'] as String? ?? 'GET')
+            .toUpperCase();
     final method = HttpMethod.values.firstWhere(
       (m) => m.value == methodStr,
       orElse: () => HttpMethod.get,
@@ -534,7 +539,10 @@ class ActionHandler {
     if (showFeedback) {
       _handleShowSnackBar(ActionSchema(
         type: 'showSnackBar',
-        params: {'message': action.params?['feedbackMessage'] as String? ?? 'Copied to clipboard'},
+        params: {
+          'message': action.params?['feedbackMessage'] as String? ??
+              'Copied to clipboard'
+        },
       ));
     }
   }
@@ -595,7 +603,8 @@ class ActionHandler {
     if (onSetState != null) {
       onSetState!(key, value);
     } else {
-      BduiLogger.warn('setState action called but no onSetState handler registered');
+      BduiLogger.warn(
+          'setState action called but no onSetState handler registered');
     }
   }
 
@@ -607,7 +616,8 @@ class ActionHandler {
         BduiLogger.warn('submitForm: validation failed for form "$formKey"');
       }
     } else {
-      BduiLogger.warn('submitForm action called but no onSubmitForm handler registered');
+      BduiLogger.warn(
+          'submitForm action called but no onSubmitForm handler registered');
     }
   }
 

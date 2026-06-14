@@ -59,7 +59,8 @@ void main() {
       expect(() => evaluateCondition('isWeb', ctx), returnsNormally);
     });
 
-    testWidgets('screen size conditions evaluate without crashing', (tester) async {
+    testWidgets('screen size conditions evaluate without crashing',
+        (tester) async {
       late BuildContext ctx;
       await tester.pumpWidget(_wrap(Builder(builder: (c) {
         ctx = c;

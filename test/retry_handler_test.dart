@@ -33,16 +33,16 @@ void main() {
 
       test('500 server error returns true', () {
         expect(
-          RetryHandler.defaultShouldRetry(
-              const ApiException(message: 'Internal Server Error', statusCode: 500)),
+          RetryHandler.defaultShouldRetry(const ApiException(
+              message: 'Internal Server Error', statusCode: 500)),
           isTrue,
         );
       });
 
       test('503 returns true', () {
         expect(
-          RetryHandler.defaultShouldRetry(
-              const ApiException(message: 'Service Unavailable', statusCode: 503)),
+          RetryHandler.defaultShouldRetry(const ApiException(
+              message: 'Service Unavailable', statusCode: 503)),
           isTrue,
         );
       });
@@ -51,8 +51,9 @@ void main() {
     group('ApiException without status code (network/timeout)', () {
       test('timeout message returns true', () {
         expect(
-          RetryHandler.defaultShouldRetry(
-              const ApiException(message: 'Request timeout. Please check your internet connection.')),
+          RetryHandler.defaultShouldRetry(const ApiException(
+              message:
+                  'Request timeout. Please check your internet connection.')),
           isTrue,
         );
       });
@@ -92,7 +93,8 @@ void main() {
 
       test('generic Exception with connection in message returns true', () {
         expect(
-          RetryHandler.defaultShouldRetry(Exception('connection reset by peer')),
+          RetryHandler.defaultShouldRetry(
+              Exception('connection reset by peer')),
           isTrue,
         );
       });

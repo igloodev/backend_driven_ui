@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
@@ -120,7 +119,8 @@ class ApiClient {
         response.isSuccess &&
         response.data != null &&
         effectiveTTL != null) {
-      BduiLogger.cache('Caching response for ${effectiveTTL.inSeconds} seconds');
+      BduiLogger.cache(
+          'Caching response for ${effectiveTTL.inSeconds} seconds');
       _cache.set(url, response.data, duration: effectiveTTL);
     } else if (serverCacheControl?.policy == CachePolicy.noCache) {
       BduiLogger.cache('Cache disabled by server - not caching');
@@ -140,8 +140,8 @@ class ApiClient {
   }) async {
     url = resolveUrl(url);
     return RetryHandler.retry(
-      action: () => _fetch('POST', url,
-          headers: headers, body: body, timeout: timeout),
+      action: () =>
+          _fetch('POST', url, headers: headers, body: body, timeout: timeout),
       maxRetries: maxRetries,
       shouldRetry: RetryHandler.defaultShouldRetry,
     );
@@ -400,8 +400,7 @@ class ApiClient {
             // Only unwrap 'ui'/'data' when the value is itself a Map.
             // A non-Map value (String, List, etc.) is left as-is so
             // the caller receives the raw decoded body rather than crashing.
-            if (data.containsKey('ui') &&
-                data['ui'] is Map<String, dynamic>) {
+            if (data.containsKey('ui') && data['ui'] is Map<String, dynamic>) {
               data = data['ui'] as Map<String, dynamic>;
             } else if (data.containsKey('data') &&
                 data['data'] is Map<String, dynamic>) {
@@ -426,7 +425,10 @@ class ApiClient {
       throw const ApiException(
         message: 'Request timeout. Please check your internet connection.',
       );
-    } on SocketException {
+    } on http.ClientException {
+      // Network-layer failure (DNS, connection refused, offline). On native the
+      // http package wraps SocketException/HttpException into ClientException;
+      // on web the browser client throws ClientException directly.
       throw const ApiException(
         message: 'No internet connection. Please check your network.',
       );
@@ -459,7 +461,9 @@ class ApiClient {
     try {
       final data = jsonDecode(response.body);
       if (data is Map) {
-        return data['message'] ?? data['error'] ?? 'HTTP ${response.statusCode}';
+        return data['message'] ??
+            data['error'] ??
+            'HTTP ${response.statusCode}';
       }
     } catch (_) {}
     return 'HTTP ${response.statusCode}: ${response.reasonPhrase}';

@@ -87,7 +87,8 @@ class SchemaParser {
       onSubmitForm: (formKeyName) {
         final key = _formKeys[formKeyName];
         if (key == null) {
-          BduiLogger.warn('submitForm: no form registered with key "$formKeyName"');
+          BduiLogger.warn(
+              'submitForm: no form registered with key "$formKeyName"');
           return false;
         }
         return key.currentState?.validate() ?? false;
@@ -128,8 +129,10 @@ class SchemaParser {
       final hasStateRefs = _hasStateRefs(schema.props);
       final hasAnimate = schema.props?.containsKey('animate') ?? false;
       // Skip cache for anything runtime-dependent
-      final skipCache =
-          hasStateRefs || hasAnimate || schema.condition != null || schema.action != null;
+      final skipCache = hasStateRefs ||
+          hasAnimate ||
+          schema.condition != null ||
+          schema.action != null;
 
       // Check cache first.
       // Widgets with conditions, actions, state refs, or animations are never
@@ -207,7 +210,8 @@ class SchemaParser {
   ///   return ProductCard(title: schema.props?['title']);
   /// });
   /// ```
-  void register(String type, Widget Function(WidgetSchema, BuildContext) builder) {
+  void register(
+      String type, Widget Function(WidgetSchema, BuildContext) builder) {
     _registry.register(type, builder);
   }
 

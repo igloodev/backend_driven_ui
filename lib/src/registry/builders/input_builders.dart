@@ -145,11 +145,10 @@ TextCapitalization _toTextCapitalization(String? value) {
 }
 
 InputDecoration _buildDecoration(Map<String, dynamic> props) {
-  final borderRadius =
-      SchemaConverters.toBorderRadius(props['borderRadius']) ??
-          BorderRadius.circular(
-            SchemaConverters.toDouble(props['borderRadius']) ?? 4.0,
-          );
+  final borderRadius = SchemaConverters.toBorderRadius(props['borderRadius']) ??
+      BorderRadius.circular(
+        SchemaConverters.toDouble(props['borderRadius']) ?? 4.0,
+      );
 
   final filled = props['filled'] as bool? ?? false;
   final fillColor = SchemaConverters.toColor(props['fillColor']);
@@ -266,7 +265,9 @@ class _BduiTextFieldState extends State<_BduiTextField> {
     super.didUpdateWidget(oldWidget);
     final newValue = widget.props['value'] as String?;
     final oldValue = oldWidget.props['value'] as String?;
-    if (newValue != null && newValue != oldValue && newValue != _controller.text) {
+    if (newValue != null &&
+        newValue != oldValue &&
+        newValue != _controller.text) {
       _controller.text = newValue;
     }
   }
@@ -289,8 +290,9 @@ class _BduiTextFieldState extends State<_BduiTextField> {
     final obscureText = props['obscureText'] as bool? ?? false;
     final bool isMultiline = props['keyboardType'] == 'multiline';
     // When obscureText: minLines must be null, maxLines must be 1.
-    final int? minLines =
-        obscureText ? null : SchemaConverters.toDouble(props['minLines'])?.toInt();
+    final int? minLines = obscureText
+        ? null
+        : SchemaConverters.toDouble(props['minLines'])?.toInt();
     final maxLinesRaw = props['maxLines'];
     // Compute maxLines:
     //   - obscureText → 1 (Flutter requires this)
@@ -303,8 +305,8 @@ class _BduiTextFieldState extends State<_BduiTextField> {
     } else if (maxLinesRaw == null) {
       maxLines = isMultiline ? null : 1;
     } else {
-      final parsed =
-          (SchemaConverters.toDouble(maxLinesRaw)?.toInt() ?? 1).clamp(1, 99999);
+      final parsed = (SchemaConverters.toDouble(maxLinesRaw)?.toInt() ?? 1)
+          .clamp(1, 99999);
       maxLines = (isMultiline && parsed == 1) ? null : parsed;
     }
     // Ensure minLines <= maxLines when both are set.
@@ -327,12 +329,11 @@ class _BduiTextFieldState extends State<_BduiTextField> {
       minLines: minLines,
       maxLength: SchemaConverters.toDouble(props['maxLength'])?.toInt(),
       keyboardType: _toKeyboardType(props['keyboardType'] as String?),
-      textInputAction:
-          _toTextInputAction(props['textInputAction'] as String?),
+      textInputAction: _toTextInputAction(props['textInputAction'] as String?),
       textCapitalization:
           _toTextCapitalization(props['textCapitalization'] as String?),
-      textAlign: SchemaConverters.toTextAlign(props['textAlign']) ??
-          TextAlign.start,
+      textAlign:
+          SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
       cursorColor: SchemaConverters.toColor(props['cursorColor']),
       cursorWidth: SchemaConverters.toDouble(props['cursorWidth']) ?? 2.0,
       autocorrect: props['autocorrect'] as bool? ?? true,
@@ -346,9 +347,8 @@ class _BduiTextFieldState extends State<_BduiTextField> {
         }
         if (onChangedAction != null) _execute(onChangedAction);
       },
-      onSubmitted: onSubmittedAction != null
-          ? (_) => _execute(onSubmittedAction)
-          : null,
+      onSubmitted:
+          onSubmittedAction != null ? (_) => _execute(onSubmittedAction) : null,
     );
   }
 }
@@ -388,7 +388,9 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
     super.didUpdateWidget(oldWidget);
     final newValue = widget.props['value'] as String?;
     final oldValue = oldWidget.props['value'] as String?;
-    if (newValue != null && newValue != oldValue && newValue != _controller.text) {
+    if (newValue != null &&
+        newValue != oldValue &&
+        newValue != _controller.text) {
       _controller.text = newValue;
     }
   }
@@ -411,8 +413,9 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
     final obscureText = props['obscureText'] as bool? ?? false;
     final bool isMultiline = props['keyboardType'] == 'multiline';
     // When obscureText: minLines must be null, maxLines must be 1.
-    final int? minLines =
-        obscureText ? null : SchemaConverters.toDouble(props['minLines'])?.toInt();
+    final int? minLines = obscureText
+        ? null
+        : SchemaConverters.toDouble(props['minLines'])?.toInt();
     final maxLinesRaw = props['maxLines'];
     // Compute maxLines:
     //   - obscureText → 1 (Flutter requires this)
@@ -425,8 +428,8 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
     } else if (maxLinesRaw == null) {
       maxLines = isMultiline ? null : 1;
     } else {
-      final parsed =
-          (SchemaConverters.toDouble(maxLinesRaw)?.toInt() ?? 1).clamp(1, 99999);
+      final parsed = (SchemaConverters.toDouble(maxLinesRaw)?.toInt() ?? 1)
+          .clamp(1, 99999);
       maxLines = (isMultiline && parsed == 1) ? null : parsed;
     }
     // Ensure minLines <= maxLines when both are set.
@@ -450,12 +453,11 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
       minLines: minLines,
       maxLength: SchemaConverters.toDouble(props['maxLength'])?.toInt(),
       keyboardType: _toKeyboardType(props['keyboardType'] as String?),
-      textInputAction:
-          _toTextInputAction(props['textInputAction'] as String?),
+      textInputAction: _toTextInputAction(props['textInputAction'] as String?),
       textCapitalization:
           _toTextCapitalization(props['textCapitalization'] as String?),
-      textAlign: SchemaConverters.toTextAlign(props['textAlign']) ??
-          TextAlign.start,
+      textAlign:
+          SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
       cursorColor: SchemaConverters.toColor(props['cursorColor']),
       cursorWidth: SchemaConverters.toDouble(props['cursorWidth']) ?? 2.0,
       autocorrect: props['autocorrect'] as bool? ?? true,
@@ -472,9 +474,8 @@ class _BduiTextFormFieldState extends State<_BduiTextFormField> {
         }
         if (onChangedAction != null) _execute(onChangedAction);
       },
-      onFieldSubmitted: onSubmittedAction != null
-          ? (_) => _execute(onSubmittedAction)
-          : null,
+      onFieldSubmitted:
+          onSubmittedAction != null ? (_) => _execute(onSubmittedAction) : null,
     );
   }
 }
@@ -527,19 +528,15 @@ class _BduiSwitchState extends State<_BduiSwitch> {
       value: _value,
       activeThumbColor: SchemaConverters.toColor(props['activeColor']),
       activeTrackColor: SchemaConverters.toColor(props['activeTrackColor']),
-      inactiveThumbColor:
-          SchemaConverters.toColor(props['inactiveThumbColor']),
-      inactiveTrackColor:
-          SchemaConverters.toColor(props['inactiveTrackColor']),
+      inactiveThumbColor: SchemaConverters.toColor(props['inactiveThumbColor']),
+      inactiveTrackColor: SchemaConverters.toColor(props['inactiveTrackColor']),
       onChanged: (newValue) {
         setState(() => _value = newValue);
         if (stateKey != null) {
           widget.parser.stateManager.set(stateKey, newValue);
         }
         if (actionMap != null) {
-          widget.parser
-              .createActionHandler(context)
-              .executeFromMap(actionMap);
+          widget.parser.createActionHandler(context).executeFromMap(actionMap);
         }
       },
     );
@@ -594,8 +591,7 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
     final fillColor = SchemaConverters.toColor(props['fillColor']);
 
     final borderColor = SchemaConverters.toColor(props['borderColor']);
-    final borderWidth =
-        SchemaConverters.toDouble(props['borderWidth']) ?? 2.0;
+    final borderWidth = SchemaConverters.toDouble(props['borderWidth']) ?? 2.0;
 
     VisualDensity? visualDensity;
     switch (props['visualDensity'] as String?) {
@@ -617,9 +613,7 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
       tristate: tristate,
       activeColor: activeColor,
       checkColor: checkColor,
-      fillColor: fillColor != null
-          ? WidgetStateProperty.all(fillColor)
-          : null,
+      fillColor: fillColor != null ? WidgetStateProperty.all(fillColor) : null,
       side: borderColor != null
           ? BorderSide(color: borderColor, width: borderWidth)
           : null,
@@ -630,9 +624,7 @@ class _BduiCheckboxState extends State<_BduiCheckbox> {
           widget.parser.stateManager.set(stateKey, newValue);
         }
         if (actionMap != null) {
-          widget.parser
-              .createActionHandler(context)
-              .executeFromMap(actionMap);
+          widget.parser.createActionHandler(context).executeFromMap(actionMap);
         }
       },
     );

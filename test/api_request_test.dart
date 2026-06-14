@@ -78,14 +78,16 @@ void main() {
       });
 
       test('can clear body by passing null explicitly', () {
-        final withBody = const ApiRequest(endpoint: '/api/items', body: {'key': 'value'});
+        final withBody =
+            const ApiRequest(endpoint: '/api/items', body: {'key': 'value'});
         final cleared = withBody.copyWith(body: null);
         expect(cleared.body, isNull);
         expect(cleared.endpoint, '/api/items');
       });
 
       test('preserves body when not specified in copyWith', () {
-        final withBody = const ApiRequest(endpoint: '/api/items', body: {'key': 'value'});
+        final withBody =
+            const ApiRequest(endpoint: '/api/items', body: {'key': 'value'});
         final copy = withBody.copyWith(endpoint: '/api/other');
         expect(copy.body, {'key': 'value'});
       });

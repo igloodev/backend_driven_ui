@@ -33,11 +33,13 @@ void main() {
     });
 
     test('minLength factory produces correct string', () {
-      expect(BduiValidatorMessages.minLength(8), 'Minimum 8 characters required');
+      expect(
+          BduiValidatorMessages.minLength(8), 'Minimum 8 characters required');
     });
 
     test('maxLength factory produces correct string', () {
-      expect(BduiValidatorMessages.maxLength(20), 'Maximum 20 characters allowed');
+      expect(
+          BduiValidatorMessages.maxLength(20), 'Maximum 20 characters allowed');
     });
 
     test('min factory produces correct string', () {
@@ -58,8 +60,10 @@ void main() {
     });
 
     test('override minLength factory', () {
-      BduiValidatorMessages.minLength = (n) => 'Kam se kam $n characters chahiye';
-      expect(BduiValidatorMessages.minLength(6), 'Kam se kam 6 characters chahiye');
+      BduiValidatorMessages.minLength =
+          (n) => 'Kam se kam $n characters chahiye';
+      expect(BduiValidatorMessages.minLength(6),
+          'Kam se kam 6 characters chahiye');
     });
 
     test('reset restores English defaults', () {
@@ -68,7 +72,8 @@ void main() {
       expect(BduiValidatorMessages.required, 'This field is required');
     });
 
-    testWidgets('overridden message appears in form validation', (tester) async {
+    testWidgets('overridden message appears in form validation',
+        (tester) async {
       BduiValidatorMessages.required = 'Zaroori hai!';
       final parser = SchemaParser();
 
@@ -81,10 +86,15 @@ void main() {
                 'children': [
                   {
                     'type': 'Form',
-                    'props': {'formKey': 'i18nForm', 'autovalidateMode': 'always'},
+                    'props': {
+                      'formKey': 'i18nForm',
+                      'autovalidateMode': 'always'
+                    },
                     'child': {
                       'type': 'TextFormField',
-                      'props': {'validators': ['required']},
+                      'props': {
+                        'validators': ['required']
+                      },
                     },
                   },
                 ],
@@ -107,7 +117,10 @@ void main() {
         'props': {'formKey': 'ph', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': 'not-a-phone', 'validators': ['phone']},
+          'props': {
+            'value': 'not-a-phone',
+            'validators': ['phone']
+          },
         },
       }));
       await tester.pump();
@@ -120,7 +133,10 @@ void main() {
         'props': {'formKey': 'ph2', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': '+919876543210', 'validators': ['phone']},
+          'props': {
+            'value': '+919876543210',
+            'validators': ['phone']
+          },
         },
       }));
       await tester.pump();
@@ -135,7 +151,10 @@ void main() {
         'props': {'formKey': 'u', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': 'example.com', 'validators': ['url']},
+          'props': {
+            'value': 'example.com',
+            'validators': ['url']
+          },
         },
       }));
       await tester.pump();
@@ -148,7 +167,10 @@ void main() {
         'props': {'formKey': 'u2', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': 'https://example.com', 'validators': ['url']},
+          'props': {
+            'value': 'https://example.com',
+            'validators': ['url']
+          },
         },
       }));
       await tester.pump();
@@ -163,7 +185,10 @@ void main() {
         'props': {'formKey': 'mn', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': '5', 'validators': ['min:10']},
+          'props': {
+            'value': '5',
+            'validators': ['min:10']
+          },
         },
       }));
       await tester.pump();
@@ -176,7 +201,10 @@ void main() {
         'props': {'formKey': 'mn2', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': '15', 'validators': ['min:10']},
+          'props': {
+            'value': '15',
+            'validators': ['min:10']
+          },
         },
       }));
       await tester.pump();
@@ -189,7 +217,10 @@ void main() {
         'props': {'formKey': 'mx', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': '200', 'validators': ['max:100']},
+          'props': {
+            'value': '200',
+            'validators': ['max:100']
+          },
         },
       }));
       await tester.pump();
@@ -202,7 +233,10 @@ void main() {
         'props': {'formKey': 'mx2', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'value': '50', 'validators': ['max:100']},
+          'props': {
+            'value': '50',
+            'validators': ['max:100']
+          },
         },
       }));
       await tester.pump();

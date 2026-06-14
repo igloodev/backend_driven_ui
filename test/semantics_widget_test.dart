@@ -17,7 +17,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Semantics',
         'props': {'label': 'Submit button', 'button': true},
-        'child': {'type': 'Text', 'props': {'text': 'Submit'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Submit'}
+        },
       }));
       expect(find.byType(Semantics), findsWidgets);
       expect(find.text('Submit'), findsOneWidget);
@@ -38,7 +41,10 @@ void main() {
           'hint': 'Swipe up or down to adjust',
           'value': '50%',
         },
-        'child': {'type': 'Text', 'props': {'text': 'Vol'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Vol'}
+        },
       }));
     });
 
@@ -57,15 +63,22 @@ void main() {
           'excludeSemantics': false,
           'selected': false,
         },
-        'child': {'type': 'Text', 'props': {'text': 'A11y'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'A11y'}
+        },
       }));
     });
 
-    testWidgets('excludeSemantics hides child from screen readers', (tester) async {
+    testWidgets('excludeSemantics hides child from screen readers',
+        (tester) async {
       await tester.pumpWidget(_build({
         'type': 'Semantics',
         'props': {'excludeSemantics': true, 'label': 'Decorative'},
-        'child': {'type': 'Icon', 'props': {'icon': 'star'}},
+        'child': {
+          'type': 'Icon',
+          'props': {'icon': 'star'}
+        },
       }));
     });
 
@@ -73,7 +86,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Semantics',
         'props': {'label': 'Checkbox', 'checked': true},
-        'child': {'type': 'Text', 'props': {'text': 'Check'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Check'}
+        },
       }));
     });
   });

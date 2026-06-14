@@ -73,8 +73,8 @@ class NavigationBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    final length =
-        (SchemaConverters.toDouble(props['length'])?.toInt() ?? 1).clamp(1, 999);
+    final length = (SchemaConverters.toDouble(props['length'])?.toInt() ?? 1)
+        .clamp(1, 999);
     final initialIndex =
         (SchemaConverters.toDouble(props['initialIndex'])?.toInt() ?? 0)
             .clamp(0, length - 1);
@@ -308,8 +308,7 @@ class _BduiNavigationBarState extends State<_BduiNavigationBar> {
         labelBehavior = NavigationDestinationLabelBehavior.alwaysHide;
         break;
       case 'onlyShowSelected':
-        labelBehavior =
-            NavigationDestinationLabelBehavior.onlyShowSelected;
+        labelBehavior = NavigationDestinationLabelBehavior.onlyShowSelected;
         break;
     }
 

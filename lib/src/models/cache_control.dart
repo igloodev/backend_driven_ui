@@ -83,7 +83,8 @@ class CacheControl {
   bool get isCacheEnabled => policy != CachePolicy.noCache;
 
   /// Get TTL as Duration
-  Duration? get ttl => ttlSeconds != null ? Duration(seconds: ttlSeconds!) : null;
+  Duration? get ttl =>
+      ttlSeconds != null ? Duration(seconds: ttlSeconds!) : null;
 
   /// Whether to refresh in background
   bool get shouldRefreshInBackground => policy == CachePolicy.refresh;

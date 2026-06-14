@@ -39,7 +39,9 @@ class SchemaConverters {
       if (value.startsWith('#')) {
         try {
           final hex = value.substring(1);
-          if (hex.length == 6) return Color(int.parse(hex, radix: 16) + 0xFF000000);
+          if (hex.length == 6) {
+            return Color(int.parse(hex, radix: 16) + 0xFF000000);
+          }
           if (hex.length == 8) return Color(int.parse(hex, radix: 16));
           return null;
         } catch (_) {
@@ -47,7 +49,9 @@ class SchemaConverters {
         }
       }
 
-      final normalized = (value.startsWith('Colors.') ? value.substring(7) : value).toLowerCase();
+      final normalized =
+          (value.startsWith('Colors.') ? value.substring(7) : value)
+              .toLowerCase();
       final named = _namedColors[normalized];
       if (named != null) return named;
 
@@ -649,7 +653,8 @@ class SchemaConverters {
     }
   }
 
-  static Alignment? toAlignment(dynamic value) => toAlignmentGeometry(value) as Alignment?;
+  static Alignment? toAlignment(dynamic value) =>
+      toAlignmentGeometry(value) as Alignment?;
 
   static AlignmentGeometry? toAlignmentGeometry(dynamic value) {
     switch (value) {
@@ -703,7 +708,8 @@ class SchemaConverters {
                 toDouble(s['offsetX']) ?? 0.0,
                 toDouble(s['offsetY']) ?? (value is List ? 0.0 : 2.0),
               ),
-              blurRadius: toDouble(s['blurRadius']) ?? (value is List ? 0.0 : 4.0),
+              blurRadius:
+                  toDouble(s['blurRadius']) ?? (value is List ? 0.0 : 4.0),
               spreadRadius: toDouble(s['spreadRadius']) ?? 0.0,
             ))
         .toList();
@@ -713,11 +719,15 @@ class SchemaConverters {
     if (value == null || value is! Map) return null;
 
     final type = value['type'] as String?;
-    final colors = (value['colors'] as List?)?.map((c) => toColor(c)).whereType<Color>().toList();
+    final colors = (value['colors'] as List?)
+        ?.map((c) => toColor(c))
+        .whereType<Color>()
+        .toList();
 
     if (colors == null || colors.isEmpty) return null;
 
-    final stops = (value['stops'] as List?)?.map((s) => (s as num).toDouble()).toList();
+    final stops =
+        (value['stops'] as List?)?.map((s) => (s as num).toDouble()).toList();
 
     switch (type) {
       case 'radial':
@@ -748,9 +758,15 @@ class SchemaConverters {
   static Matrix4? toMatrix4(dynamic value) {
     if (value == null || value is! Map) return null;
     final m = Matrix4.identity();
-    if (value['rotateZ'] != null) m.rotateZ(toDouble(value['rotateZ'])! * 3.141592653589793 / 180.0);
-    if (value['rotateX'] != null) m.rotateX(toDouble(value['rotateX'])! * 3.141592653589793 / 180.0);
-    if (value['rotateY'] != null) m.rotateY(toDouble(value['rotateY'])! * 3.141592653589793 / 180.0);
+    if (value['rotateZ'] != null) {
+      m.rotateZ(toDouble(value['rotateZ'])! * 3.141592653589793 / 180.0);
+    }
+    if (value['rotateX'] != null) {
+      m.rotateX(toDouble(value['rotateX'])! * 3.141592653589793 / 180.0);
+    }
+    if (value['rotateY'] != null) {
+      m.rotateY(toDouble(value['rotateY'])! * 3.141592653589793 / 180.0);
+    }
     if (value['scale'] != null) {
       final s = toDouble(value['scale'])!;
       m.multiply(Matrix4.diagonal3Values(s, s, s));
@@ -795,221 +811,406 @@ class SchemaConverters {
     if (value == null) return null;
     switch (value) {
       // ── Navigation / arrows ────────────────────────────────────────────────
-      case 'home':           return Icons.home;
-      case 'back':           return Icons.arrow_back;
-      case 'forward':        return Icons.arrow_forward;
-      case 'up':             return Icons.keyboard_arrow_up;
-      case 'down':           return Icons.keyboard_arrow_down;
-      case 'expand_more':    return Icons.expand_more;
-      case 'expand_less':    return Icons.expand_less;
-      case 'chevron_left':   return Icons.chevron_left;
-      case 'chevron_right':  return Icons.chevron_right;
-      case 'arrow_left':     return Icons.arrow_back_ios;
-      case 'arrow_right':    return Icons.arrow_forward_ios;
-      case 'arrow_upward':   return Icons.arrow_upward;
-      case 'arrow_downward': return Icons.arrow_downward;
-      case 'first_page':     return Icons.first_page;
-      case 'last_page':      return Icons.last_page;
-      case 'more_vert':      return Icons.more_vert;
-      case 'more_horiz':     return Icons.more_horiz;
-      case 'menu':           return Icons.menu;
-      case 'close':          return Icons.close;
-      case 'fullscreen':     return Icons.fullscreen;
-      case 'fullscreen_exit':return Icons.fullscreen_exit;
+      case 'home':
+        return Icons.home;
+      case 'back':
+        return Icons.arrow_back;
+      case 'forward':
+        return Icons.arrow_forward;
+      case 'up':
+        return Icons.keyboard_arrow_up;
+      case 'down':
+        return Icons.keyboard_arrow_down;
+      case 'expand_more':
+        return Icons.expand_more;
+      case 'expand_less':
+        return Icons.expand_less;
+      case 'chevron_left':
+        return Icons.chevron_left;
+      case 'chevron_right':
+        return Icons.chevron_right;
+      case 'arrow_left':
+        return Icons.arrow_back_ios;
+      case 'arrow_right':
+        return Icons.arrow_forward_ios;
+      case 'arrow_upward':
+        return Icons.arrow_upward;
+      case 'arrow_downward':
+        return Icons.arrow_downward;
+      case 'first_page':
+        return Icons.first_page;
+      case 'last_page':
+        return Icons.last_page;
+      case 'more_vert':
+        return Icons.more_vert;
+      case 'more_horiz':
+        return Icons.more_horiz;
+      case 'menu':
+        return Icons.menu;
+      case 'close':
+        return Icons.close;
+      case 'fullscreen':
+        return Icons.fullscreen;
+      case 'fullscreen_exit':
+        return Icons.fullscreen_exit;
 
       // ── Status / actions ──────────────────────────────────────────────────
-      case 'search':         return Icons.search;
-      case 'settings':       return Icons.settings;
-      case 'tune':           return Icons.tune;
-      case 'filter_list':    return Icons.filter_list;
-      case 'sort':           return Icons.sort;
-      case 'add':            return Icons.add;
-      case 'add_circle':     return Icons.add_circle;
-      case 'remove':         return Icons.remove;
-      case 'remove_circle':  return Icons.remove_circle;
-      case 'edit':           return Icons.edit;
-      case 'delete':         return Icons.delete;
-      case 'delete_outline': return Icons.delete_outline;
-      case 'refresh':        return Icons.refresh;
-      case 'check':          return Icons.check;
-      case 'check_circle':   return Icons.check_circle;
-      case 'check_circle_outline': return Icons.check_circle_outline;
-      case 'done':           return Icons.done;
-      case 'done_all':       return Icons.done_all;
-      case 'cancel':         return Icons.cancel;
-      case 'block':          return Icons.block;
-      case 'error':          return Icons.error;
-      case 'error_outline':  return Icons.error_outline;
-      case 'warning':        return Icons.warning;
-      case 'warning_amber':  return Icons.warning_amber;
-      case 'info':           return Icons.info;
-      case 'info_outline':   return Icons.info_outline;
-      case 'help':           return Icons.help;
-      case 'help_outline':   return Icons.help_outline;
-      case 'copy':           return Icons.copy;
-      case 'share':          return Icons.share;
-      case 'send':           return Icons.send;
-      case 'reply':          return Icons.reply;
-      case 'link':           return Icons.link;
-      case 'flag':           return Icons.flag;
-      case 'label':          return Icons.label;
-      case 'label_outline':  return Icons.label_outline;
-      case 'new_releases':   return Icons.new_releases;
-      case 'verified':       return Icons.verified;
-      case 'zoom_in':        return Icons.zoom_in;
-      case 'zoom_out':       return Icons.zoom_out;
-      case 'rotate_left':    return Icons.rotate_left;
-      case 'rotate_right':   return Icons.rotate_right;
-      case 'crop':           return Icons.crop;
+      case 'search':
+        return Icons.search;
+      case 'settings':
+        return Icons.settings;
+      case 'tune':
+        return Icons.tune;
+      case 'filter_list':
+        return Icons.filter_list;
+      case 'sort':
+        return Icons.sort;
+      case 'add':
+        return Icons.add;
+      case 'add_circle':
+        return Icons.add_circle;
+      case 'remove':
+        return Icons.remove;
+      case 'remove_circle':
+        return Icons.remove_circle;
+      case 'edit':
+        return Icons.edit;
+      case 'delete':
+        return Icons.delete;
+      case 'delete_outline':
+        return Icons.delete_outline;
+      case 'refresh':
+        return Icons.refresh;
+      case 'check':
+        return Icons.check;
+      case 'check_circle':
+        return Icons.check_circle;
+      case 'check_circle_outline':
+        return Icons.check_circle_outline;
+      case 'done':
+        return Icons.done;
+      case 'done_all':
+        return Icons.done_all;
+      case 'cancel':
+        return Icons.cancel;
+      case 'block':
+        return Icons.block;
+      case 'error':
+        return Icons.error;
+      case 'error_outline':
+        return Icons.error_outline;
+      case 'warning':
+        return Icons.warning;
+      case 'warning_amber':
+        return Icons.warning_amber;
+      case 'info':
+        return Icons.info;
+      case 'info_outline':
+        return Icons.info_outline;
+      case 'help':
+        return Icons.help;
+      case 'help_outline':
+        return Icons.help_outline;
+      case 'copy':
+        return Icons.copy;
+      case 'share':
+        return Icons.share;
+      case 'send':
+        return Icons.send;
+      case 'reply':
+        return Icons.reply;
+      case 'link':
+        return Icons.link;
+      case 'flag':
+        return Icons.flag;
+      case 'label':
+        return Icons.label;
+      case 'label_outline':
+        return Icons.label_outline;
+      case 'new_releases':
+        return Icons.new_releases;
+      case 'verified':
+        return Icons.verified;
+      case 'zoom_in':
+        return Icons.zoom_in;
+      case 'zoom_out':
+        return Icons.zoom_out;
+      case 'rotate_left':
+        return Icons.rotate_left;
+      case 'rotate_right':
+        return Icons.rotate_right;
+      case 'crop':
+        return Icons.crop;
 
       // ── People / social ───────────────────────────────────────────────────
-      case 'person':         return Icons.person;
-      case 'person_add':     return Icons.person_add;
-      case 'person_remove':  return Icons.person_remove;
-      case 'account_circle': return Icons.account_circle;
-      case 'group':          return Icons.group;
-      case 'groups':         return Icons.groups;
-      case 'logout':         return Icons.logout;
-      case 'login':          return Icons.login;
+      case 'person':
+        return Icons.person;
+      case 'person_add':
+        return Icons.person_add;
+      case 'person_remove':
+        return Icons.person_remove;
+      case 'account_circle':
+        return Icons.account_circle;
+      case 'group':
+        return Icons.group;
+      case 'groups':
+        return Icons.groups;
+      case 'logout':
+        return Icons.logout;
+      case 'login':
+        return Icons.login;
 
       // ── Favorites / ratings ───────────────────────────────────────────────
-      case 'favorite':        return Icons.favorite;
-      case 'favorite_border': return Icons.favorite_border;
-      case 'star':            return Icons.star;
-      case 'star_border':     return Icons.star_border;
-      case 'star_half':       return Icons.star_half;
-      case 'thumb_up':        return Icons.thumb_up;
-      case 'thumb_down':      return Icons.thumb_down;
-      case 'bookmark':        return Icons.bookmark;
-      case 'bookmark_border': return Icons.bookmark_border;
-      case 'bookmark_add':    return Icons.bookmark_add;
+      case 'favorite':
+        return Icons.favorite;
+      case 'favorite_border':
+        return Icons.favorite_border;
+      case 'star':
+        return Icons.star;
+      case 'star_border':
+        return Icons.star_border;
+      case 'star_half':
+        return Icons.star_half;
+      case 'thumb_up':
+        return Icons.thumb_up;
+      case 'thumb_down':
+        return Icons.thumb_down;
+      case 'bookmark':
+        return Icons.bookmark;
+      case 'bookmark_border':
+        return Icons.bookmark_border;
+      case 'bookmark_add':
+        return Icons.bookmark_add;
 
       // ── Communication ────────────────────────────────────────────────────
-      case 'email':           return Icons.email;
-      case 'phone':           return Icons.phone;
-      case 'call':            return Icons.call;
-      case 'call_end':        return Icons.call_end;
-      case 'message':         return Icons.message;
-      case 'chat':            return Icons.chat;
-      case 'chat_bubble':     return Icons.chat_bubble;
-      case 'forum':           return Icons.forum;
-      case 'notifications':   return Icons.notifications;
-      case 'notifications_none': return Icons.notifications_none;
-      case 'notifications_off':  return Icons.notifications_off;
-      case 'videocam':        return Icons.videocam;
-      case 'videocam_off':    return Icons.videocam_off;
-      case 'mic':             return Icons.mic;
-      case 'mic_off':         return Icons.mic_off;
+      case 'email':
+        return Icons.email;
+      case 'phone':
+        return Icons.phone;
+      case 'call':
+        return Icons.call;
+      case 'call_end':
+        return Icons.call_end;
+      case 'message':
+        return Icons.message;
+      case 'chat':
+        return Icons.chat;
+      case 'chat_bubble':
+        return Icons.chat_bubble;
+      case 'forum':
+        return Icons.forum;
+      case 'notifications':
+        return Icons.notifications;
+      case 'notifications_none':
+        return Icons.notifications_none;
+      case 'notifications_off':
+        return Icons.notifications_off;
+      case 'videocam':
+        return Icons.videocam;
+      case 'videocam_off':
+        return Icons.videocam_off;
+      case 'mic':
+        return Icons.mic;
+      case 'mic_off':
+        return Icons.mic_off;
 
       // ── Media controls ────────────────────────────────────────────────────
-      case 'play':            return Icons.play_arrow;
-      case 'pause':           return Icons.pause;
-      case 'stop':            return Icons.stop;
-      case 'skip_next':       return Icons.skip_next;
-      case 'skip_previous':   return Icons.skip_previous;
-      case 'volume_up':       return Icons.volume_up;
-      case 'volume_down':     return Icons.volume_down;
-      case 'volume_off':      return Icons.volume_off;
-      case 'volume_mute':     return Icons.volume_mute;
-      case 'headphones':      return Icons.headphones;
+      case 'play':
+        return Icons.play_arrow;
+      case 'pause':
+        return Icons.pause;
+      case 'stop':
+        return Icons.stop;
+      case 'skip_next':
+        return Icons.skip_next;
+      case 'skip_previous':
+        return Icons.skip_previous;
+      case 'volume_up':
+        return Icons.volume_up;
+      case 'volume_down':
+        return Icons.volume_down;
+      case 'volume_off':
+        return Icons.volume_off;
+      case 'volume_mute':
+        return Icons.volume_mute;
+      case 'headphones':
+        return Icons.headphones;
 
       // ── Files / content ───────────────────────────────────────────────────
-      case 'camera':          return Icons.camera_alt;
-      case 'image':           return Icons.image;
-      case 'photo':           return Icons.photo;
-      case 'photo_library':   return Icons.photo_library;
-      case 'file':            return Icons.insert_drive_file;
-      case 'folder':          return Icons.folder;
-      case 'folder_open':     return Icons.folder_open;
-      case 'download':        return Icons.download;
-      case 'upload':          return Icons.upload;
-      case 'attach_file':     return Icons.attach_file;
-      case 'attachment':      return Icons.attachment;
-      case 'description':     return Icons.description;
-      case 'article':         return Icons.article;
-      case 'code':            return Icons.code;
-      case 'print':           return Icons.print;
-      case 'save':            return Icons.save;
-      case 'save_alt':        return Icons.save_alt;
+      case 'camera':
+        return Icons.camera_alt;
+      case 'image':
+        return Icons.image;
+      case 'photo':
+        return Icons.photo;
+      case 'photo_library':
+        return Icons.photo_library;
+      case 'file':
+        return Icons.insert_drive_file;
+      case 'folder':
+        return Icons.folder;
+      case 'folder_open':
+        return Icons.folder_open;
+      case 'download':
+        return Icons.download;
+      case 'upload':
+        return Icons.upload;
+      case 'attach_file':
+        return Icons.attach_file;
+      case 'attachment':
+        return Icons.attachment;
+      case 'description':
+        return Icons.description;
+      case 'article':
+        return Icons.article;
+      case 'code':
+        return Icons.code;
+      case 'print':
+        return Icons.print;
+      case 'save':
+        return Icons.save;
+      case 'save_alt':
+        return Icons.save_alt;
 
       // ── Commerce ──────────────────────────────────────────────────────────
-      case 'shopping_cart':   return Icons.shopping_cart;
-      case 'shopping_bag':    return Icons.shopping_bag;
-      case 'payment':         return Icons.payment;
-      case 'credit_card':     return Icons.credit_card;
-      case 'store':           return Icons.store;
-      case 'receipt':         return Icons.receipt;
-      case 'local_offer':     return Icons.local_offer;
+      case 'shopping_cart':
+        return Icons.shopping_cart;
+      case 'shopping_bag':
+        return Icons.shopping_bag;
+      case 'payment':
+        return Icons.payment;
+      case 'credit_card':
+        return Icons.credit_card;
+      case 'store':
+        return Icons.store;
+      case 'receipt':
+        return Icons.receipt;
+      case 'local_offer':
+        return Icons.local_offer;
 
       // ── Location / map ────────────────────────────────────────────────────
-      case 'location_on':     return Icons.location_on;
-      case 'location_off':    return Icons.location_off;
-      case 'map':             return Icons.map;
-      case 'navigation':      return Icons.navigation;
-      case 'explore':         return Icons.explore;
-      case 'directions':      return Icons.directions;
+      case 'location_on':
+        return Icons.location_on;
+      case 'location_off':
+        return Icons.location_off;
+      case 'map':
+        return Icons.map;
+      case 'navigation':
+        return Icons.navigation;
+      case 'explore':
+        return Icons.explore;
+      case 'directions':
+        return Icons.directions;
 
       // ── Time / calendar ───────────────────────────────────────────────────
-      case 'calendar':        return Icons.calendar_today;
-      case 'calendar_today':  return Icons.calendar_today;
-      case 'date_range':      return Icons.date_range;
-      case 'schedule':        return Icons.schedule;
-      case 'access_time':     return Icons.access_time;
-      case 'timer':           return Icons.timer;
-      case 'history':         return Icons.history;
+      case 'calendar':
+        return Icons.calendar_today;
+      case 'calendar_today':
+        return Icons.calendar_today;
+      case 'date_range':
+        return Icons.date_range;
+      case 'schedule':
+        return Icons.schedule;
+      case 'access_time':
+        return Icons.access_time;
+      case 'timer':
+        return Icons.timer;
+      case 'history':
+        return Icons.history;
 
       // ── Device / connectivity ─────────────────────────────────────────────
-      case 'wifi':            return Icons.wifi;
-      case 'wifi_off':        return Icons.wifi_off;
-      case 'bluetooth':       return Icons.bluetooth;
-      case 'bluetooth_disabled': return Icons.bluetooth_disabled;
-      case 'battery_full':    return Icons.battery_full;
-      case 'battery_low':     return Icons.battery_1_bar;
-      case 'signal':          return Icons.signal_cellular_alt;
-      case 'fingerprint':     return Icons.fingerprint;
-      case 'qr_code':         return Icons.qr_code;
-      case 'barcode':         return Icons.barcode_reader;
-      case 'language':        return Icons.language;
-      case 'dark_mode':       return Icons.dark_mode;
-      case 'light_mode':      return Icons.light_mode;
-      case 'flash_on':        return Icons.flash_on;
-      case 'flash_off':       return Icons.flash_off;
+      case 'wifi':
+        return Icons.wifi;
+      case 'wifi_off':
+        return Icons.wifi_off;
+      case 'bluetooth':
+        return Icons.bluetooth;
+      case 'bluetooth_disabled':
+        return Icons.bluetooth_disabled;
+      case 'battery_full':
+        return Icons.battery_full;
+      case 'battery_low':
+        return Icons.battery_1_bar;
+      case 'signal':
+        return Icons.signal_cellular_alt;
+      case 'fingerprint':
+        return Icons.fingerprint;
+      case 'qr_code':
+        return Icons.qr_code;
+      case 'barcode':
+        return Icons.barcode_reader;
+      case 'language':
+        return Icons.language;
+      case 'dark_mode':
+        return Icons.dark_mode;
+      case 'light_mode':
+        return Icons.light_mode;
+      case 'flash_on':
+        return Icons.flash_on;
+      case 'flash_off':
+        return Icons.flash_off;
 
       // ── Security ──────────────────────────────────────────────────────────
-      case 'lock':            return Icons.lock;
-      case 'unlock':          return Icons.lock_open;
-      case 'security':        return Icons.security;
-      case 'shield':          return Icons.shield;
-      case 'visibility':      return Icons.visibility;
-      case 'visibility_off':  return Icons.visibility_off;
+      case 'lock':
+        return Icons.lock;
+      case 'unlock':
+        return Icons.lock_open;
+      case 'security':
+        return Icons.security;
+      case 'shield':
+        return Icons.shield;
+      case 'visibility':
+        return Icons.visibility;
+      case 'visibility_off':
+        return Icons.visibility_off;
 
       // ── Analytics / trends ────────────────────────────────────────────────
-      case 'trending_up':     return Icons.trending_up;
-      case 'trending_down':   return Icons.trending_down;
-      case 'bar_chart':       return Icons.bar_chart;
-      case 'pie_chart':       return Icons.pie_chart;
-      case 'dashboard':       return Icons.dashboard;
+      case 'trending_up':
+        return Icons.trending_up;
+      case 'trending_down':
+        return Icons.trending_down;
+      case 'bar_chart':
+        return Icons.bar_chart;
+      case 'pie_chart':
+        return Icons.pie_chart;
+      case 'dashboard':
+        return Icons.dashboard;
 
       // ── Layout / view ─────────────────────────────────────────────────────
-      case 'grid_view':       return Icons.grid_view;
-      case 'list':            return Icons.list;
-      case 'view_list':       return Icons.view_list;
-      case 'view_module':     return Icons.view_module;
-      case 'table_chart':     return Icons.table_chart;
+      case 'grid_view':
+        return Icons.grid_view;
+      case 'list':
+        return Icons.list;
+      case 'view_list':
+        return Icons.view_list;
+      case 'view_module':
+        return Icons.view_module;
+      case 'table_chart':
+        return Icons.table_chart;
 
       // ── Cloud ─────────────────────────────────────────────────────────────
-      case 'cloud':           return Icons.cloud;
-      case 'cloud_upload':    return Icons.cloud_upload;
-      case 'cloud_download':  return Icons.cloud_download;
+      case 'cloud':
+        return Icons.cloud;
+      case 'cloud_upload':
+        return Icons.cloud_upload;
+      case 'cloud_download':
+        return Icons.cloud_download;
 
       // ── Misc ──────────────────────────────────────────────────────────────
-      case 'palette':         return Icons.palette;
-      case 'brush':           return Icons.brush;
-      case 'bug_report':      return Icons.bug_report;
-      case 'support':         return Icons.support_agent;
-      case 'headset':         return Icons.headset;
-      case 'power':           return Icons.power_settings_new;
-      case 'sync':            return Icons.sync;
+      case 'palette':
+        return Icons.palette;
+      case 'brush':
+        return Icons.brush;
+      case 'bug_report':
+        return Icons.bug_report;
+      case 'support':
+        return Icons.support_agent;
+      case 'headset':
+        return Icons.headset;
+      case 'power':
+        return Icons.power_settings_new;
+      case 'sync':
+        return Icons.sync;
 
       default:
         BduiLogger.warn(
@@ -1037,8 +1238,7 @@ class SchemaConverters {
       letterSpacing: toDouble(props['letterSpacing']),
       wordSpacing: toDouble(props['wordSpacing']),
       height: toDouble(props['lineHeight']),
-      fontStyle:
-          props['fontStyle'] == 'italic' ? FontStyle.italic : null,
+      fontStyle: props['fontStyle'] == 'italic' ? FontStyle.italic : null,
       decoration: toTextDecoration(props['decoration']),
       decorationColor: toColor(props['decorationColor']),
       decorationStyle: toTextDecorationStyle(props['decorationStyle']),

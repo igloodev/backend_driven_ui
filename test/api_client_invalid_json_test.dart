@@ -12,9 +12,10 @@ void main() {
   });
 
   group('ApiClient invalid JSON handling', () {
-    test('throws ApiException with "Invalid JSON response" on malformed body', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('not valid json {{{', 200)));
+    test('throws ApiException with "Invalid JSON response" on malformed body',
+        () async {
+      ApiClient.setHttpClientForTesting(
+          MockClient((_) async => http.Response('not valid json {{{', 200)));
 
       await expectLater(
         ApiClient.get('https://api.example.com/data', maxRetries: 0),
@@ -29,8 +30,8 @@ void main() {
     });
 
     test('throws ApiException preserving the HTTP status code', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('<html>Not JSON</html>', 200)));
+      ApiClient.setHttpClientForTesting(
+          MockClient((_) async => http.Response('<html>Not JSON</html>', 200)));
 
       await expectLater(
         ApiClient.get('https://api.example.com/data', maxRetries: 0),
@@ -41,8 +42,8 @@ void main() {
     });
 
     test('valid JSON does not throw', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('{"name":"test"}', 200)));
+      ApiClient.setHttpClientForTesting(
+          MockClient((_) async => http.Response('{"name":"test"}', 200)));
 
       final response = await ApiClient.get(
         'https://api.example.com/data',
@@ -53,8 +54,8 @@ void main() {
     });
 
     test('empty body returns null data without throwing', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('', 200)));
+      ApiClient.setHttpClientForTesting(
+          MockClient((_) async => http.Response('', 200)));
 
       final response = await ApiClient.get(
         'https://api.example.com/data',
@@ -65,8 +66,8 @@ void main() {
     });
 
     test('4xx response throws ApiException with status code', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('{"message":"Not Found"}', 404)));
+      ApiClient.setHttpClientForTesting(MockClient(
+          (_) async => http.Response('{"message":"Not Found"}', 404)));
 
       await expectLater(
         ApiClient.get('https://api.example.com/data', maxRetries: 0),
@@ -77,8 +78,8 @@ void main() {
     });
 
     test('5xx response throws ApiException with status code', () async {
-      ApiClient.setHttpClientForTesting(MockClient((_) async =>
-          http.Response('{"error":"Server Error"}', 500)));
+      ApiClient.setHttpClientForTesting(MockClient(
+          (_) async => http.Response('{"error":"Server Error"}', 500)));
 
       await expectLater(
         ApiClient.get('https://api.example.com/data', maxRetries: 0),

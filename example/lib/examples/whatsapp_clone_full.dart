@@ -114,16 +114,20 @@ class BackendDrivenScreenWidget extends StatelessWidget {
       final actionMap = action as Map<String, dynamic>;
       return IconButton(
         icon: Icon(_getIcon(actionMap['icon'] as String)),
-        onPressed: () => _handleAction(context, actionMap['action'] as Map<String, dynamic>?),
+        onPressed: () => _handleAction(
+            context, actionMap['action'] as Map<String, dynamic>?),
       );
     }).toList();
   }
 
   Widget? _buildFAB(BuildContext context, Map<String, dynamic> fabConfig) {
     return FloatingActionButton(
-      onPressed: () => _handleAction(context, fabConfig['action'] as Map<String, dynamic>?),
-      backgroundColor: Color(fabConfig['backgroundColor'] as int? ?? 0xFF25D366),
-      child: Icon(_getIcon(fabConfig['icon'] as String? ?? 'add'), color: Colors.white),
+      onPressed: () =>
+          _handleAction(context, fabConfig['action'] as Map<String, dynamic>?),
+      backgroundColor:
+          Color(fabConfig['backgroundColor'] as int? ?? 0xFF25D366),
+      child: Icon(_getIcon(fabConfig['icon'] as String? ?? 'add'),
+          color: Colors.white),
     );
   }
 
@@ -225,7 +229,13 @@ class BackendScreenConfigs {
         'foregroundColor': 0xFFFFFFFF,
         'showBack': true,
         'actions': [
-          {'icon': 'edit', 'action': {'type': 'showSnackBar', 'message': 'Edit profile coming soon!'}},
+          {
+            'icon': 'edit',
+            'action': {
+              'type': 'showSnackBar',
+              'message': 'Edit profile coming soon!'
+            }
+          },
         ],
       },
       'body': {
@@ -239,7 +249,10 @@ class BackendScreenConfigs {
               'props': {
                 'width': double.infinity,
                 'padding': 32.0,
-                'gradient': {'type': 'linear', 'colors': [0xFF075E54, 0xFF128C7E]},
+                'gradient': {
+                  'type': 'linear',
+                  'colors': [0xFF075E54, 0xFF128C7E]
+                },
               },
               'child': {
                 'type': 'Column',
@@ -247,23 +260,63 @@ class BackendScreenConfigs {
                   {
                     'type': 'CircleAvatar',
                     'props': {'radius': 50.0, 'backgroundColor': 0xFFFFFFFF},
-                    'child': {'type': 'Icon', 'props': {'icon': 'person', 'size': 60.0, 'color': 0xFF075E54}},
+                    'child': {
+                      'type': 'Icon',
+                      'props': {
+                        'icon': 'person',
+                        'size': 60.0,
+                        'color': 0xFF075E54
+                      }
+                    },
                   },
-                  {'type': 'SizedBox', 'props': {'height': 16.0}},
-                  {'type': 'Text', 'props': {'text': 'John Doe', 'fontSize': 24.0, 'fontWeight': 'bold', 'color': 0xFFFFFFFF}},
-                  {'type': 'SizedBox', 'props': {'height': 4.0}},
-                  {'type': 'Text', 'props': {'text': 'Hey there! I am using WhatsApp', 'fontSize': 14.0, 'color': 0xDDFFFFFF}},
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 16.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'John Doe',
+                      'fontSize': 24.0,
+                      'fontWeight': 'bold',
+                      'color': 0xFFFFFFFF
+                    }
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 4.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'Hey there! I am using WhatsApp',
+                      'fontSize': 14.0,
+                      'color': 0xDDFFFFFF
+                    }
+                  },
                 ],
               },
             },
-            {'type': 'SizedBox', 'props': {'height': 16.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 16.0}
+            },
             // Info Items
             _infoTile('Name', 'John Doe', 'person'),
-            {'type': 'Divider', 'props': {'height': 1.0}},
+            {
+              'type': 'Divider',
+              'props': {'height': 1.0}
+            },
             _infoTile('About', 'Hey there! I am using WhatsApp', 'info'),
-            {'type': 'Divider', 'props': {'height': 1.0}},
+            {
+              'type': 'Divider',
+              'props': {'height': 1.0}
+            },
             _infoTile('Phone', '+1 234 567 8900', 'phone', '/phone'),
-            {'type': 'SizedBox', 'props': {'height': 24.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 24.0}
+            },
           ],
         },
       },
@@ -300,58 +353,172 @@ class BackendScreenConfigs {
                     {
                       'type': 'Row',
                       'children': [
-                        {'type': 'Icon', 'props': {'icon': 'verified', 'color': 0xFF4CAF50, 'size': 24.0}},
-                        {'type': 'SizedBox', 'props': {'width': 8.0}},
-                        {'type': 'Text', 'props': {'text': 'Current Phone Number', 'fontSize': 14.0, 'color': 0xFF666666}},
+                        {
+                          'type': 'Icon',
+                          'props': {
+                            'icon': 'verified',
+                            'color': 0xFF4CAF50,
+                            'size': 24.0
+                          }
+                        },
+                        {
+                          'type': 'SizedBox',
+                          'props': {'width': 8.0}
+                        },
+                        {
+                          'type': 'Text',
+                          'props': {
+                            'text': 'Current Phone Number',
+                            'fontSize': 14.0,
+                            'color': 0xFF666666
+                          }
+                        },
                       ],
                     },
-                    {'type': 'SizedBox', 'props': {'height': 12.0}},
-                    {'type': 'Text', 'props': {'text': '+1 234 567 8900', 'fontSize': 28.0, 'fontWeight': 'bold', 'color': 0xFF075E54}},
-                    {'type': 'SizedBox', 'props': {'height': 8.0}},
+                    {
+                      'type': 'SizedBox',
+                      'props': {'height': 12.0}
+                    },
+                    {
+                      'type': 'Text',
+                      'props': {
+                        'text': '+1 234 567 8900',
+                        'fontSize': 28.0,
+                        'fontWeight': 'bold',
+                        'color': 0xFF075E54
+                      }
+                    },
+                    {
+                      'type': 'SizedBox',
+                      'props': {'height': 8.0}
+                    },
                     {
                       'type': 'Container',
-                      'props': {'padding': {'horizontal': 12.0, 'vertical': 6.0}, 'borderRadius': 16.0, 'color': 0xFFE8F5E9},
-                      'child': {'type': 'Text', 'props': {'text': 'Verified', 'fontSize': 12.0, 'color': 0xFF4CAF50, 'fontWeight': 'bold'}},
+                      'props': {
+                        'padding': {'horizontal': 12.0, 'vertical': 6.0},
+                        'borderRadius': 16.0,
+                        'color': 0xFFE8F5E9
+                      },
+                      'child': {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'Verified',
+                          'fontSize': 12.0,
+                          'color': 0xFF4CAF50,
+                          'fontWeight': 'bold'
+                        }
+                      },
                     },
                   ],
                 },
               },
             },
-            {'type': 'SizedBox', 'props': {'height': 24.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 24.0}
+            },
             // Change Number Section
-            {'type': 'Text', 'props': {'text': 'Change Phone Number', 'fontSize': 18.0, 'fontWeight': 'bold'}},
-            {'type': 'SizedBox', 'props': {'height': 8.0}},
-            {'type': 'Text', 'props': {'text': 'Changing your phone number will migrate your account info, groups, and settings to your new number.', 'fontSize': 14.0, 'color': 0xFF666666}},
-            {'type': 'SizedBox', 'props': {'height': 20.0}},
+            {
+              'type': 'Text',
+              'props': {
+                'text': 'Change Phone Number',
+                'fontSize': 18.0,
+                'fontWeight': 'bold'
+              }
+            },
+            {
+              'type': 'SizedBox',
+              'props': {'height': 8.0}
+            },
+            {
+              'type': 'Text',
+              'props': {
+                'text':
+                    'Changing your phone number will migrate your account info, groups, and settings to your new number.',
+                'fontSize': 14.0,
+                'color': 0xFF666666
+              }
+            },
+            {
+              'type': 'SizedBox',
+              'props': {'height': 20.0}
+            },
             // Steps
-            _stepItem(1, 'Verify current number', 'We\'ll send OTP to your current phone'),
+            _stepItem(1, 'Verify current number',
+                'We\'ll send OTP to your current phone'),
             _stepItem(2, 'Enter new number', 'Provide your new phone number'),
-            _stepItem(3, 'Verify new number', 'Confirm with OTP sent to new number'),
-            {'type': 'SizedBox', 'props': {'height': 24.0}},
+            _stepItem(
+                3, 'Verify new number', 'Confirm with OTP sent to new number'),
+            {
+              'type': 'SizedBox',
+              'props': {'height': 24.0}
+            },
             // Change Button
             {
               'type': 'InkWell',
-              'action': {'type': 'showDialog', 'title': 'Change Number', 'message': 'This feature will be available in the next update!', 'dismissText': 'OK'},
+              'action': {
+                'type': 'showDialog',
+                'title': 'Change Number',
+                'message': 'This feature will be available in the next update!',
+                'dismissText': 'OK'
+              },
               'child': {
                 'type': 'Container',
-                'props': {'width': double.infinity, 'padding': 16.0, 'borderRadius': 12.0, 'color': 0xFF075E54},
-                'child': {'type': 'Center', 'child': {'type': 'Text', 'props': {'text': 'Change Phone Number', 'fontSize': 16.0, 'fontWeight': 'bold', 'color': 0xFFFFFFFF}}},
+                'props': {
+                  'width': double.infinity,
+                  'padding': 16.0,
+                  'borderRadius': 12.0,
+                  'color': 0xFF075E54
+                },
+                'child': {
+                  'type': 'Center',
+                  'child': {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'Change Phone Number',
+                      'fontSize': 16.0,
+                      'fontWeight': 'bold',
+                      'color': 0xFFFFFFFF
+                    }
+                  }
+                },
               },
             },
-            {'type': 'SizedBox', 'props': {'height': 20.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 20.0}
+            },
             // Info Box
             {
               'type': 'Container',
-              'props': {'padding': 16.0, 'borderRadius': 12.0, 'color': 0xFFFFF8E1},
+              'props': {
+                'padding': 16.0,
+                'borderRadius': 12.0,
+                'color': 0xFFFFF8E1
+              },
               'child': {
                 'type': 'Row',
                 'props': {'crossAxisAlignment': 'start'},
                 'children': [
-                  {'type': 'Icon', 'props': {'icon': 'info', 'color': 0xFFFF9800, 'size': 24.0}},
-                  {'type': 'SizedBox', 'props': {'width': 12.0}},
+                  {
+                    'type': 'Icon',
+                    'props': {'icon': 'info', 'color': 0xFFFF9800, 'size': 24.0}
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'width': 12.0}
+                  },
                   {
                     'type': 'Expanded',
-                    'child': {'type': 'Text', 'props': {'text': 'Your phone number is used for account verification and recovery. Keep it up to date.', 'fontSize': 14.0, 'color': 0xFF666666}},
+                    'child': {
+                      'type': 'Text',
+                      'props': {
+                        'text':
+                            'Your phone number is used for account verification and recovery. Keep it up to date.',
+                        'fontSize': 14.0,
+                        'color': 0xFF666666
+                      }
+                    },
                   },
                 ],
               },
@@ -379,19 +546,57 @@ class BackendScreenConfigs {
             // Header
             {
               'type': 'Container',
-              'props': {'width': double.infinity, 'padding': 32.0, 'gradient': {'type': 'linear', 'colors': [0xFF075E54, 0xFF25D366]}},
+              'props': {
+                'width': double.infinity,
+                'padding': 32.0,
+                'gradient': {
+                  'type': 'linear',
+                  'colors': [0xFF075E54, 0xFF25D366]
+                }
+              },
               'child': {
                 'type': 'Column',
                 'children': [
-                  {'type': 'Icon', 'props': {'icon': 'support', 'size': 64.0, 'color': 0xFFFFFFFF}},
-                  {'type': 'SizedBox', 'props': {'height': 16.0}},
-                  {'type': 'Text', 'props': {'text': 'How can we help?', 'fontSize': 24.0, 'fontWeight': 'bold', 'color': 0xFFFFFFFF}},
-                  {'type': 'SizedBox', 'props': {'height': 8.0}},
-                  {'type': 'Text', 'props': {'text': 'Choose a topic below or contact us', 'fontSize': 14.0, 'color': 0xDDFFFFFF}},
+                  {
+                    'type': 'Icon',
+                    'props': {
+                      'icon': 'support',
+                      'size': 64.0,
+                      'color': 0xFFFFFFFF
+                    }
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 16.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'How can we help?',
+                      'fontSize': 24.0,
+                      'fontWeight': 'bold',
+                      'color': 0xFFFFFFFF
+                    }
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 8.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'Choose a topic below or contact us',
+                      'fontSize': 14.0,
+                      'color': 0xDDFFFFFF
+                    }
+                  },
                 ],
               },
             },
-            {'type': 'SizedBox', 'props': {'height': 16.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 16.0}
+            },
             // Support Options
             {
               'type': 'Padding',
@@ -399,32 +604,77 @@ class BackendScreenConfigs {
               'child': {
                 'type': 'Column',
                 'children': [
-                  _supportCard('FAQ', 'Find answers to common questions', 'help', 0xFF4CAF50, '/help'),
-                  {'type': 'SizedBox', 'props': {'height': 12.0}},
-                  _supportCard('Contact Us', 'Chat with our support team', 'chat', 0xFF2196F3, null),
-                  {'type': 'SizedBox', 'props': {'height': 12.0}},
-                  _supportCard('Report a Problem', 'Help us improve the app', 'email', 0xFFF44336, null),
-                  {'type': 'SizedBox', 'props': {'height': 12.0}},
-                  _supportCard('About', 'App info and licenses', 'info', 0xFF9C27B0, '/about'),
+                  _supportCard('FAQ', 'Find answers to common questions',
+                      'help', 0xFF4CAF50, '/help'),
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 12.0}
+                  },
+                  _supportCard('Contact Us', 'Chat with our support team',
+                      'chat', 0xFF2196F3, null),
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 12.0}
+                  },
+                  _supportCard('Report a Problem', 'Help us improve the app',
+                      'email', 0xFFF44336, null),
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 12.0}
+                  },
+                  _supportCard('About', 'App info and licenses', 'info',
+                      0xFF9C27B0, '/about'),
                 ],
               },
             },
             // Contact Info
             {
               'type': 'Container',
-              'props': {'margin': 16.0, 'padding': 16.0, 'borderRadius': 12.0, 'color': 0xFFF5F5F5},
+              'props': {
+                'margin': 16.0,
+                'padding': 16.0,
+                'borderRadius': 12.0,
+                'color': 0xFFF5F5F5
+              },
               'child': {
                 'type': 'Column',
                 'children': [
-                  {'type': 'Text', 'props': {'text': 'Need immediate help?', 'fontSize': 16.0, 'fontWeight': 'bold'}},
-                  {'type': 'SizedBox', 'props': {'height': 8.0}},
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'Need immediate help?',
+                      'fontSize': 16.0,
+                      'fontWeight': 'bold'
+                    }
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 8.0}
+                  },
                   {
                     'type': 'Row',
                     'props': {'mainAxisAlignment': 'center'},
                     'children': [
-                      {'type': 'Icon', 'props': {'icon': 'email', 'color': 0xFF666666, 'size': 20.0}},
-                      {'type': 'SizedBox', 'props': {'width': 8.0}},
-                      {'type': 'Text', 'props': {'text': 'support@whatsapp.com', 'fontSize': 14.0, 'color': 0xFF075E54}},
+                      {
+                        'type': 'Icon',
+                        'props': {
+                          'icon': 'email',
+                          'color': 0xFF666666,
+                          'size': 20.0
+                        }
+                      },
+                      {
+                        'type': 'SizedBox',
+                        'props': {'width': 8.0}
+                      },
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'support@whatsapp.com',
+                          'fontSize': 14.0,
+                          'color': 0xFF075E54
+                        }
+                      },
                     ],
                   },
                 ],
@@ -448,17 +698,38 @@ class BackendScreenConfigs {
       'body': {
         'type': 'ListView',
         'children': [
-          _settingsNavItem('Privacy', 'Last seen, profile photo, about', 'privacy', '/privacy'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _settingsNavItem('Security', 'Security notifications, app lock', 'security', null),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _settingsNavItem('Two-Step Verification', 'Add extra security to your account', 'lock', null),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _settingsNavItem('Change Number', 'Change your registered phone number', 'phone', '/phone'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _settingsNavItem('Request Account Info', 'Request a report of your account', 'info', null),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _settingsNavItem('Delete My Account', 'Delete your account permanently', 'person', null),
+          _settingsNavItem('Privacy', 'Last seen, profile photo, about',
+              'privacy', '/privacy'),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _settingsNavItem(
+              'Security', 'Security notifications, app lock', 'security', null),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _settingsNavItem('Two-Step Verification',
+              'Add extra security to your account', 'lock', null),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _settingsNavItem('Change Number',
+              'Change your registered phone number', 'phone', '/phone'),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _settingsNavItem('Request Account Info',
+              'Request a report of your account', 'info', null),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _settingsNavItem('Delete My Account',
+              'Delete your account permanently', 'person', null),
         ],
       },
     };
@@ -478,19 +749,34 @@ class BackendScreenConfigs {
         'children': [
           _sectionHeader('Who can see my personal info'),
           _privacyOption('Last Seen', 'Everyone'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _privacyOption('Profile Photo', 'My Contacts'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _privacyOption('About', 'Everyone'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _privacyOption('Status', 'My Contacts'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _privacyOption('Read Receipts', 'On'),
           _sectionHeader('Disappearing Messages'),
           _privacyOption('Default Message Timer', 'Off'),
           _sectionHeader('Advanced'),
           _privacyOption('Fingerprint Lock', 'Disabled'),
-          {'type': 'SizedBox', 'props': {'height': 24.0}},
+          {
+            'type': 'SizedBox',
+            'props': {'height': 24.0}
+          },
         ],
       },
     };
@@ -510,19 +796,34 @@ class BackendScreenConfigs {
         'children': [
           _sectionHeader('Message Notifications'),
           _toggleOption('Notification Tone', 'Default'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _toggleOption('Vibrate', 'Default'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _toggleOption('Popup Notification', 'Only when screen is off'),
           _sectionHeader('Group Notifications'),
           _toggleOption('Notification Tone', 'Default'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _toggleOption('Vibrate', 'Default'),
           _sectionHeader('Calls'),
           _toggleOption('Ringtone', 'Default'),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _toggleOption('Vibrate', 'Default'),
-          {'type': 'SizedBox', 'props': {'height': 24.0}},
+          {
+            'type': 'SizedBox',
+            'props': {'height': 24.0}
+          },
         ],
       },
     };
@@ -540,12 +841,20 @@ class BackendScreenConfigs {
       'body': {
         'type': 'ListView',
         'children': [
-          _faqItem('How do I change my phone number?', 'Go to Settings > Account > Change Number. You\'ll need to verify both your old and new numbers.'),
-          _faqItem('How do I back up my chats?', 'Go to Settings > Chats > Chat Backup. You can set up automatic backups to Google Drive or iCloud.'),
-          _faqItem('How do I block a contact?', 'Open the chat, tap the contact name, scroll down and tap "Block". They won\'t be able to send you messages.'),
-          _faqItem('How do I enable two-step verification?', 'Go to Settings > Account > Two-Step Verification > Enable. Create a 6-digit PIN.'),
-          _faqItem('Can I use WhatsApp on multiple devices?', 'Yes! Go to Settings > Linked Devices to connect up to 4 additional devices.'),
-          {'type': 'SizedBox', 'props': {'height': 24.0}},
+          _faqItem('How do I change my phone number?',
+              'Go to Settings > Account > Change Number. You\'ll need to verify both your old and new numbers.'),
+          _faqItem('How do I back up my chats?',
+              'Go to Settings > Chats > Chat Backup. You can set up automatic backups to Google Drive or iCloud.'),
+          _faqItem('How do I block a contact?',
+              'Open the chat, tap the contact name, scroll down and tap "Block". They won\'t be able to send you messages.'),
+          _faqItem('How do I enable two-step verification?',
+              'Go to Settings > Account > Two-Step Verification > Enable. Create a 6-digit PIN.'),
+          _faqItem('Can I use WhatsApp on multiple devices?',
+              'Yes! Go to Settings > Linked Devices to connect up to 4 additional devices.'),
+          {
+            'type': 'SizedBox',
+            'props': {'height': 24.0}
+          },
         ],
       },
     };
@@ -565,7 +874,10 @@ class BackendScreenConfigs {
         'child': {
           'type': 'Column',
           'children': [
-            {'type': 'SizedBox', 'props': {'height': 40.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 40.0}
+            },
             {
               'type': 'Center',
               'child': {
@@ -573,33 +885,104 @@ class BackendScreenConfigs {
                 'children': [
                   {
                     'type': 'Container',
-                    'props': {'width': 100.0, 'height': 100.0, 'borderRadius': 20.0, 'gradient': {'type': 'linear', 'colors': [0xFF25D366, 0xFF128C7E]}},
-                    'child': {'type': 'Center', 'child': {'type': 'Icon', 'props': {'icon': 'chat', 'size': 50.0, 'color': 0xFFFFFFFF}}},
+                    'props': {
+                      'width': 100.0,
+                      'height': 100.0,
+                      'borderRadius': 20.0,
+                      'gradient': {
+                        'type': 'linear',
+                        'colors': [0xFF25D366, 0xFF128C7E]
+                      }
+                    },
+                    'child': {
+                      'type': 'Center',
+                      'child': {
+                        'type': 'Icon',
+                        'props': {
+                          'icon': 'chat',
+                          'size': 50.0,
+                          'color': 0xFFFFFFFF
+                        }
+                      }
+                    },
                   },
-                  {'type': 'SizedBox', 'props': {'height': 16.0}},
-                  {'type': 'Text', 'props': {'text': 'WhatsApp Clone', 'fontSize': 24.0, 'fontWeight': 'bold'}},
-                  {'type': 'SizedBox', 'props': {'height': 4.0}},
-                  {'type': 'Text', 'props': {'text': 'Version 2.24.0', 'fontSize': 14.0, 'color': 0xFF666666}},
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 16.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'WhatsApp Clone',
+                      'fontSize': 24.0,
+                      'fontWeight': 'bold'
+                    }
+                  },
+                  {
+                    'type': 'SizedBox',
+                    'props': {'height': 4.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': 'Version 2.24.0',
+                      'fontSize': 14.0,
+                      'color': 0xFF666666
+                    }
+                  },
                 ],
               },
             },
-            {'type': 'SizedBox', 'props': {'height': 40.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 40.0}
+            },
             _aboutItem('Powered by', 'Backend-Driven UI'),
-            {'type': 'Divider', 'props': {'height': 1.0}},
+            {
+              'type': 'Divider',
+              'props': {'height': 1.0}
+            },
             _aboutItem('Platform', 'Flutter'),
-            {'type': 'Divider', 'props': {'height': 1.0}},
+            {
+              'type': 'Divider',
+              'props': {'height': 1.0}
+            },
             _aboutItem('License', 'MIT License'),
-            {'type': 'SizedBox', 'props': {'height': 32.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 32.0}
+            },
             {
               'type': 'Center',
-              'child': {'type': 'Text', 'props': {'text': 'Built with Backend-Driven UI Framework', 'fontSize': 12.0, 'color': 0xFF999999}},
+              'child': {
+                'type': 'Text',
+                'props': {
+                  'text': 'Built with Backend-Driven UI Framework',
+                  'fontSize': 12.0,
+                  'color': 0xFF999999
+                }
+              },
             },
-            {'type': 'SizedBox', 'props': {'height': 8.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 8.0}
+            },
             {
               'type': 'Center',
-              'child': {'type': 'Text', 'props': {'text': 'Multi-screen navigation via JSON', 'fontSize': 12.0, 'fontWeight': 'bold', 'color': 0xFF075E54}},
+              'child': {
+                'type': 'Text',
+                'props': {
+                  'text': 'Multi-screen navigation via JSON',
+                  'fontSize': 12.0,
+                  'fontWeight': 'bold',
+                  'color': 0xFF075E54
+                }
+              },
             },
-            {'type': 'SizedBox', 'props': {'height': 24.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'height': 24.0}
+            },
           ],
         },
       },
@@ -608,24 +991,40 @@ class BackendScreenConfigs {
 
   // ===== HELPER WIDGET BUILDERS =====
 
-  static Map<String, dynamic> _infoTile(String label, String value, String icon, [String? route]) {
+  static Map<String, dynamic> _infoTile(String label, String value, String icon,
+      [String? route]) {
     final List<Map<String, dynamic>> rowChildren = [
-      {'type': 'Icon', 'props': {'icon': icon, 'color': 0xFF075E54, 'size': 24.0}},
-      {'type': 'SizedBox', 'props': {'width': 16.0}},
+      {
+        'type': 'Icon',
+        'props': {'icon': icon, 'color': 0xFF075E54, 'size': 24.0}
+      },
+      {
+        'type': 'SizedBox',
+        'props': {'width': 16.0}
+      },
       {
         'type': 'Expanded',
         'child': {
           'type': 'Column',
           'props': {'crossAxisAlignment': 'start'},
           'children': [
-            {'type': 'Text', 'props': {'text': label, 'fontSize': 12.0, 'color': 0xFF666666}},
-            {'type': 'Text', 'props': {'text': value, 'fontSize': 16.0}},
+            {
+              'type': 'Text',
+              'props': {'text': label, 'fontSize': 12.0, 'color': 0xFF666666}
+            },
+            {
+              'type': 'Text',
+              'props': {'text': value, 'fontSize': 16.0}
+            },
           ],
         },
       },
     ];
     if (route != null) {
-      rowChildren.add({'type': 'Icon', 'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}});
+      rowChildren.add({
+        'type': 'Icon',
+        'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}
+      });
     }
 
     final child = {
@@ -637,33 +1036,73 @@ class BackendScreenConfigs {
       },
     };
     if (route != null) {
-      return {'type': 'InkWell', 'action': {'type': 'navigate', 'route': route}, 'child': child};
+      return {
+        'type': 'InkWell',
+        'action': {'type': 'navigate', 'route': route},
+        'child': child
+      };
     }
     return child;
   }
 
-  static Map<String, dynamic> _stepItem(int number, String title, String subtitle) {
+  static Map<String, dynamic> _stepItem(
+      int number, String title, String subtitle) {
     return {
       'type': 'Container',
-      'props': {'padding': {'vertical': 8.0}},
+      'props': {
+        'padding': {'vertical': 8.0}
+      },
       'child': {
         'type': 'Row',
         'props': {'crossAxisAlignment': 'start'},
         'children': [
           {
             'type': 'Container',
-            'props': {'width': 28.0, 'height': 28.0, 'borderRadius': 14.0, 'color': 0xFF075E54},
-            'child': {'type': 'Center', 'child': {'type': 'Text', 'props': {'text': number.toString(), 'fontSize': 14.0, 'fontWeight': 'bold', 'color': 0xFFFFFFFF}}},
+            'props': {
+              'width': 28.0,
+              'height': 28.0,
+              'borderRadius': 14.0,
+              'color': 0xFF075E54
+            },
+            'child': {
+              'type': 'Center',
+              'child': {
+                'type': 'Text',
+                'props': {
+                  'text': number.toString(),
+                  'fontSize': 14.0,
+                  'fontWeight': 'bold',
+                  'color': 0xFFFFFFFF
+                }
+              }
+            },
           },
-          {'type': 'SizedBox', 'props': {'width': 12.0}},
+          {
+            'type': 'SizedBox',
+            'props': {'width': 12.0}
+          },
           {
             'type': 'Expanded',
             'child': {
               'type': 'Column',
               'props': {'crossAxisAlignment': 'start'},
               'children': [
-                {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0, 'fontWeight': 'w500'}},
-                {'type': 'Text', 'props': {'text': subtitle, 'fontSize': 13.0, 'color': 0xFF666666}},
+                {
+                  'type': 'Text',
+                  'props': {
+                    'text': title,
+                    'fontSize': 16.0,
+                    'fontWeight': 'w500'
+                  }
+                },
+                {
+                  'type': 'Text',
+                  'props': {
+                    'text': subtitle,
+                    'fontSize': 13.0,
+                    'color': 0xFF666666
+                  }
+                },
               ],
             },
           },
@@ -672,7 +1111,8 @@ class BackendScreenConfigs {
     };
   }
 
-  static Map<String, dynamic> _supportCard(String title, String subtitle, String icon, int color, String? route) {
+  static Map<String, dynamic> _supportCard(
+      String title, String subtitle, String icon, int color, String? route) {
     final action = route != null
         ? {'type': 'navigate', 'route': route}
         : {'type': 'showSnackBar', 'message': '$title - Coming soon!'};
@@ -690,22 +1130,53 @@ class BackendScreenConfigs {
             'children': [
               {
                 'type': 'Container',
-                'props': {'width': 48.0, 'height': 48.0, 'borderRadius': 12.0, 'color': color},
-                'child': {'type': 'Center', 'child': {'type': 'Icon', 'props': {'icon': icon, 'color': 0xFFFFFFFF, 'size': 24.0}}},
+                'props': {
+                  'width': 48.0,
+                  'height': 48.0,
+                  'borderRadius': 12.0,
+                  'color': color
+                },
+                'child': {
+                  'type': 'Center',
+                  'child': {
+                    'type': 'Icon',
+                    'props': {'icon': icon, 'color': 0xFFFFFFFF, 'size': 24.0}
+                  }
+                },
               },
-              {'type': 'SizedBox', 'props': {'width': 16.0}},
+              {
+                'type': 'SizedBox',
+                'props': {'width': 16.0}
+              },
               {
                 'type': 'Expanded',
                 'child': {
                   'type': 'Column',
                   'props': {'crossAxisAlignment': 'start'},
                   'children': [
-                    {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0, 'fontWeight': 'bold'}},
-                    {'type': 'Text', 'props': {'text': subtitle, 'fontSize': 13.0, 'color': 0xFF666666}},
+                    {
+                      'type': 'Text',
+                      'props': {
+                        'text': title,
+                        'fontSize': 16.0,
+                        'fontWeight': 'bold'
+                      }
+                    },
+                    {
+                      'type': 'Text',
+                      'props': {
+                        'text': subtitle,
+                        'fontSize': 13.0,
+                        'color': 0xFF666666
+                      }
+                    },
                   ],
                 },
               },
-              {'type': 'Icon', 'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}},
+              {
+                'type': 'Icon',
+                'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}
+              },
             ],
           },
         },
@@ -713,7 +1184,8 @@ class BackendScreenConfigs {
     };
   }
 
-  static Map<String, dynamic> _settingsNavItem(String title, String subtitle, String icon, String? route) {
+  static Map<String, dynamic> _settingsNavItem(
+      String title, String subtitle, String icon, String? route) {
     final action = route != null
         ? {'type': 'navigate', 'route': route}
         : {'type': 'showSnackBar', 'message': '$title - Coming soon!'};
@@ -726,20 +1198,39 @@ class BackendScreenConfigs {
         'child': {
           'type': 'Row',
           'children': [
-            {'type': 'Icon', 'props': {'icon': icon, 'color': 0xFF075E54, 'size': 24.0}},
-            {'type': 'SizedBox', 'props': {'width': 16.0}},
+            {
+              'type': 'Icon',
+              'props': {'icon': icon, 'color': 0xFF075E54, 'size': 24.0}
+            },
+            {
+              'type': 'SizedBox',
+              'props': {'width': 16.0}
+            },
             {
               'type': 'Expanded',
               'child': {
                 'type': 'Column',
                 'props': {'crossAxisAlignment': 'start'},
                 'children': [
-                  {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0}},
-                  {'type': 'Text', 'props': {'text': subtitle, 'fontSize': 13.0, 'color': 0xFF666666}},
+                  {
+                    'type': 'Text',
+                    'props': {'text': title, 'fontSize': 16.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': subtitle,
+                      'fontSize': 13.0,
+                      'color': 0xFF666666
+                    }
+                  },
                 ],
               },
             },
-            {'type': 'Icon', 'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}},
+            {
+              'type': 'Icon',
+              'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC}
+            },
           ],
         },
       },
@@ -749,8 +1240,19 @@ class BackendScreenConfigs {
   static Map<String, dynamic> _sectionHeader(String title) {
     return {
       'type': 'Container',
-      'props': {'padding': {'horizontal': 16.0, 'vertical': 12.0}, 'color': 0xFFF5F5F5},
-      'child': {'type': 'Text', 'props': {'text': title, 'fontSize': 14.0, 'fontWeight': 'bold', 'color': 0xFF075E54}},
+      'props': {
+        'padding': {'horizontal': 16.0, 'vertical': 12.0},
+        'color': 0xFFF5F5F5
+      },
+      'child': {
+        'type': 'Text',
+        'props': {
+          'text': title,
+          'fontSize': 14.0,
+          'fontWeight': 'bold',
+          'color': 0xFF075E54
+        }
+      },
     };
   }
 
@@ -764,8 +1266,17 @@ class BackendScreenConfigs {
         'child': {
           'type': 'Row',
           'children': [
-            {'type': 'Expanded', 'child': {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0}}},
-            {'type': 'Text', 'props': {'text': value, 'fontSize': 14.0, 'color': 0xFF666666}},
+            {
+              'type': 'Expanded',
+              'child': {
+                'type': 'Text',
+                'props': {'text': title, 'fontSize': 16.0}
+              }
+            },
+            {
+              'type': 'Text',
+              'props': {'text': value, 'fontSize': 14.0, 'color': 0xFF666666}
+            },
           ],
         },
       },
@@ -775,15 +1286,27 @@ class BackendScreenConfigs {
   static Map<String, dynamic> _toggleOption(String title, String value) {
     return {
       'type': 'InkWell',
-      'action': {'type': 'showSnackBar', 'message': 'Notification setting: $title'},
+      'action': {
+        'type': 'showSnackBar',
+        'message': 'Notification setting: $title'
+      },
       'child': {
         'type': 'Container',
         'props': {'padding': 16.0},
         'child': {
           'type': 'Row',
           'children': [
-            {'type': 'Expanded', 'child': {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0}}},
-            {'type': 'Text', 'props': {'text': value, 'fontSize': 14.0, 'color': 0xFF666666}},
+            {
+              'type': 'Expanded',
+              'child': {
+                'type': 'Text',
+                'props': {'text': title, 'fontSize': 16.0}
+              }
+            },
+            {
+              'type': 'Text',
+              'props': {'text': value, 'fontSize': 14.0, 'color': 0xFF666666}
+            },
           ],
         },
       },
@@ -798,11 +1321,26 @@ class BackendScreenConfigs {
         'type': 'Column',
         'props': {'crossAxisAlignment': 'start'},
         'children': [
-          {'type': 'Text', 'props': {'text': question, 'fontSize': 16.0, 'fontWeight': 'bold'}},
-          {'type': 'SizedBox', 'props': {'height': 8.0}},
-          {'type': 'Text', 'props': {'text': answer, 'fontSize': 14.0, 'color': 0xFF666666}},
-          {'type': 'SizedBox', 'props': {'height': 8.0}},
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Text',
+            'props': {'text': question, 'fontSize': 16.0, 'fontWeight': 'bold'}
+          },
+          {
+            'type': 'SizedBox',
+            'props': {'height': 8.0}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': answer, 'fontSize': 14.0, 'color': 0xFF666666}
+          },
+          {
+            'type': 'SizedBox',
+            'props': {'height': 8.0}
+          },
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
         ],
       },
     };
@@ -816,8 +1354,14 @@ class BackendScreenConfigs {
         'type': 'Row',
         'props': {'mainAxisAlignment': 'spaceBetween'},
         'children': [
-          {'type': 'Text', 'props': {'text': label, 'fontSize': 14.0, 'color': 0xFF666666}},
-          {'type': 'Text', 'props': {'text': value, 'fontSize': 14.0, 'fontWeight': 'w500'}},
+          {
+            'type': 'Text',
+            'props': {'text': label, 'fontSize': 14.0, 'color': 0xFF666666}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': value, 'fontSize': 14.0, 'fontWeight': 'w500'}
+          },
         ],
       },
     };
@@ -933,17 +1477,35 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
       'variantA': {
         'type': 'ListView',
         'children': [
-          _chatTile('Mom ❤️', 'Don\'t forget groceries!', '10:30 AM', 2, 0xFFE91E63),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _chatTile('Work Group', 'John: Meeting at 3 PM', '9:45 AM', 5, 0xFF2196F3),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          _chatTile(
+              'Mom ❤️', 'Don\'t forget groceries!', '10:30 AM', 2, 0xFFE91E63),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _chatTile(
+              'Work Group', 'John: Meeting at 3 PM', '9:45 AM', 5, 0xFF2196F3),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _chatTile('Best Friend', 'Haha! 😂', 'Yesterday', 0, 0xFF9C27B0),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _chatTile('Dad', 'Coming late tonight', 'Yesterday', 0, 0xFFFF9800),
-          {'type': 'Divider', 'props': {'height': 1.0}},
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
           _chatTile('Gym Buddy 💪', 'Tomorrow 6 AM?', 'Tuesday', 0, 0xFF4CAF50),
-          {'type': 'Divider', 'props': {'height': 1.0}},
-          _chatTile('College Group', '25 new messages', 'Tuesday', 25, 0xFF00BCD4),
+          {
+            'type': 'Divider',
+            'props': {'height': 1.0}
+          },
+          _chatTile(
+              'College Group', '25 new messages', 'Tuesday', 25, 0xFF00BCD4),
         ],
       },
       'variantB': {
@@ -952,17 +1514,46 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
         'child': {
           'type': 'Column',
           'children': [
-            {'type': 'Text', 'props': {'text': '⭐ Priority', 'fontWeight': 'bold', 'fontSize': 14.0}},
-            {'type': 'SizedBox', 'props': {'height': 8.0}},
-            _chatCard('Mom ❤️', 'Don\'t forget groceries!', '10:30 AM', 2, 0xFFE91E63, true),
-            _chatCard('Work Group', 'John: Meeting at 3 PM', '9:45 AM', 5, 0xFF2196F3, true),
-            {'type': 'SizedBox', 'props': {'height': 16.0}},
-            {'type': 'Text', 'props': {'text': '💬 Recent', 'fontWeight': 'bold', 'fontSize': 14.0}},
-            {'type': 'SizedBox', 'props': {'height': 8.0}},
-            _chatCard('Best Friend', 'Haha! 😂', 'Yesterday', 0, 0xFF9C27B0, false),
-            _chatCard('Dad', 'Coming late tonight', 'Yesterday', 0, 0xFFFF9800, false),
-            _chatCard('Gym Buddy 💪', 'Tomorrow 6 AM?', 'Tuesday', 0, 0xFF4CAF50, false),
-            _chatCard('College Group', '25 new messages', 'Tuesday', 25, 0xFF00BCD4, false),
+            {
+              'type': 'Text',
+              'props': {
+                'text': '⭐ Priority',
+                'fontWeight': 'bold',
+                'fontSize': 14.0
+              }
+            },
+            {
+              'type': 'SizedBox',
+              'props': {'height': 8.0}
+            },
+            _chatCard('Mom ❤️', 'Don\'t forget groceries!', '10:30 AM', 2,
+                0xFFE91E63, true),
+            _chatCard('Work Group', 'John: Meeting at 3 PM', '9:45 AM', 5,
+                0xFF2196F3, true),
+            {
+              'type': 'SizedBox',
+              'props': {'height': 16.0}
+            },
+            {
+              'type': 'Text',
+              'props': {
+                'text': '💬 Recent',
+                'fontWeight': 'bold',
+                'fontSize': 14.0
+              }
+            },
+            {
+              'type': 'SizedBox',
+              'props': {'height': 8.0}
+            },
+            _chatCard(
+                'Best Friend', 'Haha! 😂', 'Yesterday', 0, 0xFF9C27B0, false),
+            _chatCard('Dad', 'Coming late tonight', 'Yesterday', 0, 0xFFFF9800,
+                false),
+            _chatCard('Gym Buddy 💪', 'Tomorrow 6 AM?', 'Tuesday', 0,
+                0xFF4CAF50, false),
+            _chatCard('College Group', '25 new messages', 'Tuesday', 25,
+                0xFF00BCD4, false),
           ],
         },
       },
@@ -986,26 +1577,59 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
                 {
                   'type': 'CircleAvatar',
                   'props': {'radius': 32.0, 'backgroundColor': 0xFF9E9E9E},
-                  'child': {'type': 'Icon', 'props': {'icon': 'person', 'color': 0xFFFFFFFF}},
+                  'child': {
+                    'type': 'Icon',
+                    'props': {'icon': 'person', 'color': 0xFFFFFFFF}
+                  },
                 },
-                {'type': 'SizedBox', 'props': {'width': 16.0}},
+                {
+                  'type': 'SizedBox',
+                  'props': {'width': 16.0}
+                },
                 {
                   'type': 'Expanded',
                   'child': {
                     'type': 'Column',
                     'props': {'crossAxisAlignment': 'start'},
                     'children': [
-                      {'type': 'Text', 'props': {'text': 'My Status', 'fontWeight': 'bold', 'fontSize': 16.0}},
-                      {'type': 'Text', 'props': {'text': 'Tap to add status update', 'fontSize': 14.0, 'color': 0xFF666666}},
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'My Status',
+                          'fontWeight': 'bold',
+                          'fontSize': 16.0
+                        }
+                      },
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'Tap to add status update',
+                          'fontSize': 14.0,
+                          'color': 0xFF666666
+                        }
+                      },
                     ],
                   },
                 },
               ],
             },
           },
-          {'type': 'SizedBox', 'props': {'height': 24.0}},
-          {'type': 'Text', 'props': {'text': 'Recent updates', 'fontSize': 14.0, 'fontWeight': 'bold'}},
-          {'type': 'SizedBox', 'props': {'height': 16.0}},
+          {
+            'type': 'SizedBox',
+            'props': {'height': 24.0}
+          },
+          {
+            'type': 'Text',
+            'props': {
+              'text': 'Recent updates',
+              'fontSize': 14.0,
+              'fontWeight': 'bold'
+            }
+          },
+          {
+            'type': 'SizedBox',
+            'props': {'height': 16.0}
+          },
           _statusTile('Mom ❤️', 'Today, 9:30 AM', 0xFFE91E63),
           _statusTile('Best Friend', 'Today, 8:15 AM', 0xFF9C27B0),
           _statusTile('Dad', 'Yesterday, 6:45 PM', 0xFFFF9800),
@@ -1019,11 +1643,21 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
       'type': 'ListView',
       'children': [
         _callTile('Mom ❤️', 'Today, 10:30 AM', false, false, 0xFFE91E63),
-        {'type': 'Divider', 'props': {'height': 1.0}},
+        {
+          'type': 'Divider',
+          'props': {'height': 1.0}
+        },
         _callTile('Dad', 'Today, 9:15 AM', false, true, 0xFFFF9800),
-        {'type': 'Divider', 'props': {'height': 1.0}},
-        _callTile('Best Friend', 'Yesterday, 8:45 PM', false, false, 0xFF9C27B0),
-        {'type': 'Divider', 'props': {'height': 1.0}},
+        {
+          'type': 'Divider',
+          'props': {'height': 1.0}
+        },
+        _callTile(
+            'Best Friend', 'Yesterday, 8:45 PM', false, false, 0xFF9C27B0),
+        {
+          'type': 'Divider',
+          'props': {'height': 1.0}
+        },
         _callTile('Gym Buddy 💪', '15/03/2024', false, false, 0xFF4CAF50),
       ],
     };
@@ -1046,52 +1680,120 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
                 {
                   'type': 'CircleAvatar',
                   'props': {'radius': 36.0, 'backgroundColor': 0xFF075E54},
-                  'child': {'type': 'Icon', 'props': {'icon': 'person', 'size': 40.0, 'color': 0xFFFFFFFF}},
+                  'child': {
+                    'type': 'Icon',
+                    'props': {
+                      'icon': 'person',
+                      'size': 40.0,
+                      'color': 0xFFFFFFFF
+                    }
+                  },
                 },
-                {'type': 'SizedBox', 'props': {'width': 16.0}},
+                {
+                  'type': 'SizedBox',
+                  'props': {'width': 16.0}
+                },
                 {
                   'type': 'Expanded',
                   'child': {
                     'type': 'Column',
                     'props': {'crossAxisAlignment': 'start'},
                     'children': [
-                      {'type': 'Text', 'props': {'text': 'John Doe', 'fontSize': 18.0, 'fontWeight': 'bold'}},
-                      {'type': 'Text', 'props': {'text': 'Hey there! I am using WhatsApp', 'fontSize': 14.0, 'color': 0xFF666666}},
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'John Doe',
+                          'fontSize': 18.0,
+                          'fontWeight': 'bold'
+                        }
+                      },
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': 'Hey there! I am using WhatsApp',
+                          'fontSize': 14.0,
+                          'color': 0xFF666666
+                        }
+                      },
                     ],
                   },
                 },
-                {'type': 'Icon', 'props': {'icon': 'qr_code', 'color': 0xFF075E54, 'size': 24.0}},
+                {
+                  'type': 'Icon',
+                  'props': {
+                    'icon': 'qr_code',
+                    'color': 0xFF075E54,
+                    'size': 24.0
+                  }
+                },
               ],
             },
           },
         },
-        {'type': 'Divider', 'props': {'height': 8.0, 'thickness': 8.0, 'color': 0xFFF5F5F5}},
+        {
+          'type': 'Divider',
+          'props': {'height': 8.0, 'thickness': 8.0, 'color': 0xFFF5F5F5}
+        },
         // Settings items with navigation
-        _settingsTile('Account', 'Privacy, security, change number', 'key', '/account'),
-        _settingsTile('Privacy', 'Last seen, profile photo, about', 'lock', '/privacy'),
+        _settingsTile(
+            'Account', 'Privacy, security, change number', 'key', '/account'),
+        _settingsTile(
+            'Privacy', 'Last seen, profile photo, about', 'lock', '/privacy'),
         _settingsTile('Chats', 'Theme, wallpapers, chat history', 'chat', null),
-        _settingsTile('Notifications', 'Message, group & call tones', 'notifications', '/notifications'),
-        _settingsTile('Storage and data', 'Network usage, auto-download', 'storage', null),
-        _settingsTile('Help', 'Help center, contact us, privacy policy', 'help', '/support'),
-        {'type': 'Divider', 'props': {'height': 8.0, 'thickness': 8.0, 'color': 0xFFF5F5F5}},
-        _settingsTile('Invite a friend', 'Share WhatsApp with friends', 'group', null),
-        {'type': 'SizedBox', 'props': {'height': 16.0}},
+        _settingsTile('Notifications', 'Message, group & call tones',
+            'notifications', '/notifications'),
+        _settingsTile('Storage and data', 'Network usage, auto-download',
+            'storage', null),
+        _settingsTile('Help', 'Help center, contact us, privacy policy', 'help',
+            '/support'),
+        {
+          'type': 'Divider',
+          'props': {'height': 8.0, 'thickness': 8.0, 'color': 0xFFF5F5F5}
+        },
+        _settingsTile(
+            'Invite a friend', 'Share WhatsApp with friends', 'group', null),
+        {
+          'type': 'SizedBox',
+          'props': {'height': 16.0}
+        },
         {
           'type': 'Center',
-          'child': {'type': 'Text', 'props': {'text': 'from BACKEND DRIVEN UI', 'fontSize': 12.0, 'fontWeight': 'bold', 'color': 0xFF075E54}},
+          'child': {
+            'type': 'Text',
+            'props': {
+              'text': 'from BACKEND DRIVEN UI',
+              'fontSize': 12.0,
+              'fontWeight': 'bold',
+              'color': 0xFF075E54
+            }
+          },
         },
-        {'type': 'SizedBox', 'props': {'height': 8.0}},
+        {
+          'type': 'SizedBox',
+          'props': {'height': 8.0}
+        },
         {
           'type': 'Center',
-          'child': {'type': 'Text', 'props': {'text': 'Tap any item to navigate!', 'fontSize': 11.0, 'color': 0xFF999999}},
+          'child': {
+            'type': 'Text',
+            'props': {
+              'text': 'Tap any item to navigate!',
+              'fontSize': 11.0,
+              'color': 0xFF999999
+            }
+          },
         },
-        {'type': 'SizedBox', 'props': {'height': 16.0}},
+        {
+          'type': 'SizedBox',
+          'props': {'height': 16.0}
+        },
       ],
     };
   }
 
   // Helper builders
-  Map<String, dynamic> _chatTile(String name, String msg, String time, int unread, int color) {
+  Map<String, dynamic> _chatTile(
+      String name, String msg, String time, int unread, int color) {
     return {
       'type': 'InkWell',
       'props': {'onTap': true},
@@ -1104,9 +1806,15 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
             {
               'type': 'CircleAvatar',
               'props': {'radius': 28.0, 'backgroundColor': color},
-              'child': {'type': 'Icon', 'props': {'icon': 'favorite', 'color': 0xFFFFFFFF}},
+              'child': {
+                'type': 'Icon',
+                'props': {'icon': 'favorite', 'color': 0xFFFFFFFF}
+              },
             },
-            {'type': 'SizedBox', 'props': {'width': 12.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'width': 12.0}
+            },
             {
               'type': 'Expanded',
               'child': {
@@ -1117,20 +1825,61 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
                     'type': 'Row',
                     'props': {'mainAxisAlignment': 'spaceBetween'},
                     'children': [
-                      {'type': 'Text', 'props': {'text': name, 'fontWeight': 'bold', 'fontSize': 16.0}},
-                      {'type': 'Text', 'props': {'text': time, 'fontSize': 12.0, 'color': 0xFF999999}},
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': name,
+                          'fontWeight': 'bold',
+                          'fontSize': 16.0
+                        }
+                      },
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': time,
+                          'fontSize': 12.0,
+                          'color': 0xFF999999
+                        }
+                      },
                     ],
                   },
                   {
                     'type': 'Row',
                     'props': {'mainAxisAlignment': 'spaceBetween'},
                     'children': [
-                      {'type': 'Expanded', 'child': {'type': 'Text', 'props': {'text': msg, 'fontSize': 14.0, 'color': 0xFF666666, 'maxLines': 1}}},
+                      {
+                        'type': 'Expanded',
+                        'child': {
+                          'type': 'Text',
+                          'props': {
+                            'text': msg,
+                            'fontSize': 14.0,
+                            'color': 0xFF666666,
+                            'maxLines': 1
+                          }
+                        }
+                      },
                       if (unread > 0)
                         {
                           'type': 'Container',
-                          'props': {'width': 24.0, 'height': 24.0, 'borderRadius': 12.0, 'color': 0xFF25D366},
-                          'child': {'type': 'Center', 'child': {'type': 'Text', 'props': {'text': unread.toString(), 'fontSize': 12.0, 'color': 0xFFFFFFFF, 'fontWeight': 'bold'}}},
+                          'props': {
+                            'width': 24.0,
+                            'height': 24.0,
+                            'borderRadius': 12.0,
+                            'color': 0xFF25D366
+                          },
+                          'child': {
+                            'type': 'Center',
+                            'child': {
+                              'type': 'Text',
+                              'props': {
+                                'text': unread.toString(),
+                                'fontSize': 12.0,
+                                'color': 0xFFFFFFFF,
+                                'fontWeight': 'bold'
+                              }
+                            }
+                          },
                         },
                     ],
                   },
@@ -1143,10 +1892,15 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
     };
   }
 
-  Map<String, dynamic> _chatCard(String name, String msg, String time, int unread, int color, bool priority) {
+  Map<String, dynamic> _chatCard(String name, String msg, String time,
+      int unread, int color, bool priority) {
     return {
       'type': 'Card',
-      'props': {'elevation': 2.0, 'margin': {'bottom': 8.0}, 'borderRadius': 12.0},
+      'props': {
+        'elevation': 2.0,
+        'margin': {'bottom': 8.0},
+        'borderRadius': 12.0
+      },
       'child': {
         'type': 'InkWell',
         'props': {'onTap': true},
@@ -1154,7 +1908,12 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
           'type': 'Container',
           'props': {
             'padding': 12.0,
-            'gradient': priority ? {'type': 'linear', 'colors': [0xFFFFF8E1, 0xFFFFFFFF]} : null,
+            'gradient': priority
+                ? {
+                    'type': 'linear',
+                    'colors': [0xFFFFF8E1, 0xFFFFFFFF]
+                  }
+                : null,
           },
           'child': {
             'type': 'Row',
@@ -1162,22 +1921,60 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
               {
                 'type': 'CircleAvatar',
                 'props': {'radius': 32.0, 'backgroundColor': color},
-                'child': {'type': 'Icon', 'props': {'icon': 'favorite', 'color': 0xFFFFFFFF, 'size': 28.0}},
+                'child': {
+                  'type': 'Icon',
+                  'props': {
+                    'icon': 'favorite',
+                    'color': 0xFFFFFFFF,
+                    'size': 28.0
+                  }
+                },
               },
-              {'type': 'SizedBox', 'props': {'width': 12.0}},
+              {
+                'type': 'SizedBox',
+                'props': {'width': 12.0}
+              },
               {
                 'type': 'Expanded',
                 'child': {
                   'type': 'Column',
                   'props': {'crossAxisAlignment': 'start'},
                   'children': [
-                    {'type': 'Text', 'props': {'text': name, 'fontWeight': 'bold', 'fontSize': 17.0}},
-                    {'type': 'Text', 'props': {'text': msg, 'fontSize': 14.0, 'color': 0xFF666666}},
+                    {
+                      'type': 'Text',
+                      'props': {
+                        'text': name,
+                        'fontWeight': 'bold',
+                        'fontSize': 17.0
+                      }
+                    },
+                    {
+                      'type': 'Text',
+                      'props': {
+                        'text': msg,
+                        'fontSize': 14.0,
+                        'color': 0xFF666666
+                      }
+                    },
                     if (unread > 0)
                       {
                         'type': 'Container',
-                        'props': {'padding': {'horizontal': 8.0, 'vertical': 4.0}, 'borderRadius': 12.0, 'gradient': {'type': 'linear', 'colors': [0xFF25D366, 0xFF128C7E]}},
-                        'child': {'type': 'Text', 'props': {'text': '$unread new', 'fontSize': 11.0, 'color': 0xFFFFFFFF}},
+                        'props': {
+                          'padding': {'horizontal': 8.0, 'vertical': 4.0},
+                          'borderRadius': 12.0,
+                          'gradient': {
+                            'type': 'linear',
+                            'colors': [0xFF25D366, 0xFF128C7E]
+                          }
+                        },
+                        'child': {
+                          'type': 'Text',
+                          'props': {
+                            'text': '$unread new',
+                            'fontSize': 11.0,
+                            'color': 0xFFFFFFFF
+                          }
+                        },
                       },
                   ],
                 },
@@ -1195,24 +1992,46 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
       'props': {'onTap': true},
       'child': {
         'type': 'Container',
-        'props': {'padding': {'vertical': 12.0}},
+        'props': {
+          'padding': {'vertical': 12.0}
+        },
         'child': {
           'type': 'Row',
           'children': [
             {
               'type': 'CircleAvatar',
               'props': {'radius': 32.0, 'backgroundColor': color},
-              'child': {'type': 'Icon', 'props': {'icon': 'favorite', 'color': 0xFFFFFFFF}},
+              'child': {
+                'type': 'Icon',
+                'props': {'icon': 'favorite', 'color': 0xFFFFFFFF}
+              },
             },
-            {'type': 'SizedBox', 'props': {'width': 16.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'width': 16.0}
+            },
             {
               'type': 'Expanded',
               'child': {
                 'type': 'Column',
                 'props': {'crossAxisAlignment': 'start'},
                 'children': [
-                  {'type': 'Text', 'props': {'text': name, 'fontWeight': 'bold', 'fontSize': 16.0}},
-                  {'type': 'Text', 'props': {'text': time, 'fontSize': 14.0, 'color': 0xFF666666}},
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': name,
+                      'fontWeight': 'bold',
+                      'fontSize': 16.0
+                    }
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': time,
+                      'fontSize': 14.0,
+                      'color': 0xFF666666
+                    }
+                  },
                 ],
               },
             },
@@ -1222,7 +2041,8 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
     };
   }
 
-  Map<String, dynamic> _callTile(String name, String time, bool isVideo, bool isMissed, int color) {
+  Map<String, dynamic> _callTile(
+      String name, String time, bool isVideo, bool isMissed, int color) {
     return {
       'type': 'InkWell',
       'props': {'onTap': true},
@@ -1235,35 +2055,73 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
             {
               'type': 'CircleAvatar',
               'props': {'radius': 28.0, 'backgroundColor': color},
-              'child': {'type': 'Icon', 'props': {'icon': 'person', 'color': 0xFFFFFFFF}},
+              'child': {
+                'type': 'Icon',
+                'props': {'icon': 'person', 'color': 0xFFFFFFFF}
+              },
             },
-            {'type': 'SizedBox', 'props': {'width': 16.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'width': 16.0}
+            },
             {
               'type': 'Expanded',
               'child': {
                 'type': 'Column',
                 'props': {'crossAxisAlignment': 'start'},
                 'children': [
-                  {'type': 'Text', 'props': {'text': name, 'fontWeight': 'bold', 'fontSize': 16.0, 'color': isMissed ? 0xFFF44336 : 0xFF000000}},
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': name,
+                      'fontWeight': 'bold',
+                      'fontSize': 16.0,
+                      'color': isMissed ? 0xFFF44336 : 0xFF000000
+                    }
+                  },
                   {
                     'type': 'Row',
                     'children': [
-                      {'type': 'Icon', 'props': {'icon': isMissed ? 'error' : 'check', 'size': 16.0, 'color': isMissed ? 0xFFF44336 : 0xFF4CAF50}},
-                      {'type': 'SizedBox', 'props': {'width': 4.0}},
-                      {'type': 'Text', 'props': {'text': time, 'fontSize': 14.0, 'color': 0xFF666666}},
+                      {
+                        'type': 'Icon',
+                        'props': {
+                          'icon': isMissed ? 'error' : 'check',
+                          'size': 16.0,
+                          'color': isMissed ? 0xFFF44336 : 0xFF4CAF50
+                        }
+                      },
+                      {
+                        'type': 'SizedBox',
+                        'props': {'width': 4.0}
+                      },
+                      {
+                        'type': 'Text',
+                        'props': {
+                          'text': time,
+                          'fontSize': 14.0,
+                          'color': 0xFF666666
+                        }
+                      },
                     ],
                   },
                 ],
               },
             },
-            {'type': 'IconButton', 'props': {'icon': isVideo ? 'person' : 'call', 'color': 0xFF075E54}},
+            {
+              'type': 'IconButton',
+              'props': {
+                'icon': isVideo ? 'person' : 'call',
+                'color': 0xFF075E54
+              }
+            },
           ],
         },
       },
     };
   }
 
-  Map<String, dynamic> _settingsTile(String title, String subtitle, String icon, String? route) {
+  Map<String, dynamic> _settingsTile(
+      String title, String subtitle, String icon, String? route) {
     // Navigation action from backend - either navigate to route or show snackbar
     final action = route != null
         ? {'type': 'navigate', 'route': route}
@@ -1273,28 +2131,61 @@ class _WhatsAppCloneFullState extends State<WhatsAppCloneFull> {
       'action': action,
       'child': {
         'type': 'Container',
-        'props': {'padding': {'horizontal': 16.0, 'vertical': 14.0}},
+        'props': {
+          'padding': {'horizontal': 16.0, 'vertical': 14.0}
+        },
         'child': {
           'type': 'Row',
           'children': [
             {
               'type': 'Container',
-              'props': {'width': 40.0, 'height': 40.0, 'borderRadius': 20.0, 'color': 0xFFE8F5E9},
-              'child': {'type': 'Center', 'child': {'type': 'Icon', 'props': {'icon': icon, 'color': 0xFF075E54, 'size': 22.0}}},
+              'props': {
+                'width': 40.0,
+                'height': 40.0,
+                'borderRadius': 20.0,
+                'color': 0xFFE8F5E9
+              },
+              'child': {
+                'type': 'Center',
+                'child': {
+                  'type': 'Icon',
+                  'props': {'icon': icon, 'color': 0xFF075E54, 'size': 22.0}
+                }
+              },
             },
-            {'type': 'SizedBox', 'props': {'width': 16.0}},
+            {
+              'type': 'SizedBox',
+              'props': {'width': 16.0}
+            },
             {
               'type': 'Expanded',
               'child': {
                 'type': 'Column',
                 'props': {'crossAxisAlignment': 'start'},
                 'children': [
-                  {'type': 'Text', 'props': {'text': title, 'fontSize': 16.0}},
-                  {'type': 'Text', 'props': {'text': subtitle, 'fontSize': 13.0, 'color': 0xFF666666}},
+                  {
+                    'type': 'Text',
+                    'props': {'text': title, 'fontSize': 16.0}
+                  },
+                  {
+                    'type': 'Text',
+                    'props': {
+                      'text': subtitle,
+                      'fontSize': 13.0,
+                      'color': 0xFF666666
+                    }
+                  },
                 ],
               },
             },
-            {'type': 'Icon', 'props': {'icon': 'chevron_right', 'color': 0xFFCCCCCC, 'size': 20.0}},
+            {
+              'type': 'Icon',
+              'props': {
+                'icon': 'chevron_right',
+                'color': 0xFFCCCCCC,
+                'size': 20.0
+              }
+            },
           ],
         },
       },
@@ -1318,7 +2209,8 @@ class _WhatsAppScaffold extends StatefulWidget {
   State<_WhatsAppScaffold> createState() => _WhatsAppScaffoldState();
 }
 
-class _WhatsAppScaffoldState extends State<_WhatsAppScaffold> with SingleTickerProviderStateMixin {
+class _WhatsAppScaffoldState extends State<_WhatsAppScaffold>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentTab = 0;
 
@@ -1386,7 +2278,8 @@ class _WhatsAppScaffoldState extends State<_WhatsAppScaffold> with SingleTickerP
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: tabs.map((tab) => _buildTabContent(tab['screen'])).toList(),
+              children:
+                  tabs.map((tab) => _buildTabContent(tab['screen'])).toList(),
             ),
           ),
         ],
@@ -1412,7 +2305,10 @@ class _WhatsAppScaffoldState extends State<_WhatsAppScaffold> with SingleTickerP
     final fabConfig = tab['fab'];
     if (fabConfig == null) return null;
 
-    const gradient = {'type': 'linear', 'colors': [0xFF25D366, 0xFF128C7E]};
+    const gradient = {
+      'type': 'linear',
+      'colors': [0xFF25D366, 0xFF128C7E]
+    };
     const boxShadow = {'color': 0x40000000, 'offsetY': 4.0, 'blurRadius': 8.0};
     const containerProps = {
       'width': 56.0,
@@ -1429,7 +2325,14 @@ class _WhatsAppScaffoldState extends State<_WhatsAppScaffold> with SingleTickerP
         'props': containerProps,
         'child': {
           'type': 'Center',
-          'child': {'type': 'Icon', 'props': {'icon': fabConfig['icon'], 'color': 0xFFFFFFFF, 'size': 28.0}},
+          'child': {
+            'type': 'Icon',
+            'props': {
+              'icon': fabConfig['icon'],
+              'color': 0xFFFFFFFF,
+              'size': 28.0
+            }
+          },
         },
       },
     });

@@ -1,6 +1,8 @@
 # Backend-Driven UI
 
 [![pub package](https://img.shields.io/pub/v/backend_driven_ui.svg)](https://pub.dev/packages/backend_driven_ui)
+[![pub points](https://img.shields.io/pub/points/backend_driven_ui)](https://pub.dev/packages/backend_driven_ui/score)
+[![platforms](https://img.shields.io/badge/platforms-iOS%20Android%20Web%20macOS%20Windows%20Linux-02569B?logo=flutter&logoColor=white)](https://pub.dev/packages/backend_driven_ui)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 **Flutter UIs That Update Themselves. Seriously.**
@@ -13,6 +15,7 @@ Server-driven UI framework with ApiWidget - build data-driven interfaces without
 
 - 🎯 **80+ Built-in Widget Types** - Fully interactive apps from JSON
 - ⚡ **Zero App Releases** - Update UI from backend JSON instantly
+- 🌐 **All 6 Platforms** - Android, iOS, **Web**, macOS, Windows & Linux
 - 🔓 **100% Open Source** - MIT licensed, yours forever
 - 📦 **ApiWidget** - FutureBuilder's smarter, faster cousin
 - 🚀 **Lightweight & Fast** - Optimized parsing, lazy loading
@@ -68,6 +71,10 @@ Full URLs (`https://...`) are always used as-is regardless of `baseUrl`.
 ---
 
 ## 📖 Documentation
+
+> **Full schema reference** → [igloodev.in/docs/backend-driven-ui/schema](https://igloodev.in/docs/backend-driven-ui/schema)
+>
+> Complete reference for all 80+ widgets, props, actions, conditions, validators, state binding, and animations. Also available offline as [SCHEMA_REFERENCE.md](./SCHEMA_REFERENCE.md).
 
 ### Backend-Driven UI (the wow factor)
 

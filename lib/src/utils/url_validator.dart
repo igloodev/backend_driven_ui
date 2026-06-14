@@ -1,7 +1,8 @@
-import 'dart:io';
-
 import '../core/bdui_config.dart';
 import 'bdui_logger.dart';
+// Platform-specific IP-literal check: dart:io InternetAddress on native,
+// a pure-Dart stub on web.
+import 'url_validator_stub.dart' if (dart.library.io) 'url_validator_io.dart';
 
 /// URL validation utility to reduce SSRF attack surface.
 ///
@@ -75,77 +76,15 @@ class UrlValidator {
       return true;
     }
 
-    // Try to parse as InternetAddress for proper IP validation
-    try {
-      final address = InternetAddress.tryParse(cleanHost);
-      if (address != null) {
-        // Use Dart's built-in checks - handles all IPv4/IPv6 formats
-        if (address.isLoopback) {
-          return true;
-        }
-
-        // Check for private/link-local ranges
-        if (_isPrivateAddress(address)) {
-          return true;
-        }
-      }
-    } catch (e) {
-      // Not a valid IP, continue with hostname checks
-    }
-
-    // Fallback: Manual IPv4 check for edge cases
-    if (_isPrivateIPv4String(cleanHost)) {
+    // Platform IP-literal check: full IPv4/IPv6 private/loopback validation on
+    // native (dart:io InternetAddress); a no-op on web (see stub).
+    if (isPrivateOrLoopbackIp(cleanHost)) {
       return true;
     }
 
-    return false;
-  }
-
-  /// Check if InternetAddress is in private range
-  static bool _isPrivateAddress(InternetAddress address) {
-    final bytes = address.rawAddress;
-
-    if (address.type == InternetAddressType.IPv4 && bytes.length == 4) {
-      // 10.0.0.0/8
-      if (bytes[0] == 10) return true;
-      // 172.16.0.0/12
-      if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31) return true;
-      // 192.168.0.0/16
-      if (bytes[0] == 192 && bytes[1] == 168) return true;
-      // 169.254.0.0/16 (link-local)
-      if (bytes[0] == 169 && bytes[1] == 254) return true;
-      // 127.0.0.0/8 (loopback - redundant but explicit)
-      if (bytes[0] == 127) return true;
-      // 0.0.0.0/8
-      if (bytes[0] == 0) return true;
-    }
-
-    if (address.type == InternetAddressType.IPv6 && bytes.length == 16) {
-      // fc00::/7 - Unique local (private)
-      if (bytes[0] == 0xfc || bytes[0] == 0xfd) return true;
-      // fe80::/10 - Link-local
-      if (bytes[0] == 0xfe && (bytes[1] & 0xc0) == 0x80) return true;
-      // ::1 - Loopback (check all zeros except last byte)
-      var allZeros = true;
-      for (var i = 0; i < 15; i++) {
-        if (bytes[i] != 0) {
-          allZeros = false;
-          break;
-        }
-      }
-      if (allZeros && bytes[15] == 1) return true;
-      // :: - Unspecified
-      if (bytes.every((b) => b == 0)) return true;
-      // ::ffff:0:0/96 - IPv4-mapped, check the IPv4 part
-      if (bytes[10] == 0xff && bytes[11] == 0xff) {
-        // Check IPv4 portion (last 4 bytes)
-        if (bytes[12] == 10) return true;
-        if (bytes[12] == 172 && bytes[13] >= 16 && bytes[13] <= 31) return true;
-        if (bytes[12] == 192 && bytes[13] == 168) return true;
-        if (bytes[12] == 169 && bytes[13] == 254) return true;
-        if (bytes[12] == 127) return true;
-        if (bytes[12] == 0) return true;
-      }
+    // Pure-Dart fallback: manual IPv4 check (covers web and edge cases).
+    if (_isPrivateIPv4String(cleanHost)) {
+      return true;
     }
 
     return false;

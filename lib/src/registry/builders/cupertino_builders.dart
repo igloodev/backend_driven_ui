@@ -39,8 +39,9 @@ class CupertinoBuilders {
       );
     }
 
-    final borderRadius = SchemaConverters.toBorderRadius(props['borderRadius']) ??
-        const BorderRadius.all(Radius.circular(8));
+    final borderRadius =
+        SchemaConverters.toBorderRadius(props['borderRadius']) ??
+            const BorderRadius.all(Radius.circular(8));
     final padding = SchemaConverters.toEdgeInsets(props['padding']);
     final minSize = SchemaConverters.toDouble(props['minSize']) ?? 44.0;
 
@@ -130,7 +131,8 @@ class CupertinoBuilders {
     SchemaParser parser,
   ) {
     final props = schema.props ?? {};
-    return _CupertinoTextFieldWidget(schema: schema, props: props, parser: parser);
+    return _CupertinoTextFieldWidget(
+        schema: schema, props: props, parser: parser);
   }
 }
 
@@ -224,9 +226,8 @@ class _CupertinoSliderState extends State<_CupertinoSliderWidget> {
     final fromState = stateKey != null
         ? SchemaConverters.toDouble(widget.parser.stateManager.get(stateKey))
         : null;
-    _value = fromState ??
-        SchemaConverters.toDouble(widget.props['value']) ??
-        0.0;
+    _value =
+        fromState ?? SchemaConverters.toDouble(widget.props['value']) ?? 0.0;
   }
 
   @override
@@ -253,7 +254,8 @@ class _CupertinoSliderState extends State<_CupertinoSliderWidget> {
       max: max,
       divisions: divisions,
       activeColor: SchemaConverters.toColor(props['activeColor']),
-      thumbColor: SchemaConverters.toColor(props['thumbColor']) ?? CupertinoColors.white,
+      thumbColor: SchemaConverters.toColor(props['thumbColor']) ??
+          CupertinoColors.white,
       onChanged: (v) {
         setState(() => _value = v);
         if (stateKey != null) widget.parser.stateManager.set(stateKey, v);
@@ -297,7 +299,9 @@ class _CupertinoTextFieldState extends State<_CupertinoTextFieldWidget> {
     super.didUpdateWidget(oldWidget);
     final newValue = widget.props['value'] as String?;
     final oldValue = oldWidget.props['value'] as String?;
-    if (newValue != null && newValue != oldValue && newValue != _controller.text) {
+    if (newValue != null &&
+        newValue != oldValue &&
+        newValue != _controller.text) {
       _controller.text = newValue;
     }
   }
@@ -332,11 +336,14 @@ class _CupertinoTextFieldState extends State<_CupertinoTextFieldWidget> {
       placeholder: props['hint'] as String?,
       obscureText: obscure,
       enabled: props['enabled'] as bool? ?? true,
-      maxLines: obscure ? 1 : SchemaConverters.toDouble(props['maxLines'])?.toInt() ?? 1,
+      maxLines: obscure
+          ? 1
+          : SchemaConverters.toDouble(props['maxLines'])?.toInt() ?? 1,
       style: SchemaConverters.toTextStyle(props['style']),
       padding: SchemaConverters.toEdgeInsets(props['padding']) ??
           const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-      textAlign: SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
+      textAlign:
+          SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
       clearButtonMode: _toOverlayMode(props['clearButtonMode'] as String?),
       onChanged: (v) {
         if (stateKey != null) widget.parser.stateManager.set(stateKey, v);

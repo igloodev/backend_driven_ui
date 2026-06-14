@@ -53,7 +53,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Padding',
         'props': {},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -62,7 +65,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Padding',
         'props': {'padding': 16},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -70,8 +76,13 @@ void main() {
     testWidgets('padding with all key', (t) async {
       await t.pumpWidget(_build({
         'type': 'Padding',
-        'props': {'padding': {'all': 12}},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'props': {
+          'padding': {'all': 12}
+        },
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -82,7 +93,10 @@ void main() {
         'props': {
           'padding': {'horizontal': 20, 'vertical': 8},
         },
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -93,25 +107,35 @@ void main() {
         'props': {
           'padding': {'left': 4, 'top': 8, 'right': 4, 'bottom': 16},
         },
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
 
     testWidgets('no child does not crash', (t) async {
-      await t.pumpWidget(_build({'type': 'Padding', 'props': {'padding': 8}}));
+      await t.pumpWidget(_build({
+        'type': 'Padding',
+        'props': {'padding': 8}
+      }));
       expect(t.takeException(), isNull);
     });
   });
 
-  group('LayoutBuilders — Expanded / Flexible / Spacer outside Flex fallback', () {
+  group('LayoutBuilders — Expanded / Flexible / Spacer outside Flex fallback',
+      () {
     testWidgets('Expanded outside Column renders child directly', (t) async {
       await t.pumpWidget(_build({
         'type': 'Container',
         'child': {
           'type': 'Expanded',
           'props': {'flex': 1},
-          'child': {'type': 'Text', 'props': {'text': 'hi'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'hi'}
+          },
         },
       }));
       expect(t.takeException(), isNull);
@@ -124,7 +148,10 @@ void main() {
         'child': {
           'type': 'Flexible',
           'props': {'flex': 1},
-          'child': {'type': 'Text', 'props': {'text': 'hi'}},
+          'child': {
+            'type': 'Text',
+            'props': {'text': 'hi'}
+          },
         },
       }));
       expect(t.takeException(), isNull);
@@ -143,7 +170,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Expanded',
         'props': {'flex': 1},
-        'child': {'type': 'Text', 'props': {'text': 'top'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'top'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -157,7 +187,10 @@ void main() {
           {
             'type': 'Expanded',
             'props': {'flex': 0},
-            'child': {'type': 'Text', 'props': {'text': 'a'}},
+            'child': {
+              'type': 'Text',
+              'props': {'text': 'a'}
+            },
           },
         ],
       }));
@@ -171,7 +204,10 @@ void main() {
           {
             'type': 'Expanded',
             'props': {'flex': -5},
-            'child': {'type': 'Text', 'props': {'text': 'a'}},
+            'child': {
+              'type': 'Text',
+              'props': {'text': 'a'}
+            },
           },
         ],
       }));
@@ -185,7 +221,10 @@ void main() {
           {
             'type': 'Expanded',
             'props': {},
-            'child': {'type': 'Text', 'props': {'text': 'a'}},
+            'child': {
+              'type': 'Text',
+              'props': {'text': 'a'}
+            },
           },
         ],
       }));
@@ -199,7 +238,10 @@ void main() {
           {
             'type': 'Flexible',
             'props': {'flex': 0},
-            'child': {'type': 'Text', 'props': {'text': 'a'}},
+            'child': {
+              'type': 'Text',
+              'props': {'text': 'a'}
+            },
           },
         ],
       }));
@@ -210,9 +252,18 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Row',
         'children': [
-          {'type': 'Text', 'props': {'text': 'a'}},
-          {'type': 'Spacer', 'props': {'flex': 0}},
-          {'type': 'Text', 'props': {'text': 'b'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'a'}
+          },
+          {
+            'type': 'Spacer',
+            'props': {'flex': 0}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'b'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -280,15 +331,22 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'ListView',
         'children': [
-          {'type': 'Text', 'props': {'text': 'item 1'}},
-          {'type': 'Text', 'props': {'text': 'item 2'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'item 1'}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'item 2'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
     });
 
     testWidgets('ListView.separated empty children', (t) async {
-      await t.pumpWidget(_build({'type': 'ListView.separated', 'children': []}));
+      await t
+          .pumpWidget(_build({'type': 'ListView.separated', 'children': []}));
       expect(t.takeException(), isNull);
     });
 
@@ -298,7 +356,8 @@ void main() {
     });
 
     testWidgets('SingleChildScrollView no child', (t) async {
-      await t.pumpWidget(_build({'type': 'SingleChildScrollView', 'props': {}}));
+      await t
+          .pumpWidget(_build({'type': 'SingleChildScrollView', 'props': {}}));
       expect(t.takeException(), isNull);
     });
   });
@@ -308,7 +367,12 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView',
         'props': {'crossAxisCount': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -317,7 +381,12 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView',
         'props': {'crossAxisCount': -2},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -326,7 +395,12 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView',
         'props': {'crossAxisCount': 2, 'childAspectRatio': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -335,7 +409,12 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView',
         'props': {'crossAxisCount': 2, 'childAspectRatio': -1},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -353,16 +432,27 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView.count',
         'props': {'crossAxisCount': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
 
-    testWidgets('GridView.extent maxCrossAxisExtent 0 clamped to 0.1', (t) async {
+    testWidgets('GridView.extent maxCrossAxisExtent 0 clamped to 0.1',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'GridView.extent',
         'props': {'maxCrossAxisExtent': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -371,16 +461,27 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'GridView.custom',
         'props': {'crossAxisCount': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
 
-    testWidgets('GridView.custom maxCrossAxisExtent 0 clamped to 0.1', (t) async {
+    testWidgets('GridView.custom maxCrossAxisExtent 0 clamped to 0.1',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'GridView.custom',
         'props': {'maxCrossAxisExtent': 0},
-        'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+        'children': [
+          {
+            'type': 'Text',
+            'props': {'text': 'item'}
+          }
+        ],
       }));
       expect(t.takeException(), isNull);
     });
@@ -395,7 +496,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Opacity',
         'props': {'opacity': 1.5},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -404,7 +508,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Opacity',
         'props': {'opacity': -0.5},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -413,7 +520,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Opacity',
         'props': {},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -422,7 +532,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Opacity',
         'props': {'opacity': 0},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -431,23 +544,30 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Opacity',
         'props': {'opacity': 1},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
   });
 
   group('EffectsBuilders — Visibility cascade guard', () {
-    testWidgets('maintainSize true forces maintainAnimation and maintainState', (t) async {
+    testWidgets('maintainSize true forces maintainAnimation and maintainState',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'Visibility',
         'props': {
           'visible': true,
           'maintainSize': true,
           'maintainAnimation': false, // would violate assert without cascade
-          'maintainState': false,     // same
+          'maintainState': false, // same
         },
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -460,7 +580,10 @@ void main() {
           'maintainAnimation': false,
           'maintainState': false,
         },
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -469,7 +592,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Visibility',
         'props': {'visible': false},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -478,7 +604,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'Visibility',
         'props': {},
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -491,7 +620,10 @@ void main() {
           'maintainAnimation': true,
           'maintainState': true,
         },
-        'child': {'type': 'Text', 'props': {'text': 'hi'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'hi'}
+        },
       }));
       expect(t.takeException(), isNull);
     });
@@ -509,7 +641,12 @@ void main() {
           {
             'type': 'SliverFixedExtentList',
             'props': {'itemExtent': 0},
-            'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+            'children': [
+              {
+                'type': 'Text',
+                'props': {'text': 'item'}
+              }
+            ],
           },
         ],
       }));
@@ -523,7 +660,12 @@ void main() {
           {
             'type': 'SliverFixedExtentList',
             'props': {'itemExtent': -10},
-            'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+            'children': [
+              {
+                'type': 'Text',
+                'props': {'text': 'item'}
+              }
+            ],
           },
         ],
       }));
@@ -537,7 +679,12 @@ void main() {
           {
             'type': 'SliverGrid',
             'props': {'crossAxisCount': 0},
-            'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+            'children': [
+              {
+                'type': 'Text',
+                'props': {'text': 'item'}
+              }
+            ],
           },
         ],
       }));
@@ -551,7 +698,12 @@ void main() {
           {
             'type': 'SliverGrid',
             'props': {'crossAxisCount': 2, 'childAspectRatio': 0},
-            'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+            'children': [
+              {
+                'type': 'Text',
+                'props': {'text': 'item'}
+              }
+            ],
           },
         ],
       }));
@@ -565,14 +717,20 @@ void main() {
           {
             'type': 'SliverGrid',
             'props': {'maxCrossAxisExtent': 0},
-            'children': [{'type': 'Text', 'props': {'text': 'item'}}],
+            'children': [
+              {
+                'type': 'Text',
+                'props': {'text': 'item'}
+              }
+            ],
           },
         ],
       }));
       expect(t.takeException(), isNull);
     });
 
-    testWidgets('SliverAppBar snap true without floating does not assert', (t) async {
+    testWidgets('SliverAppBar snap true without floating does not assert',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'CustomScrollView',
         'children': [
@@ -582,7 +740,10 @@ void main() {
           },
           {
             'type': 'SliverToBoxAdapter',
-            'child': {'type': 'SizedBox', 'props': {'height': 100}},
+            'child': {
+              'type': 'SizedBox',
+              'props': {'height': 100}
+            },
           },
         ],
       }));
@@ -618,7 +779,10 @@ void main() {
             'props': {},
             'child': {
               'type': 'SliverToBoxAdapter',
-              'child': {'type': 'Text', 'props': {'text': 'hi'}},
+              'child': {
+                'type': 'Text',
+                'props': {'text': 'hi'}
+              },
             },
           },
         ],
@@ -643,7 +807,8 @@ void main() {
 
   group('NavigationBuilders — BottomNavigationBar item count guard', () {
     testWidgets('0 items returns SizedBox', (t) async {
-      await t.pumpWidget(_build({'type': 'BottomNavigationBar', 'children': []}));
+      await t
+          .pumpWidget(_build({'type': 'BottomNavigationBar', 'children': []}));
       expect(t.takeException(), isNull);
     });
 
@@ -651,7 +816,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'BottomNavigationBar',
         'children': [
-          {'type': 'Item', 'props': {'icon': 'home', 'label': 'Home'}},
+          {
+            'type': 'Item',
+            'props': {'icon': 'home', 'label': 'Home'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -661,8 +829,14 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'BottomNavigationBar',
         'children': [
-          {'type': 'Item', 'props': {'icon': 'home', 'label': 'Home'}},
-          {'type': 'Item', 'props': {'icon': 'search', 'label': 'Search'}},
+          {
+            'type': 'Item',
+            'props': {'icon': 'home', 'label': 'Home'}
+          },
+          {
+            'type': 'Item',
+            'props': {'icon': 'search', 'label': 'Search'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -672,9 +846,18 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'BottomNavigationBar',
         'children': [
-          {'type': 'Item', 'props': {'icon': 'home', 'label': 'Home'}},
-          {'type': 'Item', 'props': {'icon': 'search', 'label': 'Search'}},
-          {'type': 'Item', 'props': {'icon': 'xyz_unknown', 'label': 'More'}},
+          {
+            'type': 'Item',
+            'props': {'icon': 'home', 'label': 'Home'}
+          },
+          {
+            'type': 'Item',
+            'props': {'icon': 'search', 'label': 'Search'}
+          },
+          {
+            'type': 'Item',
+            'props': {'icon': 'xyz_unknown', 'label': 'More'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -692,8 +875,14 @@ void main() {
         'type': 'TabBar',
         'props': {'indicatorWeight': 0},
         'children': [
-          {'type': 'Tab', 'props': {'text': 'A'}},
-          {'type': 'Tab', 'props': {'text': 'B'}},
+          {
+            'type': 'Tab',
+            'props': {'text': 'A'}
+          },
+          {
+            'type': 'Tab',
+            'props': {'text': 'B'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -704,8 +893,14 @@ void main() {
         'type': 'TabBar',
         'props': {'indicatorWeight': -5},
         'children': [
-          {'type': 'Tab', 'props': {'text': 'A'}},
-          {'type': 'Tab', 'props': {'text': 'B'}},
+          {
+            'type': 'Tab',
+            'props': {'text': 'A'}
+          },
+          {
+            'type': 'Tab',
+            'props': {'text': 'B'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -715,8 +910,14 @@ void main() {
       await t.pumpWidget(_buildWithTabController({
         'type': 'TabBar',
         'children': [
-          {'type': 'Tab', 'props': {'text': 'Home'}},
-          {'type': 'Tab', 'props': {'text': 'Search'}},
+          {
+            'type': 'Tab',
+            'props': {'text': 'Home'}
+          },
+          {
+            'type': 'Tab',
+            'props': {'text': 'Search'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -771,8 +972,14 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'NavigationBar',
         'children': [
-          {'type': 'Dest', 'props': {'icon': 'home', 'label': 'Home'}},
-          {'type': 'Dest', 'props': {'icon': 'search', 'label': 'Search'}},
+          {
+            'type': 'Dest',
+            'props': {'icon': 'home', 'label': 'Home'}
+          },
+          {
+            'type': 'Dest',
+            'props': {'icon': 'search', 'label': 'Search'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);
@@ -789,7 +996,8 @@ void main() {
   // ═══════════════════════════════════════════════════════════════════════════
 
   group('InputBuilders — obscureText + maxLines guard', () {
-    testWidgets('TextField obscureText true with maxLines 5 forces maxLines 1', (t) async {
+    testWidgets('TextField obscureText true with maxLines 5 forces maxLines 1',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'TextField',
         'props': {'obscureText': true, 'maxLines': 5},
@@ -810,7 +1018,9 @@ void main() {
       expect(t.takeException(), isNull);
     });
 
-    testWidgets('TextFormField obscureText true with maxLines 3 forces maxLines 1', (t) async {
+    testWidgets(
+        'TextFormField obscureText true with maxLines 3 forces maxLines 1',
+        (t) async {
       await t.pumpWidget(_build({
         'type': 'TextFormField',
         'props': {'obscureText': true, 'maxLines': 3},
@@ -889,7 +1099,10 @@ void main() {
     });
 
     testWidgets('Text with content renders correctly', (t) async {
-      await t.pumpWidget(_build({'type': 'Text', 'props': {'text': 'Hello'}}));
+      await t.pumpWidget(_build({
+        'type': 'Text',
+        'props': {'text': 'Hello'}
+      }));
       expect(t.takeException(), isNull);
       expect(find.text('Hello'), findsOneWidget);
     });
@@ -901,18 +1114,23 @@ void main() {
 
     testWidgets('Icon unknown name falls back to help_outline', (t) async {
       await t.pumpWidget(
-        _build({'type': 'Icon', 'props': {'icon': 'totally_unknown_xyz'}}),
+        _build({
+          'type': 'Icon',
+          'props': {'icon': 'totally_unknown_xyz'}
+        }),
       );
       expect(t.takeException(), isNull);
     });
 
     testWidgets('CircularProgressIndicator no props', (t) async {
-      await t.pumpWidget(_build({'type': 'CircularProgressIndicator', 'props': {}}));
+      await t.pumpWidget(
+          _build({'type': 'CircularProgressIndicator', 'props': {}}));
       expect(t.takeException(), isNull);
     });
 
     testWidgets('LinearProgressIndicator no props', (t) async {
-      await t.pumpWidget(_build({'type': 'LinearProgressIndicator', 'props': {}}));
+      await t
+          .pumpWidget(_build({'type': 'LinearProgressIndicator', 'props': {}}));
       expect(t.takeException(), isNull);
     });
 
@@ -933,7 +1151,10 @@ void main() {
     });
 
     testWidgets('ElevatedButton with text', (t) async {
-      await t.pumpWidget(_build({'type': 'ElevatedButton', 'props': {'text': 'Click'}}));
+      await t.pumpWidget(_build({
+        'type': 'ElevatedButton',
+        'props': {'text': 'Click'}
+      }));
       expect(t.takeException(), isNull);
     });
 
@@ -948,7 +1169,10 @@ void main() {
     });
 
     testWidgets('IconButton unknown icon falls back', (t) async {
-      await t.pumpWidget(_build({'type': 'IconButton', 'props': {'icon': 'xyz_unknown'}}));
+      await t.pumpWidget(_build({
+        'type': 'IconButton',
+        'props': {'icon': 'xyz_unknown'}
+      }));
       expect(t.takeException(), isNull);
     });
 
@@ -969,7 +1193,8 @@ void main() {
 
   group('SchemaParser — unknown widget fallback', () {
     testWidgets('unknown type shows fallback without crashing', (t) async {
-      await t.pumpWidget(_build({'type': 'CompletelyUnknownWidget123', 'props': {}}));
+      await t.pumpWidget(
+          _build({'type': 'CompletelyUnknownWidget123', 'props': {}}));
       expect(t.takeException(), isNull);
     });
 
@@ -977,7 +1202,10 @@ void main() {
       await t.pumpWidget(_build({
         'type': 'UnknownParent',
         'children': [
-          {'type': 'Text', 'props': {'text': 'visible child'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'visible child'}
+          },
         ],
       }));
       expect(t.takeException(), isNull);

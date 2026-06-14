@@ -29,8 +29,14 @@ void main() {
       final schema = WidgetSchema.fromJson({
         'type': 'Column',
         'children': [
-          {'type': 'Text', 'props': {'text': 'A'}},
-          {'type': 'Text', 'props': {'text': 'B'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'A'}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'B'}
+          },
         ],
       });
       expect(schema.children?.length, 2);
@@ -41,7 +47,10 @@ void main() {
     test('parses single child', () {
       final schema = WidgetSchema.fromJson({
         'type': 'Center',
-        'child': {'type': 'Text', 'props': {'text': 'centered'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'centered'}
+        },
       });
       expect(schema.child?.type, 'Text');
       expect(schema.child?.props?['text'], 'centered');
@@ -120,9 +129,13 @@ void main() {
       // Create 501 children — expect truncation at 500 (BduiConfig.maxChildren)
       final children = List.generate(
         501,
-        (i) => {'type': 'Text', 'props': {'text': '$i'}},
+        (i) => {
+          'type': 'Text',
+          'props': {'text': '$i'}
+        },
       );
-      final schema = WidgetSchema.fromJson({'type': 'Column', 'children': children});
+      final schema =
+          WidgetSchema.fromJson({'type': 'Column', 'children': children});
       expect(schema.children?.length, lessThanOrEqualTo(500));
     });
   });

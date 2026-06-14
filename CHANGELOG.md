@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-06-14
+
+### Added
+- **Web platform support.** The package now supports all 6 platforms
+  (Android, iOS, Web, Windows, macOS, Linux). Removed the `dart:io` imports
+  that previously excluded web: the SSRF URL validator's IP-literal check now
+  uses a conditional import (`dart:io` `InternetAddress` on native, a pure-Dart
+  fallback on web), and the HTTP client catches `http.ClientException`.
+
+### Changed
+- Network failures (DNS / offline / connection refused) now correctly surface
+  the "No internet connection" message on every platform — previously the
+  `http` package wrapped `SocketException` into `ClientException`, so the old
+  `on SocketException` clause never matched on native.
+
+### Notes
+- On web, private/loopback **IPv4** literals and cloud-metadata / localhost
+  hosts are still blocked; full **IPv6**-range IP-literal validation runs on
+  native only (browsers also enforce CORS / sandboxing). No API changes.
+
 ## [0.5.1] - 2026-06-11
 
 ### Fixed

@@ -86,12 +86,13 @@ class _SchemaWidgetState extends State<SchemaWidget> {
   }
 
   void _initParser() {
-    _parser = widget.parser ?? SchemaParser(
-      onCustomAction: widget.onCustomAction,
-      onNavigate: widget.onNavigate,
-      onApiSuccess: widget.onApiSuccess,
-      onApiError: widget.onApiError,
-    );
+    _parser = widget.parser ??
+        SchemaParser(
+          onCustomAction: widget.onCustomAction,
+          onNavigate: widget.onNavigate,
+          onApiSuccess: widget.onApiSuccess,
+          onApiError: widget.onApiError,
+        );
   }
 
   @override

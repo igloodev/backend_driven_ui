@@ -18,9 +18,18 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'PageView',
         'children': [
-          {'type': 'Text', 'props': {'text': 'Page 1'}},
-          {'type': 'Text', 'props': {'text': 'Page 2'}},
-          {'type': 'Text', 'props': {'text': 'Page 3'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'Page 1'}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'Page 2'}
+          },
+          {
+            'type': 'Text',
+            'props': {'text': 'Page 3'}
+          },
         ],
       }));
 
@@ -38,7 +47,10 @@ void main() {
         'type': 'PageView',
         'props': {'scrollDirection': 'vertical'},
         'children': [
-          {'type': 'Text', 'props': {'text': 'A'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'A'}
+          },
         ],
       }));
     });
@@ -48,7 +60,10 @@ void main() {
         'type': 'PageView',
         'props': {'reverse': true},
         'children': [
-          {'type': 'Text', 'props': {'text': 'R'}},
+          {
+            'type': 'Text',
+            'props': {'text': 'R'}
+          },
         ],
       }));
     });
@@ -59,7 +74,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'PageView.builder',
         'props': {'itemCount': 3},
-        'child': {'type': 'Text', 'props': {'text': 'item'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'item'}
+        },
       }));
 
       expect(find.byType(PageView), findsOneWidget);
@@ -75,7 +93,10 @@ void main() {
     testWidgets('null itemCount (infinite) does not crash', (tester) async {
       await tester.pumpWidget(_build({
         'type': 'PageView.builder',
-        'child': {'type': 'Text', 'props': {'text': 'x'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'x'}
+        },
       }));
     });
   });

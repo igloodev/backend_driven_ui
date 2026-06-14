@@ -240,7 +240,8 @@ class InteractiveBuilders {
       ),
       movementDuration: Duration(
         milliseconds:
-            SchemaConverters.toDouble(props['movementDuration'])?.toInt() ?? 200,
+            SchemaConverters.toDouble(props['movementDuration'])?.toInt() ??
+                200,
       ),
       crossAxisEndOffset:
           SchemaConverters.toDouble(props['crossAxisEndOffset']) ?? 0.0,

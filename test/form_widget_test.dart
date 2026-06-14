@@ -25,20 +25,30 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Form',
         'props': {'formKey': 'login'},
-        'child': {'type': 'TextFormField', 'props': {'hint': 'Email'}},
+        'child': {
+          'type': 'TextFormField',
+          'props': {'hint': 'Email'}
+        },
       }));
 
       expect(find.byType(Form), findsOneWidget);
       expect(find.byType(TextFormField), findsOneWidget);
     });
 
-    testWidgets('renders with multiple children wrapped in Column', (tester) async {
+    testWidgets('renders with multiple children wrapped in Column',
+        (tester) async {
       await tester.pumpWidget(_build({
         'type': 'Form',
         'props': {'formKey': 'signup'},
         'children': [
-          {'type': 'TextFormField', 'props': {'hint': 'Name'}},
-          {'type': 'TextFormField', 'props': {'hint': 'Email'}},
+          {
+            'type': 'TextFormField',
+            'props': {'hint': 'Name'}
+          },
+          {
+            'type': 'TextFormField',
+            'props': {'hint': 'Email'}
+          },
         ],
       }));
 
@@ -46,13 +56,17 @@ void main() {
       expect(find.byType(TextFormField), findsNWidgets(2));
     });
 
-    testWidgets('uses default formKey "_default" when not specified', (tester) async {
+    testWidgets('uses default formKey "_default" when not specified',
+        (tester) async {
       final parser = SchemaParser();
 
       await tester.pumpWidget(_build(
         {
           'type': 'Form',
-          'child': {'type': 'TextFormField', 'props': {'hint': 'Field'}},
+          'child': {
+            'type': 'TextFormField',
+            'props': {'hint': 'Field'}
+          },
         },
         parser: parser,
       ));
@@ -60,14 +74,16 @@ void main() {
       expect(parser.getFormKey('_default').currentState, isNotNull);
     });
 
-    testWidgets('getFormKey returns the same key object on repeated calls', (tester) async {
+    testWidgets('getFormKey returns the same key object on repeated calls',
+        (tester) async {
       final parser = SchemaParser();
       final key1 = parser.getFormKey('form1');
       final key2 = parser.getFormKey('form1');
       expect(key1, same(key2));
     });
 
-    testWidgets('submitForm action validates form — fails without required field',
+    testWidgets(
+        'submitForm action validates form — fails without required field',
         (tester) async {
       final parser = SchemaParser();
 
@@ -111,13 +127,17 @@ void main() {
       expect(find.text('This field is required'), findsOneWidget);
     });
 
-    testWidgets('autovalidateMode always shows error immediately', (tester) async {
+    testWidgets('autovalidateMode always shows error immediately',
+        (tester) async {
       await tester.pumpWidget(_build({
         'type': 'Form',
         'props': {'formKey': 'av', 'autovalidateMode': 'always'},
         'child': {
           'type': 'TextFormField',
-          'props': {'hint': 'Email', 'validators': ['required']},
+          'props': {
+            'hint': 'Email',
+            'validators': ['required']
+          },
         },
       }));
 

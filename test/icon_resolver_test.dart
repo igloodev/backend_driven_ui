@@ -46,7 +46,8 @@ void main() {
       'shopping_cart', 'shopping_bag', 'payment', 'credit_card', 'store',
       'receipt', 'local_offer',
       // Location
-      'location_on', 'location_off', 'map', 'navigation', 'explore', 'directions',
+      'location_on', 'location_off', 'map', 'navigation', 'explore',
+      'directions',
       // Time
       'calendar', 'calendar_today', 'date_range', 'schedule', 'access_time',
       'timer', 'history',
@@ -89,7 +90,15 @@ void main() {
   });
 
   group('Icon resolver — original icons still resolve', () {
-    for (final icon in ['home', 'search', 'settings', 'back', 'forward', 'star', 'person']) {
+    for (final icon in [
+      'home',
+      'search',
+      'settings',
+      'back',
+      'forward',
+      'star',
+      'person'
+    ]) {
       testWidgets('$icon still resolves', (tester) async {
         await tester.pumpWidget(_build({
           'type': 'Icon',

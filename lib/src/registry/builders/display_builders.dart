@@ -23,8 +23,10 @@ class DisplayBuilders {
         fontStyle: props['fontStyle'] == 'italic' ? FontStyle.italic : null,
         decoration: SchemaConverters.toTextDecoration(props['decoration']),
         decorationColor: SchemaConverters.toColor(props['decorationColor']),
-        decorationStyle: SchemaConverters.toTextDecorationStyle(props['decorationStyle']),
-        decorationThickness: SchemaConverters.toDouble(props['decorationThickness']),
+        decorationStyle:
+            SchemaConverters.toTextDecorationStyle(props['decorationStyle']),
+        decorationThickness:
+            SchemaConverters.toDouble(props['decorationThickness']),
         fontFamily: props['fontFamily'] as String?,
       ),
       textAlign: SchemaConverters.toTextAlign(props['textAlign']),
@@ -69,7 +71,8 @@ class DisplayBuilders {
         width: SchemaConverters.toDouble(props['width']),
         height: SchemaConverters.toDouble(props['height']),
         color: Colors.grey[200],
-        child: const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
+        child:
+            const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
       ),
     );
   }
@@ -89,9 +92,11 @@ class DisplayBuilders {
       text: TextSpan(
         children: spansList.map(_parseSpan).toList(),
       ),
-      textAlign: SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
+      textAlign:
+          SchemaConverters.toTextAlign(props['textAlign']) ?? TextAlign.start,
       maxLines: SchemaConverters.toDouble(props['maxLines'])?.toInt(),
-      overflow: SchemaConverters.toTextOverflow(props['overflow']) ?? TextOverflow.clip,
+      overflow: SchemaConverters.toTextOverflow(props['overflow']) ??
+          TextOverflow.clip,
       softWrap: props['softWrap'] as bool? ?? true,
       textDirection: SchemaConverters.toTextDirection(props['textDirection']),
     );

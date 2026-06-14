@@ -199,7 +199,8 @@ class _ApiWidgetState extends State<ApiWidget> {
         'ApiWidget: endpoint is empty and no ApiRequest was provided. '
         'Set endpoint or pass a request object.',
       );
-      throw Exception('ApiWidget requires a non-empty endpoint or an ApiRequest.');
+      throw Exception(
+          'ApiWidget requires a non-empty endpoint or an ApiRequest.');
     }
 
     final client = widget.httpClient ?? const DefaultBduiHttpClient();

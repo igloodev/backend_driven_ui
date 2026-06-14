@@ -83,6 +83,5 @@ class ApiRequest {
   }
 
   @override
-  String toString() =>
-      'ApiRequest(${method.value} $endpoint)';
+  String toString() => 'ApiRequest(${method.value} $endpoint)';
 }

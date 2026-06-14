@@ -40,7 +40,8 @@ class SliverBuilders {
       reverse: props['reverse'] as bool? ?? false,
       shrinkWrap: props['shrinkWrap'] as bool? ?? false,
       physics: physics,
-      slivers: schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
+      slivers:
+          schema.children?.map((c) => parser.parse(c, context)).toList() ?? [],
     );
   }
 
@@ -56,8 +57,7 @@ class SliverBuilders {
   ) {
     final props = schema.props ?? {};
     final title = props['title'] as String?;
-    final expandedHeight =
-        SchemaConverters.toDouble(props['expandedHeight']);
+    final expandedHeight = SchemaConverters.toDouble(props['expandedHeight']);
 
     return SliverAppBar(
       title: title != null ? Text(title) : null,
@@ -65,7 +65,8 @@ class SliverBuilders {
       expandedHeight: expandedHeight,
       floating: props['floating'] as bool? ?? false,
       pinned: props['pinned'] as bool? ?? false,
-      snap: (props['snap'] as bool? ?? false) && (props['floating'] as bool? ?? false),
+      snap: (props['snap'] as bool? ?? false) &&
+          (props['floating'] as bool? ?? false),
       backgroundColor: SchemaConverters.toColor(props['backgroundColor']),
       foregroundColor: SchemaConverters.toColor(props['foregroundColor']),
       elevation: SchemaConverters.toDouble(props['elevation']),
@@ -92,7 +93,8 @@ class SliverBuilders {
       delegate: SliverChildBuilderDelegate(
         (ctx, index) {
           final child = children[index];
-          final itemKey = child.props?['id']?.toString() ?? 'sliver_item_$index';
+          final itemKey =
+              child.props?['id']?.toString() ?? 'sliver_item_$index';
           return KeyedSubtree(
             key: ValueKey(itemKey),
             child: parser.parse(child, ctx),
@@ -126,16 +128,21 @@ class SliverBuilders {
             crossAxisSpacing:
                 SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
             childAspectRatio:
-                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+                    .clamp(0.01, double.infinity),
           )
         : SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ?? 2).clamp(1, 99999),
+            crossAxisCount:
+                (SchemaConverters.toDouble(props['crossAxisCount'])?.toInt() ??
+                        2)
+                    .clamp(1, 99999),
             mainAxisSpacing:
                 SchemaConverters.toDouble(props['mainAxisSpacing']) ?? 0.0,
             crossAxisSpacing:
                 SchemaConverters.toDouble(props['crossAxisSpacing']) ?? 0.0,
             childAspectRatio:
-                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0).clamp(0.01, double.infinity),
+                (SchemaConverters.toDouble(props['childAspectRatio']) ?? 1.0)
+                    .clamp(0.01, double.infinity),
           );
 
     return SliverGrid(
@@ -143,7 +150,8 @@ class SliverBuilders {
       delegate: SliverChildBuilderDelegate(
         (ctx, index) {
           final child = children[index];
-          final itemKey = child.props?['id']?.toString() ?? 'sliver_grid_$index';
+          final itemKey =
+              child.props?['id']?.toString() ?? 'sliver_grid_$index';
           return KeyedSubtree(
             key: ValueKey(itemKey),
             child: parser.parse(child, ctx),
@@ -180,10 +188,10 @@ class SliverBuilders {
   ) {
     final props = schema.props ?? {};
     return SliverPadding(
-      padding: SchemaConverters.toEdgeInsets(props['padding']) ?? EdgeInsets.zero,
-      sliver: schema.child != null
-          ? parser.parse(schema.child!, context)
-          : null,
+      padding:
+          SchemaConverters.toEdgeInsets(props['padding']) ?? EdgeInsets.zero,
+      sliver:
+          schema.child != null ? parser.parse(schema.child!, context) : null,
     );
   }
 
@@ -200,9 +208,7 @@ class SliverBuilders {
     return SliverFillRemaining(
       hasScrollBody: props['hasScrollBody'] as bool? ?? false,
       fillOverscroll: props['fillOverscroll'] as bool? ?? false,
-      child: schema.child != null
-          ? parser.parse(schema.child!, context)
-          : null,
+      child: schema.child != null ? parser.parse(schema.child!, context) : null,
     );
   }
 
@@ -219,7 +225,8 @@ class SliverBuilders {
     final children = schema.children ?? [];
 
     return SliverFixedExtentList(
-      itemExtent: (SchemaConverters.toDouble(props['itemExtent']) ?? 56.0).clamp(0.1, double.infinity),
+      itemExtent: (SchemaConverters.toDouble(props['itemExtent']) ?? 56.0)
+          .clamp(0.1, double.infinity),
       delegate: SliverChildBuilderDelegate(
         (ctx, index) {
           final child = children[index];

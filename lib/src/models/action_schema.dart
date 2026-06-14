@@ -64,7 +64,8 @@ class ActionSchema {
       throw ArgumentError('ActionSchema requires a "type" field');
     }
     if (type is! String) {
-      throw ArgumentError('ActionSchema "type" must be a String, got ${type.runtimeType}');
+      throw ArgumentError(
+          'ActionSchema "type" must be a String, got ${type.runtimeType}');
     }
     if (type.isEmpty) {
       throw ArgumentError('ActionSchema "type" cannot be empty');
@@ -72,8 +73,18 @@ class ActionSchema {
 
     // Reserved keys that are not part of params
     const reservedKeys = {
-      'type', 'params', 'route', 'endpoint', 'method', 'body',
-      'onSuccess', 'onError', 'actions', 'condition', 'then', 'else'
+      'type',
+      'params',
+      'route',
+      'endpoint',
+      'method',
+      'body',
+      'onSuccess',
+      'onError',
+      'actions',
+      'condition',
+      'then',
+      'else'
     };
 
     // Collect extra keys into params (for convenience - allows flat action format)
@@ -113,7 +124,8 @@ class ActionSchema {
       endpoint: json['endpoint']?.toString(),
       method: json['method']?.toString(),
       body: json['body'],
-      onSuccess: onSuccessMap != null ? ActionSchema.fromJson(onSuccessMap) : null,
+      onSuccess:
+          onSuccessMap != null ? ActionSchema.fromJson(onSuccessMap) : null,
       onError: onErrorMap != null ? ActionSchema.fromJson(onErrorMap) : null,
       actions: actionsList,
       condition: json['condition']?.toString(),

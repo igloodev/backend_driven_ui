@@ -17,7 +17,8 @@ class _MockHttpClient implements BduiHttpClient {
   _MockHttpClient(this._handler);
 
   @override
-  Future<ApiResponse> get(String url, {
+  Future<ApiResponse> get(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
@@ -29,16 +30,19 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> getWithRefresh(String url, {
+  Future<ApiResponse> getWithRefresh(
+    String url, {
     Map<String, String>? headers,
     Duration? cacheDuration,
     int? maxRetries,
     Duration? timeout,
     void Function(ApiResponse)? onRefresh,
-  }) => get(url);
+  }) =>
+      get(url);
 
   @override
-  Future<ApiResponse> post(String url, {
+  Future<ApiResponse> post(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
@@ -50,7 +54,8 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> put(String url, {
+  Future<ApiResponse> put(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
@@ -62,7 +67,8 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> patch(String url, {
+  Future<ApiResponse> patch(
+    String url, {
     Map<String, String>? headers,
     dynamic body,
     int? maxRetries,
@@ -74,7 +80,8 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> delete(String url, {
+  Future<ApiResponse> delete(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
@@ -85,7 +92,8 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> head(String url, {
+  Future<ApiResponse> head(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
@@ -96,7 +104,8 @@ class _MockHttpClient implements BduiHttpClient {
   }
 
   @override
-  Future<ApiResponse> options(String url, {
+  Future<ApiResponse> options(
+    String url, {
     Map<String, String>? headers,
     int? maxRetries,
     Duration? timeout,
@@ -119,7 +128,8 @@ Widget _wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
 void main() {
   group('ApiWidget', () {
     group('empty endpoint guard', () {
-      testWidgets('shows error state when endpoint is empty and no request provided',
+      testWidgets(
+          'shows error state when endpoint is empty and no request provided',
           (tester) async {
         final client = _MockHttpClient((_) async =>
             const ApiResponse(statusCode: 200, data: {'key': 'value'}));
@@ -152,7 +162,8 @@ void main() {
         expect(client.callCount, 1);
       });
 
-      testWidgets('does not throw when ApiRequest is provided with empty string endpoint',
+      testWidgets(
+          'does not throw when ApiRequest is provided with empty string endpoint',
           (tester) async {
         // ApiRequest path bypasses the empty-endpoint guard
         final client = _MockHttpClient((_) async =>
@@ -171,8 +182,8 @@ void main() {
 
     group('didUpdateWidget refetch', () {
       testWidgets('refetches when endpoint changes', (tester) async {
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: {'v': 1}));
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: {'v': 1}));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/v1',
@@ -193,8 +204,8 @@ void main() {
       });
 
       testWidgets('refetches when ApiRequest changes', (tester) async {
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: {'v': 1}));
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: {'v': 1}));
 
         const req1 = ApiRequest(endpoint: 'https://api.example.com/a');
         const req2 = ApiRequest(endpoint: 'https://api.example.com/b');
@@ -217,9 +228,10 @@ void main() {
         expect(client.lastUrl, 'https://api.example.com/b');
       });
 
-      testWidgets('does not refetch when unrelated props change', (tester) async {
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: {'v': 1}));
+      testWidgets('does not refetch when unrelated props change',
+          (tester) async {
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: {'v': 1}));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/data',
@@ -244,8 +256,8 @@ void main() {
       testWidgets('onError called once per unique error', (tester) async {
         int errorCallCount = 0;
 
-        final client = _MockHttpClient((_) async =>
-            throw Exception('network failure'));
+        final client =
+            _MockHttpClient((_) async => throw Exception('network failure'));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/data',
@@ -314,8 +326,8 @@ void main() {
           (tester) async {
         int callCount = 0;
 
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: {'id': 1}));
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: {'id': 1}));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/data',
@@ -352,8 +364,8 @@ void main() {
       });
 
       testWidgets('shows empty widget for empty map response', (tester) async {
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: {}));
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: {}));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/data',
@@ -367,8 +379,8 @@ void main() {
       });
 
       testWidgets('shows empty widget for null data', (tester) async {
-        final client = _MockHttpClient((_) async =>
-            const ApiResponse(statusCode: 200, data: null));
+        final client = _MockHttpClient(
+            (_) async => const ApiResponse(statusCode: 200, data: null));
 
         await tester.pumpWidget(_wrap(ApiWidget(
           endpoint: 'https://api.example.com/data',

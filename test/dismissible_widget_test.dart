@@ -18,7 +18,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Dismissible',
         'props': {'dismissKey': 'item-1'},
-        'child': {'type': 'Text', 'props': {'text': 'Swipe me'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Swipe me'}
+        },
       }));
       expect(find.byType(Dismissible), findsOneWidget);
       expect(find.text('Swipe me'), findsOneWidget);
@@ -35,7 +38,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Dismissible',
         'props': {'dismissKey': 'item-2', 'direction': 'endToStart'},
-        'child': {'type': 'Text', 'props': {'text': 'Delete'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Delete'}
+        },
       }));
       expect(find.byType(Dismissible), findsOneWidget);
     });
@@ -44,7 +50,10 @@ void main() {
       await tester.pumpWidget(_build({
         'type': 'Dismissible',
         'props': {'dismissKey': 'item-3', 'direction': 'startToEnd'},
-        'child': {'type': 'Text', 'props': {'text': 'Archive'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Archive'}
+        },
       }));
     });
 
@@ -58,7 +67,10 @@ void main() {
             'props': {'color': 'green'},
           },
         },
-        'child': {'type': 'Text', 'props': {'text': 'Custom bg'}},
+        'child': {
+          'type': 'Text',
+          'props': {'text': 'Custom bg'}
+        },
       }));
     });
 

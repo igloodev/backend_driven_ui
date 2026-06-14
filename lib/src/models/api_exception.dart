@@ -30,5 +30,6 @@ class ApiException implements Exception {
       statusCode != null && statusCode! >= 400 && statusCode! < 500;
 
   @override
-  String toString() => 'ApiException: $message${statusCode != null ? ' ($statusCode)' : ''}';
+  String toString() =>
+      'ApiException: $message${statusCode != null ? ' ($statusCode)' : ''}';
 }

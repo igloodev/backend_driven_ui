@@ -69,7 +69,8 @@ class EffectsBuilders {
   ) {
     final props = schema.props ?? {};
     return Opacity(
-      opacity: (SchemaConverters.toDouble(props['opacity']) ?? 1.0).clamp(0.0, 1.0),
+      opacity:
+          (SchemaConverters.toDouble(props['opacity']) ?? 1.0).clamp(0.0, 1.0),
       child: schema.child != null
           ? parser.parse(schema.child!, context)
           : const SizedBox.shrink(),
